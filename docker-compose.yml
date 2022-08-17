@@ -9,3 +9,7 @@ services:
       - 8088:80
     environment:
       NODE_ENV: production
+
+  backend:
+    build: ./BE
+    command: uvicorn app.main:app --root-path /api --proxy-headers --host 0.0.0.0 --port 8000
