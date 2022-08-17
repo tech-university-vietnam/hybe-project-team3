@@ -3,7 +3,7 @@ import "./App.css";
 function App() {
   return (
     <div className="App">
-      <p>main app page</p>
+      <p>HYBE app page</p>
     </div>
   );
 }
