@@ -1,7 +1,6 @@
 version: "2"
 services:
-  nginx-react:
-    container_name: ngixreactapp
+  frontend:
     build:
       context: .
       dockerfile: Dockerfile
