@@ -2,5 +2,5 @@
 exclude =
     migrations
     __pycache__
-    venv
-    .venv
+    BE/venv
+    BE/.venv
