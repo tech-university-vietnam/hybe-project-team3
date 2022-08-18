@@ -6,11 +6,10 @@ import unittest
 from app.main import get_day_of_week
 
 
-class GetDayOfWeek(unittest.TestCase):
-
+class TestGetDayOfWeek(unittest.TestCase):
     def test_get_day_of_week(self):
         dow = datetime.now().strftime("%A")
-        self.assertEqual(dow, get_day_of_week()['day'])
+        assert dow == get_day_of_week()['day']
 
     @patch('app.main.get_datetime_now')
     def test_mocked_get_day_of_week(self, mock_get_dow: Mock):
