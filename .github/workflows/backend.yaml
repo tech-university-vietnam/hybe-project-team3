@@ -10,7 +10,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.8.13
       - name: Checkout PyTorch
         uses: actions/checkout@master
       - name: Install flake8
