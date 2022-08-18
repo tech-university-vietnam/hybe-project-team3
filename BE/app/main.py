@@ -5,8 +5,6 @@ from datetime import datetime
 def get_datetime_now() -> datetime:
     # Use arrow function here to mock the builtin library
     return datetime.now()
-
-
 app = FastAPI()
 
 
