@@ -1,11 +1,13 @@
-import "./App.css";
+import { Footer } from "layouts/Footer/Footer";
+import { Header } from "layouts/Header/Header";
+import { HomePage } from "pages/HomePage/HomePage"
 
-function App() {
-  return (
-    <div className="App">
-      <p>HYBE app page</p>
-    </div>
-  );
-}
+const App = () => (
+  <>
+  <Header/>
+  <HomePage/>
+  <Footer/>
+  </>
+)
 
 export default App;
