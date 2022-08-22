@@ -1,12 +1,37 @@
 import { useForm } from 'react-hook-form';
-import { FormControl, InputLabel, Select, MenuItem, Button, Typography, TextField } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Container } from '@mui/system';
+import { FormInputText } from 'components/FormInputText/FormInputText';
+import { FormInputDropdown } from 'components/FormInputDropdown/FormInputDropdown';
 
 const RegisterForm = props => {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { control, handleSubmit } = useForm({
+        defaultValues: {
+            email: '',
+            password: '',
+            passwordCheck: '',
+            hospital: ''
+        }
+    }
+    );
     const onSubmit = data => console.log(data);
+
+    const getHospitalList = () => {
+        const options = [
+            {
+                label: "Dropdown Option 1",
+                value: "1",
+            },
+            {
+                label: "Dropdown Option 2",
+                value: "2",
+            },
+        ];
+
+        return options;
+    }
 
     return (
         <>
@@ -19,52 +44,38 @@ const RegisterForm = props => {
                 }}
             >
                 <Typography variant="h4">Create your account</Typography>
-                <TextField
-                    label='Email'
-                    variant='outlined'
-                    type='email'
+                <FormInputText
+                    name="email"
+                    label="Email"
+                    type="email"
+                    control={control}
                 />
-                <TextField
-                    label='Password'
-                    variant='outlined'
-                    type='password'
+                <FormInputText
+                    name="password"
+                    label="Password"
+                    type="password"
+                    control={control}
                 />
-                <TextField
-                    label='Re-type your password'
-                    variant='outlined'
-                    type='email'
+                <FormInputText
+                    name="passwordCheck"
+                    label="Re-type your password"
+                    type="password"
+                    control={control}
                 />
-                <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Hospital</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        // value={age}
-                        label="Hospital"
-                    // onChange={handleChange}
-                    >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                </FormControl>
-                <Button variant="contained">Sign up</Button>
+                <FormInputDropdown
+                    name="hospital"
+                    label="Hospital"
+                    control={control}
+                    options={getHospitalList()}
+                />
+                <Button
+                    variant="contained"
+                    onClick={handleSubmit(onSubmit)}>
+                    Sign up
+                </Button>
             </Container>
 
         </>
-
-        /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-        // <form onSubmit={handleSubmit(onSubmit)}>
-        //     {/* register your input into the hook by invoking the "register" function */}
-        //     <input defaultValue="test" {...register("example")} />
-
-        //     {/* include validation with required or other standard HTML validation rules */}
-        //     <input {...register("exampleRequired", { required: true })} />
-        //     {/* errors will return when field validation fails  */}
-        //     {errors.exampleRequired && <span>This field is required</span>}
-
-        //     <input type="submit" />
-        // </form>
     )
 }
 
