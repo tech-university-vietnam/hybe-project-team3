@@ -13,10 +13,3 @@ jobs:
           token: ${{ secrets.OKTETO_TOKEN }}
           url: ${{ secrets.OKTETO_URL }}
 
-      - name: Deploy preview environment
-        uses: okteto/deploy-preview@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          name: weburnit
-          scope: personal
