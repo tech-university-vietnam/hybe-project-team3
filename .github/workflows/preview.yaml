@@ -1,15 +1,21 @@
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  devflow:
+  preview:
     runs-on: ubuntu-latest
     steps:
-
-    - uses: okteto/context@latest
+    - name: Context
+      uses: okteto/context@latest
       with:
         token: ${{ secrets.OKTETO_TOKEN }}
-    - name: "Build"
-      uses: okteto/build@latest
+
+    - name: Deploy preview environment
+      uses: okteto/deploy-preview@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: pr-${{ github.event.number }}-weburnit
+        scope: personal
