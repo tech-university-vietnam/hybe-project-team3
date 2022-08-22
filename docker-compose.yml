@@ -1,16 +1,14 @@
 version: "2"
 services:
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: FE
     ports:
       - 8088:80
     environment:
       NODE_ENV: production
 
   backend:
-    build: ./BE
+    build: BE
     command: uvicorn app.main:app --root-path /api --proxy-headers --host 0.0.0.0 --port 8000
 
   database:
@@ -18,4 +16,3 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: example
-  
