@@ -1,15 +1,15 @@
 on:
-  pull_request:
+  push:
     branches:
       - main
 
 jobs:
-  preview:
+  devflow:
     runs-on: ubuntu-latest
     steps:
-      - name: Context
-        uses: okteto/context@latest
-        with:
-          token: ${{ secrets.OKTETO_TOKEN }}
-          url: ${{ secrets.OKTETO_URL }}
 
+    - uses: okteto/context@latest
+      with:
+        token: ${{ secrets.OKTETO_TOKEN }}
+    - name: "Build"
+      uses: okteto/build@latest
