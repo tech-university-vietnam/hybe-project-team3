@@ -1,9 +1,9 @@
 import React from "react";
 import { Greeting } from 'components/Greeting/Greeting'
-import className from "./HomePage.css"
+import "./HomePage.css"
 
 export const HomePage = () => (
-  <div className={className.textAlign}>
+  <div className='textAlign'>
     <Greeting />
   </div>
 )
