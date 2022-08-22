@@ -5,14 +5,14 @@ from BE.app.domains.user import User
 
 
 class UserRepository(ABC):
-    """BookRepository defines a repository interface for Book entity."""
+    """User Repository defines a repository interface for user entity."""
 
     @abstractmethod
-    def create(self, book: User) -> Optional[User]:
+    def create(self, user: User) -> Optional[User]:
         raise NotImplementedError
 
     @abstractmethod
-    def update(self, book: User) -> Optional[User]:
+    def update(self, user: User) -> Optional[User]:
         raise NotImplementedError
 
     @abstractmethod
