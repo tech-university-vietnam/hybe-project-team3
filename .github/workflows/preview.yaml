@@ -2,28 +2,14 @@ on:
   push:
     branches:
       - main
-name: Build
 
 jobs:
   devflow:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout
-      uses: actions/checkout@master
 
-    - name: context
-      uses: okteto/context@latest
+    - uses: okteto/context@latest
       with:
         token: ${{ secrets.OKTETO_TOKEN }}
-
-    - name: "Activate Namespace"
-      uses: okteto/namespace@latest
-      with:
-        name: weburnit
-
-    - name: "Trigger the pipeline"
-      uses: okteto/pipeline@latest
-      with:
-        name: pr-${{ github.event.number }}
-        timeout: 8m
-        skipIfExists: true
+    - name: "Build"
+      uses: okteto/build@latest
