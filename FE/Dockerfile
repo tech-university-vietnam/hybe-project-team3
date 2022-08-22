@@ -1,7 +1,6 @@
 FROM node:alpine as build
 WORKDIR /app
-COPY FE .
-COPY nginx.conf .
+COPY . .
 RUN yarn
 RUN yarn build
 
