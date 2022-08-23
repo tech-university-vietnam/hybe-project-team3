@@ -1,18 +1,21 @@
 from fastapi import APIRouter
+from fastapi_utils.cbv import cbv
+from fastapi_utils.inferring_router import InferringRouter
 
-router = APIRouter()
+from app.domain.user.user_service import UserService
 
-
-@router.get("/users/login", tags=["users"])
-async def read_users():
-    return [{"username": "Rick"}, {"username": "Morty"}]
-
-
-@router.get("/users/me", tags=["users"])
-async def read_user_me():
-    return {"username": "fakecurrentuser"}
+router = InferringRouter()
 
 
-@router.get("/users/{username}", tags=["users"])
-async def read_user(username: str):
-    return {"username": username}
+@cbv(router)
+class UserRoute:
+    # Inject dependency services
+    user_service = UserService
+
+    @router.get("/users/me", tags=["users"])
+    async def get_current_user(self):
+        return {"username": "fakecurrentuser"}
+
+    @router.get("/users/{username}", tags=["users"])
+    async def get_user(self, username: str):
+        return {"username": username}
