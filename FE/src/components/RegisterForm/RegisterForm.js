@@ -1,21 +1,20 @@
-import { useForm } from 'react-hook-form';
-import { Button, Typography } from '@mui/material';
+import { Controller, useForm } from 'react-hook-form';
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Container } from '@mui/system';
-import { FormInputText } from 'components/FormInputText/FormInputText';
-import { FormInputDropdown } from 'components/FormInputDropdown/FormInputDropdown';
+import { RegisterSchema } from 'validation/RegisterSchema';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const RegisterForm = props => {
-    const { control, handleSubmit } = useForm({
-        defaultValues: {
-            email: '',
-            password: '',
-            passwordCheck: '',
-            hospital: ''
-        }
-    }
-    );
+    const {
+        register,
+        control,
+        handleSubmit,
+        formState: { errors }
+    } = useForm({
+        resolver: yupResolver(RegisterSchema)
+    })
+
     const onSubmit = data => console.log(data);
 
     const getHospitalList = () => {
@@ -29,52 +28,91 @@ const RegisterForm = props => {
                 value: "2",
             },
         ];
-
         return options;
     }
 
     return (
         <>
             <Container
-                maxWidth='sm'
+                maxWidth='xs'
                 style={{
                     display: "grid",
-                    gridRowGap: "30px",
+                    gridRowGap: "20px",
                     padding: "20px"
                 }}
             >
                 <Typography variant="h4">Create your account</Typography>
-                <FormInputText
+                <TextField
+                    required
+                    id="email"
                     name="email"
                     label="Email"
-                    type="email"
-                    control={control}
+                    fullWidth
+                    // margin="dense"
+                    {...register('email')}
+                    error={errors.email ? true : false}
                 />
-                <FormInputText
+                <Typography color="red">
+                    {errors.email?.message}
+                </Typography>
+                <TextField
+                    required
+                    id="password"
                     name="password"
                     label="Password"
                     type="password"
-                    control={control}
+                    {...register('password')}
+                    error={errors.password ? true : false}
                 />
-                <FormInputText
-                    name="passwordCheck"
+                <Typography color="red">
+                    {errors.password?.message}
+                </Typography>
+                <TextField
+                    required
+                    id="confirmPassword"
+                    name="confirmPassword"
                     label="Re-type your password"
                     type="password"
-                    control={control}
+                    {...register('confirmPassword')}
+                    error={errors.confirmPassword ? true : false}
                 />
-                <FormInputDropdown
+                <Typography color="red">
+                    {errors.confirmPassword?.message}
+                </Typography>
+                <Controller
+                    control={control}
                     name="hospital"
-                    label="Hospital"
-                    control={control}
-                    options={getHospitalList()}
+                    render={({ field: { onChange, value } }) => (
+                        <FormControl
+                            fullWidth
+                            required
+                            {...register('hospital')}
+                            error={errors.hospital ? true : false}
+                        >
+                            <InputLabel id="hospitalLabel">Hospital</InputLabel>
+                            <Select
+                                labelId="hospitalLabel"
+                                label="Hospital"
+                                id="hospital"
+                                value={value}
+                                onChange={onChange}
+                                defaultValue=""
+                            >
+                                {getHospitalList().map(hospital =>
+                                    <MenuItem key={hospital.value} value={hospital.value}>{hospital.label}</MenuItem>
+                                )}
+                            </Select>
+                        </FormControl>)}
                 />
+                <Typography color="red">
+                    {errors.hospital?.message}
+                </Typography>
                 <Button
                     variant="contained"
                     onClick={handleSubmit(onSubmit)}>
                     Sign up
                 </Button>
             </Container>
-
         </>
     )
 }
