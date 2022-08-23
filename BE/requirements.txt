@@ -9,3 +9,7 @@ alembic
 bcrypt
 pydantic
 psycopg2
+pyjwt
+pytest
+pytest-cov
+requests

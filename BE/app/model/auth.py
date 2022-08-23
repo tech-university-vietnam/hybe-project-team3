@@ -1,11 +1,9 @@
-from typing import Optional
-from datetime import datetime
 
 
 class Auth:
 
-    def __init__(self, username, email, hash_password, salt):
+    def __init__(self,id, username, email, hash_pw):
+        self.id: int = id
         self.username: str = username
         self.email: str = email
-        self.hash_password: str = hash_password
-        self.salt: str = salt
+        self.hash_pw: str = hash_pw

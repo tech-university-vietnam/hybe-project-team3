@@ -1,25 +1,32 @@
-version: "2"
+version: "3"
 services:
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 8088:80
-    environment:
-      NODE_ENV: production
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 8088:80
+  #   environment:
+  #     NODE_ENV: production
 
   backend:
     build: ./BE
     ports:
-      - 8000:8000 
-    command: uvicorn app.main:app --root-path /api --proxy-headers --host 0.0.0.0 --port 8000
+      - 8000:8000
+    links:
+      - database
+    command: uvicorn app.main:app --proxy-headers --host 0.0.0.0 --port 8000
+    depends_on:
+      - database
 
   database:
     image: postgres:latest
     restart: always
     ports:
       - 5432:5432
+    expose:
+     - "5432"
     environment:
-      POSTGRES_PASSWORD: example
-  
+      POSTGRES_PASSWORD: password
+networks:
+  default:

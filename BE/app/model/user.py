@@ -6,7 +6,7 @@ class User:
     """User represents your collection of books as an entity."""
 
     def __init__(self,
-                 id: str,
+                 id: int,
                  username: str,
                  email: str,
                  address: str,
@@ -16,7 +16,7 @@ class User:
                  created_at: Optional[datetime] = datetime.now(),
                  updated_at: Optional[datetime] = datetime.now(),
                  ):
-        self.id: Optional[str] = id
+        self.id: int = id
         self.username: str = username
         self.email: str = email
         self.address: str = address
