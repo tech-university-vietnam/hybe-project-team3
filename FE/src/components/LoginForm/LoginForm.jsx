@@ -70,7 +70,7 @@ const LoginForm = (props) => {
         </Typography>
 
         <Button
-          data-testid="button-test"
+          data-testid="login-button-test"
           variant="contained"
           onClick={handleSubmit(onSubmit)}
           sx={{ height: "50px", fontWeight: "bold" }}
