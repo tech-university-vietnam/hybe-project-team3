@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginSchema } from "Utils/validation/LoginSchema";
@@ -7,7 +8,10 @@ import { Box, Button, Container, TextField, Typography } from "@mui/material";
 // TODO: call backend api to login
 // TODO: error handling for incorrect email/password
 
+let loginUrl = "localhost:8000/login";
+
 const LoginForm = (props) => {
+  const [loginError, setLoginError] = useState(null);
   const {
     register,
     handleSubmit,
@@ -16,7 +20,16 @@ const LoginForm = (props) => {
     resolver: yupResolver(LoginSchema),
   });
 
-  const onSubmit = (data) => console.log("submit data is", data);
+  const onSubmit = (data) => {
+    axios
+      .post(loginUrl, data)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        setLoginError(error);
+      });
+  };
 
   return (
     <div>
@@ -54,17 +67,23 @@ const LoginForm = (props) => {
           error={errors.password ? true : false}
         />
 
+        {loginError && (
+          <Typography color="red">
+            Cannot login to server. Please try again
+          </Typography>
+        )}
+
         <Typography
           color="red"
           data-testid="email-error"
-          sx={{ visibility: errors.email?.message ? "visible" : "hidden" }}
+          sx={{ display: errors.email?.message ? "inline" : "none" }}
         >
           {errors.email?.message}
         </Typography>
         <Typography
           color="red"
           data-testid="password-error"
-          sx={{ visibility: errors.password?.message ? "visible" : "hidden" }}
+          sx={{ display: errors.password?.message ? "inline" : "none" }}
         >
           {errors.password?.message}
         </Typography>
