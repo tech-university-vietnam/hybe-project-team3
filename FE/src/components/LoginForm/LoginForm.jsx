@@ -56,6 +56,7 @@ const LoginForm = () => {
           label="Email"
           {...register("email")}
           error={errors.email ? true : false}
+          helperText={errors.email?.message}
         />
 
         <TextField
@@ -63,8 +64,10 @@ const LoginForm = () => {
           id="password"
           name="password"
           label="Password"
+          type="password"
           {...register("password")}
           error={errors.password ? true : false}
+          helperText={errors.password?.message}
         />
 
         {loginError && (
@@ -75,24 +78,7 @@ const LoginForm = () => {
           </>
         )}
 
-        <Typography
-          color="red"
-          role="email-error-p"
-          data-testid="email-error"
-          sx={{ display: errors.email?.message ? "inline" : "none" }}
-        >
-          {errors.email?.message}
-        </Typography>
-        <Typography
-          color="red"
-          data-testid="password-error"
-          sx={{ display: errors.password?.message ? "inline" : "none" }}
-        >
-          {errors.password?.message}
-        </Typography>
-
         <Button
-          data-testid="login-button-test"
           variant="contained"
           onClick={handleSubmit(onSubmit)}
           sx={{ height: "50px", fontWeight: "bold" }}
