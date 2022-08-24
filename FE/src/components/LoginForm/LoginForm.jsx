@@ -10,7 +10,7 @@ import { Box, Button, Container, TextField, Typography } from "@mui/material";
 
 let loginUrl = "localhost:8000/login";
 
-const LoginForm = (props) => {
+const LoginForm = ({ testFunc }) => {
   const [loginError, setLoginError] = useState(null);
   const {
     register,
@@ -68,13 +68,16 @@ const LoginForm = (props) => {
         />
 
         {loginError && (
-          <Typography color="red">
-            Cannot login to server. Please try again
-          </Typography>
+          <>
+            <Typography color="red" data-testid="login-error">
+              Cannot login to server. Please try again
+            </Typography>
+          </>
         )}
 
         <Typography
           color="red"
+          role="email-error-p"
           data-testid="email-error"
           sx={{ display: errors.email?.message ? "inline" : "none" }}
         >
@@ -91,10 +94,10 @@ const LoginForm = (props) => {
         <Button
           data-testid="login-button-test"
           variant="contained"
-          onClick={handleSubmit(onSubmit)}
+          onClick={testFunc}
           sx={{ height: "50px", fontWeight: "bold" }}
         >
-          Sign up
+          Login
         </Button>
         <Typography>Don't have an account? Join free today</Typography>
       </Container>
