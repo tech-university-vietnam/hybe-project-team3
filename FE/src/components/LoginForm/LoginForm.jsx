@@ -10,7 +10,7 @@ import { Box, Button, Container, TextField, Typography } from "@mui/material";
 
 let loginUrl = "localhost:8000/login";
 
-const LoginForm = ({ testFunc }) => {
+const LoginForm = () => {
   const [loginError, setLoginError] = useState(null);
   const {
     register,
@@ -94,7 +94,7 @@ const LoginForm = ({ testFunc }) => {
         <Button
           data-testid="login-button-test"
           variant="contained"
-          onClick={testFunc}
+          onClick={handleSubmit(onSubmit)}
           sx={{ height: "50px", fontWeight: "bold" }}
         >
           Login
