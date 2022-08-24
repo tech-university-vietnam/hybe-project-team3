@@ -18,8 +18,6 @@ const LoginForm = (props) => {
 
   const onSubmit = (data) => console.log("submit data is", data);
 
-  console.log("errors are", errors);
-
   return (
     <div>
       <Container
@@ -38,7 +36,6 @@ const LoginForm = (props) => {
             Login to your account
           </Typography>
         </Box>
-
         <TextField
           required
           id="email"
@@ -46,8 +43,7 @@ const LoginForm = (props) => {
           label="Email"
           {...register("email")}
           error={errors.email ? true : false}
-        ></TextField>
-        <Typography color="red">{errors.email?.message}</Typography>
+        />
 
         <TextField
           required
@@ -56,9 +52,25 @@ const LoginForm = (props) => {
           label="Password"
           {...register("password")}
           error={errors.password ? true : false}
-        ></TextField>
-        <Typography color="red">{errors.password?.message}</Typography>
+        />
+
+        <Typography
+          color="red"
+          data-testid="email-error"
+          sx={{ visibility: errors.email?.message ? "visible" : "hidden" }}
+        >
+          {errors.email?.message}
+        </Typography>
+        <Typography
+          color="red"
+          data-testid="password-error"
+          sx={{ visibility: errors.password?.message ? "visible" : "hidden" }}
+        >
+          {errors.password?.message}
+        </Typography>
+
         <Button
+          data-testid="button-test"
           variant="contained"
           onClick={handleSubmit(onSubmit)}
           sx={{ height: "50px", fontWeight: "bold" }}
