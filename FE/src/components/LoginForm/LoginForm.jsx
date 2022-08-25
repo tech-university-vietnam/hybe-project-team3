@@ -12,6 +12,7 @@ let loginUrl = "localhost:8000/login";
 
 const LoginForm = () => {
   const [loginError, setLoginError] = useState(null);
+
   const {
     register,
     handleSubmit,
@@ -25,9 +26,10 @@ const LoginForm = () => {
       .post(loginUrl, data)
       .then((response) => {
         console.log(response);
+        localStorage.setItem("token", response.data.token);
       })
       .catch((error) => {
-        setLoginError(error);
+        setLoginError(error.data.msg);
       });
   };
 
@@ -73,7 +75,7 @@ const LoginForm = () => {
         {loginError && (
           <>
             <Typography color="red" data-testid="login-error">
-              Cannot login to server. Please try again
+              {loginError}
             </Typography>
           </>
         )}
