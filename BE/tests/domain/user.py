@@ -17,18 +17,10 @@ class TestUserModel:
             work_for=1
         )
 
-        assert (
-            user.username
-            == "foo"
-        )
-        assert (
-            user.email
-            == "foo@gmail.com"
-        )
-        assert (
-            user.telephone
-            == "1"
-        )
+        assert user.username == "foo"
+        assert user.email == "foo@gmail.com"
+
+        assert user.telephone == "1"
         assert user.work_for == 1
         assert user.created_at == now
         assert user.updated_at == now
