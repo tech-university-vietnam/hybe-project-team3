@@ -54,10 +54,7 @@ test("email validation", async () => {
 test('password validation', async () => {
     render(<RegisterForm />)
 
-    const passwordInput = screen.getByLabelText("input")
-    userEvent.type(passwordInput, 'hello');
-    
-
+    const passwordInput = screen.getByTestId("password").querySelector("input");
     const signUpButton = screen.getByRole("button", {
         name: "Sign up"
     });
@@ -72,4 +69,26 @@ test('password validation', async () => {
         await screen.findByText('Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character');
         userEvent.clear(passwordInput)
     }
+})
+
+test('confirm password validation', async () => {
+    render(<RegisterForm />)
+
+    const passwordInput = screen.getByTestId("password").querySelector("input");
+    const confirmPasswordInput = screen.getByTestId("confirmPassword").querySelector("input");
+    const signUpButton = screen.getByRole("button", {
+        name: "Sign up"
+    });
+
+    const password = '123456'
+    const confirmPassword = '123'
+
+    userEvent.type(passwordInput, password);
+    userEvent.type(confirmPasswordInput, confirmPassword);
+
+    await act(async () => {
+        fireEvent.click(signUpButton)
+    });
+
+    expect(screen.getByText('Confirm password does not match')).toBeInTheDocument()
 })

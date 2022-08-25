@@ -57,11 +57,11 @@ const RegisterForm = props => {
                 </Typography>
                 <TextField
                     required
-                    id="passwordId"
+                    id="password"
                     name="password"
                     label="Password"
                     type="password"
-                    
+                    data-testid="password"
                     {...register('password')}
                     error={errors.password ? true : false}
                 />
@@ -74,6 +74,7 @@ const RegisterForm = props => {
                     name="confirmPassword"
                     label="Re-type your password"
                     type="password"
+                    data-testid="confirmPassword"
                     {...register('confirmPassword')}
                     error={errors.confirmPassword ? true : false}
                 />
