@@ -3,3 +3,13 @@ uvicorn
 flake8
 pytest
 pyte
+fastapi-utils
+sqlalchemy
+alembic
+bcrypt
+pydantic
+psycopg2
+pyjwt
+pytest
+pytest-cov
+requests
