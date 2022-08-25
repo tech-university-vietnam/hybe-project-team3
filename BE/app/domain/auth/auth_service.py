@@ -4,9 +4,9 @@ import bcrypt
 from app.controllers.auth.auth_request import RegisterRequest
 from app.domain.auth.auth_repository import AuthRepository
 from app.domain.user.user_repository import UserRepository
-import logging
 
 from app.model.auth import Auth
+
 
 class AuthService:
     auth_repo = AuthRepository()
