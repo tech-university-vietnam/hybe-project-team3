@@ -8,13 +8,10 @@ class JWTService:
         self.config = get_settings()
 
     def encode(self, user_id: str) -> str:
-        payload = {
-                'user_id': user_id
-            }
-        return jwt.encode(
-                payload,
-                self.config.SECRET,
-                algorithm="HS256")
+        payload = {'user_id': user_id}
+        return jwt.encode(payload,
+                          self.config.SECRET,
+                          algorithm="HS256")
 
     @staticmethod
     def decode_token(self, token: str) -> str:
