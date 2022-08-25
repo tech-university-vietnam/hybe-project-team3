@@ -25,19 +25,12 @@ class TestUserDTO:
 
         user = user_dto.to_entity()
 
-        assert (
-            user.username
-            == "foo"
-        )
-        assert (
-            user.email
-            == "foo@gmail.com"
-        )
-        assert (
-            user.telephone
-            == "1"
-        )
+        assert user.username == "foo"
+        assert user.email == "foo@gmail.com"
+
+        assert user.telephone == "1"
         assert user.work_for == 1
+
         assert user.created_at == now
         assert user.updated_at == now
 
@@ -73,31 +66,20 @@ class TestUserDTO:
 
     def test_from_register_request_should_create_dto_instance(self):
         register_request = RegisterRequest(
-            username="foo",
             password="123",
             email="foo@gmail.com",
-            address="foooo",
-            telephone="1",
-            avatar="foo/bar",
             work_for=1
         )
 
         user_dto = UserDTO.from_register_request(register_request)
 
         assert (
-            user_dto.username
-            == "foo"
-        )
-        assert (
             user_dto.email
             == "foo@gmail.com"
         )
-        assert (
-            user_dto.telephone
-            == "1"
-        )
         password = register_request.password.encode('utf8')
         hash_pw = user_dto.hash_pw.encode('utf8')
+
         assert bcrypt.checkpw(password, hash_pw)
         assert user_dto.work_for == 1
         assert isinstance(user_dto.created_at, datetime)

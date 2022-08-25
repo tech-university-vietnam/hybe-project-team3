@@ -2,16 +2,16 @@ from pydantic import BaseModel
 
 
 class RegisterRequest(BaseModel):
-    username: str
-    password: str
-    address: str
     email: str
-    telephone: str
-    avatar: str
+    password: str
     work_for: int
 
 
 class LoginRequest(BaseModel):
-    username: str
     email: str
     password: str
+
+
+class LogoutRequest(BaseModel):
+    email: str
+
