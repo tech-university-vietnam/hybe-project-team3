@@ -24,5 +24,3 @@ class UserService:
 
     def delete_token(self, user_id: str, username: str) -> bool:
         return self.user_repo.delete_token(user_id, username)
-
-

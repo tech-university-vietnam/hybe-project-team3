@@ -13,7 +13,6 @@ def get_settings():
 settings = get_settings()
 app = FastAPI(debug=True)
 
-# reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="token")
 reusable_oauth2 = HTTPBearer(
     scheme_name='Authorization'
 )

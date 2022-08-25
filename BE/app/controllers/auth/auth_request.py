@@ -14,4 +14,3 @@ class LoginRequest(BaseModel):
 
 class LogoutRequest(BaseModel):
     email: str
-
