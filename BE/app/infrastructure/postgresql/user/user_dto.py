@@ -2,18 +2,18 @@ from datetime import datetime
 from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer
-from sqlalchemy.sql import func
 from app.controllers.auth.auth_request import RegisterRequest
 from app.infrastructure.postgresql.database import Base
 from app.model.user import User
 import bcrypt
-from datetime import datetime
+
 
 class UserDTO(Base):
     """userDTO is a data transfer object associated with User entity."""
 
     __tablename__ = "User"
-    id: Union[int, Column] = Column(Integer, primary_key=True, autoincrement=True)
+    id: Union[int, Column] = Column(Integer, primary_key=True,
+                                    autoincrement=True)
 
     # Login method
     username: Union[str, Column] = Column(String, nullable=False)
@@ -25,10 +25,13 @@ class UserDTO(Base):
     # Additional info
     address: Union[str, Column] = Column(String, nullable=False)
     avatar: Union[str, Column] = Column(String, nullable=False)
-    # created_at: Union[datetime, Column] = Column(DateTime(timezone=True), server_default=func.now())
+    # created_at: Union[datetime, Column] = Column(DateTime(timezone=True),
+    #           server_default=func.now())
 
-    created_at: Union[datetime, Column] = Column(DateTime(timezone=True), server_default=func.now(), nullable=True)
-    updated_at: Union[datetime, Column] = Column(DateTime(timezone=True), onupdate=func.now(), nullable=True)
+    created_at: Union[datetime, Column] = Column(DateTime(timezone=True),
+                                                 nullable=True)
+    updated_at: Union[datetime, Column] = Column(DateTime(timezone=True),
+                                                 nullable=True)
 
     # Foreign key, Todo: Remove mock
     # hospital_id: Union[int, Column] = Column()
@@ -77,6 +80,6 @@ class UserDTO(Base):
             telephone=regis_req.telephone,
             avatar=regis_req.avatar,
             work_for=regis_req.work_for,
-            created_at = now,
-            updated_at = now
+            created_at=now,
+            updated_at=now
         )

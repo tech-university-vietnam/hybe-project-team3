@@ -3,6 +3,8 @@ from app.model.user import User
 from datetime import datetime
 
 now = datetime.now()
+
+
 class TestUser:
     def test_constructor_should_create_instance(self):
         user = User(

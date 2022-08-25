@@ -7,6 +7,7 @@ from app.domain.user.user_repository import UserRepository
 
 from app.model.auth import Auth
 
+
 class AuthService:
     auth_repo = AuthRepository()
     user_repo = UserRepository()

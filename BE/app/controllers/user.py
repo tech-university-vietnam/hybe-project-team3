@@ -1,4 +1,3 @@
-from fastapi import APIRouter
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 

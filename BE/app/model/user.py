@@ -29,6 +29,4 @@ class User:
     def __eq__(self, o: object) -> bool:
         if isinstance(o, User):
             return self.id == o.id
-
         return False
-

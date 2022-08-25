@@ -7,6 +7,8 @@ from app.model.user import User
 import bcrypt
 
 now = datetime.now()
+
+
 class TestUserDTO:
     def test_to_entity_model_should_create_entity_instance(self):
         user_dto = UserDTO(
@@ -96,7 +98,7 @@ class TestUserDTO:
         )
         password = register_request.password.encode('utf8')
         hash_pw = user_dto.hash_pw.encode('utf8')
-        assert bcrypt.checkpw(password, hash_pw) == True
+        assert bcrypt.checkpw(password, hash_pw)
         assert user_dto.work_for == 1
         assert isinstance(user_dto.created_at, datetime)
         assert isinstance(user_dto.updated_at, datetime)

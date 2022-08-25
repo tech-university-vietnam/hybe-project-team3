@@ -8,7 +8,8 @@ from app.infrastructure.postgresql.database import create_tables
 def get_settings():
     return Settings()
 
-settings= get_settings()
+
+settings = get_settings()
 app = FastAPI(debug=True)
 
 
