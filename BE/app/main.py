@@ -1,21 +1,26 @@
 from fastapi import FastAPI
-from datetime import datetime
+from functools import lru_cache
+from app.config import Settings
+from app.infrastructure.postgresql.database import create_tables
 
 
-def get_datetime_now() -> datetime:
-    # Use arrow function here to mock the builtin library
-    return datetime.now()
+@lru_cache()
+def get_settings():
+    return Settings()
 
 
-app = FastAPI()
+settings = get_settings()
+app = FastAPI(debug=True)
 
 
-@app.get("/day", tags=["Dates"])
-def get_day_of_week():
-    """
-    Get the current day of week
-    """
+def setup(setup_app: FastAPI):
+    from app.controllers.auth.auth import router as auth_router
+    from app.controllers.user import router as user_router
 
-    return {
-        "day": get_datetime_now().strftime("%A")
-    }
+    create_tables()
+
+    setup_app.include_router(auth_router)
+    setup_app.include_router(user_router)
+
+
+setup(app)
