@@ -31,4 +31,4 @@ class AuthenticationRoute:
                 }
             ]
         }
-        return {dummy_hospitals}
+        return dummy_hospitals
