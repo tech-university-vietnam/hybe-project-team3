@@ -1,9 +1,7 @@
 version: "3"
 services:
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: FE
     ports:
       - 8088:80
     environment:
