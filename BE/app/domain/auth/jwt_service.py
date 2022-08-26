@@ -1,6 +1,7 @@
 import jwt
-from app.main import get_settings
 import datetime
+
+from app.config import get_settings
 
 
 class JWTService:

@@ -17,8 +17,8 @@ class AuthenticationRoute:
     @router.post("/login", tags=["authentication"])
     def login(self, login_req: LoginRequest):
         user = self.auth_service.login(**dict(login_req))
-        if (user):
-            return {"token": self.jwt_service.encode(user.id)}
+        if user:
+            return {"token": self.jwt_service.encode(str(user.id))}
         return {"msg": "wrong email or password"}
 
     @router.post("/register", tags=["authentication"])
