@@ -21,8 +21,8 @@ class AuthenticationRoute:
     @router.post("/login", tags=["authentication"])
     def login(self, login_req: LoginRequest):
         user = self.auth_service.login(**dict(login_req))
-        if (user):
-            token: str = self.jwt_service.encode(user.id)
+        if user:
+            token: str = self.jwt_service.encode(str(user.id))
             if (self.user_service.add_new_token(user.id, token)):
                 return {"token": token}
             else:

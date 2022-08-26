@@ -4,3 +4,5 @@ exclude =
     __pycache__
     BE/venv
     BE/.venv
+    FE/
+    BE/alembic

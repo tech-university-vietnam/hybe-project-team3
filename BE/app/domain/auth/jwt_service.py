@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 from typing import Optional
 import jwt
+import datetime
+
 from app.domain.user.user_repository import UserRepository
-from app.main import get_settings, reusable_oauth2
+from app.config import get_settings, reusable_oauth2
 from fastapi import Depends, HTTPException, status
 
 
