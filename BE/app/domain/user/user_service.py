@@ -22,5 +22,5 @@ class UserService:
     def add_new_token(self, id: str, token: str) -> bool:
         return self.user_repo.add_new_token(id, token)
 
-    def delete_token(self, user_id: str, username: str) -> bool:
-        return self.user_repo.delete_token(user_id, username)
+    def delete_token(self, user_id: str, email: str) -> bool:
+        return self.user_repo.delete_token(user_id, email)
