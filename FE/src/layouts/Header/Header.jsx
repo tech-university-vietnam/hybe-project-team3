@@ -98,8 +98,8 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
             "aria-labelledby": "notification-button",
           }}
         >
-          {notifications.map((notification) => (
-            <MenuItem>Notification</MenuItem>
+          {notifications.map((notification, index) => (
+            <MenuItem key={index}>Notification</MenuItem>
           ))}
         </Menu>
       </Toolbar>
