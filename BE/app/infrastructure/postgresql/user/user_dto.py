@@ -16,15 +16,15 @@ class UserDTO(Base):
                                     autoincrement=True)
 
     # Login method
-    username: Union[str, Column] = Column(String, nullable=False)
+    username: Union[str, Column] = Column(String, nullable=True)
     email: Union[str, Column] = Column(String, nullable=False)
-    telephone: Union[str, Column] = Column(String, nullable=False)
+    telephone: Union[str, Column] = Column(String, nullable=True)
     # Auth data
     hash_pw: Union[str, Column] = Column(String, nullable=False)
 
     # Additional info
-    address: Union[str, Column] = Column(String, nullable=False)
-    avatar: Union[str, Column] = Column(String, nullable=False)
+    address: Union[str, Column] = Column(String, nullable=True)
+    avatar: Union[str, Column] = Column(String, nullable=True)
     # created_at: Union[datetime, Column] = Column(DateTime(timezone=True),
     #           server_default=func.now())
 
@@ -32,7 +32,9 @@ class UserDTO(Base):
                                                  nullable=True)
     updated_at: Union[datetime, Column] = Column(DateTime(timezone=True),
                                                  nullable=True)
-
+    # jwt token
+    token: Union[str, Column] = Column(String, nullable=True)
+    token_created_at: Union[str, Column] = Column(String, nullable=True)
     # Foreign key, Todo: Remove mock
     # hospital_id: Union[int, Column] = Column()
     hospital_id = 1
@@ -73,12 +75,8 @@ class UserDTO(Base):
         pwhash = bcrypt.hashpw(password, salt).decode('utf8')
         now = datetime.now()
         return UserDTO(
-            username=regis_req.username,
             hash_pw=pwhash,
             email=regis_req.email,
-            address=regis_req.address,
-            telephone=regis_req.telephone,
-            avatar=regis_req.avatar,
             work_for=regis_req.work_for,
             created_at=now,
             updated_at=now

@@ -1,6 +1,7 @@
 from typing import Optional
 import bcrypt
 
+from fastapi import HTTPException
 from app.controllers.auth.auth_request import RegisterRequest
 from app.domain.auth.auth_repository import AuthRepository
 from app.domain.user.user_repository import UserRepository
@@ -18,14 +19,15 @@ class AuthService:
         hash_pw = hash_pw.encode('utf8')
         return bcrypt.checkpw(password, hash_pw)
 
-    def login(self, username, email, password) -> Optional[Auth]:
+    def login(self, email, password) -> Optional[Auth]:
         # Returns jwt token
-        auth_user = self.auth_repo.query_auth_user(username, email)
+        auth_user = self.auth_repo.query_auth_user(email)
 
         if auth_user and self.compare_hash(password, auth_user.hash_pw):
             return auth_user
         else:
-            return None
+            raise HTTPException(status_code=404,
+                                detail="Wrong email or password")
 
     def register(self, register_req: RegisterRequest) -> bool:
         success = self.user_repo.create(register_req)

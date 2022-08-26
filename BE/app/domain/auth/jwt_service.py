@@ -1,6 +1,6 @@
-import logging
 import jwt
-from app.main import get_settings
+from app.main import get_settings, reusable_oauth2
+from fastapi import Depends
 
 
 class JWTService:
@@ -13,14 +13,11 @@ class JWTService:
                           self.config.SECRET,
                           algorithm="HS256")
 
-    @staticmethod
-    def decode_token(self, token: str) -> str:
-        try:
-            payload = jwt.decode(token, self.config.SECRET,
-                                 algorithms=["HS256"])
-            logging.info(payload)
-            return payload
-        except jwt.ExpiredSignatureError:
-            return 'Expired token'
-        except jwt.InvalidTokenError:
-            return 'Wrong token'
+    def validate_token(self, http_authorization_credentials=Depends(
+                       reusable_oauth2)) -> str:
+        """
+        Decode JWT token to get username => return username
+        """
+        payload = jwt.decode(http_authorization_credentials.credentials,
+                             self.config.SECRET, algorithms=["HS256"])
+        return payload.get("user_id")

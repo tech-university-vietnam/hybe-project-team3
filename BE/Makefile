@@ -7,7 +7,11 @@ dropdb:
 test:
 	coverage run -m pytest
 server:
-	uvincorn app.main:app --port 8000
+	uvicorn app.main:app --port 8000 --reload
 report:
 	coverage report -m
-.PHONY: postgres createdb dropdb test server
+rebuildBE:
+	docker-compose up --build backend
+rebuildDB:
+	docker-compose up --build database
+.PHONY: postgres createdb dropdb test server rebuildBE rebuildDB
