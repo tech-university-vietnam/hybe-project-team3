@@ -1,6 +1,7 @@
 from typing import Optional
 import bcrypt
 
+from fastapi import HTTPException
 from app.controllers.auth.auth_request import RegisterRequest
 from app.domain.auth.auth_repository import AuthRepository
 from app.domain.user.user_repository import UserRepository
@@ -26,7 +27,8 @@ class AuthService:
         if auth_user and self.compare_hash(password, auth_user.hash_pw):
             return auth_user
         else:
-            return None
+            raise HTTPException(status_code=404,
+                                detail="Wrong email or password")
 
     def register(self, register_req: RegisterRequest) -> bool:
         return self.user_repo.create(register_req)
