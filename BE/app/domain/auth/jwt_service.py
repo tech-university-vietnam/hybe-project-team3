@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 from typing import Optional
 import jwt
-import datetime
 
 from app.domain.user.user_repository import UserRepository
-from app.config import get_settings, reusable_oauth2
+from app.config import get_settings
 from fastapi import Depends, HTTPException, status
+from app.main import reusable_oauth2
 
 
 class JWTService:
