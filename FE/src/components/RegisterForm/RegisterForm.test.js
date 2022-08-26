@@ -1,7 +1,10 @@
 /* eslint-disable testing-library/no-unnecessary-act */
-import { fireEvent, render, screen, act, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, act, waitFor, getByRole } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import RegisterForm from "./RegisterForm";
+import axios from "axios";
+
+jest.mock('axios')
 
 test("loads the input fields and the button", () => {
     render(<RegisterForm />);
@@ -92,3 +95,15 @@ test('confirm password validation', async () => {
 
     expect(screen.getByText('Confirm password does not match')).toBeInTheDocument()
 })
+
+// test('success registration', async () => {
+//     render(<RegisterForm/>)
+//     let email = (Math.random() + 1).toString(36).substring(15);
+//     const emailInput = screen.getByRole("textbox", {
+//         name: "Email"
+//     });
+//     userEvent.type(emailInput, email);
+//     userEvent.type(screen.getByTestId("password").querySelector("input"), "Password@123");
+//     userEvent.type(screen.getByTestId("confirmPassword").querySelector("input"), "Password@123");
+//     fireEvent.change(screen.getByTestId('select-hospital'), { target: { value: 1 } })
+// })

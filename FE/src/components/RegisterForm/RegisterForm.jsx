@@ -2,8 +2,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Container } from '@mui/system';
-import { RegisterSchema } from 'validation/RegisterSchema';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { RegisterSchema } from '../../Utils/validation/RegisterSchema';
+import { yupResolver } from '@hookform/resolvers/yup';  
 import axios from 'axios';
 
 const RegisterForm = props => {
