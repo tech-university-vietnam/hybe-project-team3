@@ -19,9 +19,9 @@ class AuthService:
 
         return bcrypt.checkpw(password, hash_pw)
 
-    def login(self, username, email, password) -> Optional[Auth]:
+    def login(self, email, password) -> Optional[Auth]:
         # Returns jwt token
-        auth_user = self.auth_repo.query_auth_user(username, email)
+        auth_user = self.auth_repo.query_auth_user(email)
 
         if auth_user and self.compare_hash(password, auth_user.hash_pw):
             return auth_user
@@ -29,5 +29,4 @@ class AuthService:
             return None
 
     def register(self, register_req: RegisterRequest) -> bool:
-        success = self.user_repo.create(register_req)
-        return success
+        return self.user_repo.create(register_req)
