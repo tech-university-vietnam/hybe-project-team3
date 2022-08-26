@@ -87,7 +87,7 @@ const LoginForm = () => {
         >
           Login
         </Button>
-        <Typography>Don't have an account? Join free today</Typography>
+        <Typography>Don't have an account? <a href="/register">Join</a> free today</Typography>
       </Container>
     </div>
   );
