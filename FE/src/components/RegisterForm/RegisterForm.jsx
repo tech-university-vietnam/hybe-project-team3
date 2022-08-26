@@ -67,7 +67,7 @@ const RegisterForm = props => {
                     padding: "20px"
                 }}
             >
-                <Typography variant="h4">Create your account</Typography>
+                <Typography variant="h4" fontWeight="bold" textAlign="left">Create your account</Typography>
                 <TextField
                     required
                     id="email"
