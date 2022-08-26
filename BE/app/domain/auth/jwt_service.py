@@ -1,24 +1,28 @@
-import logging
 import jwt
-from app.main import get_settings
+import datetime
+
+from app.config import get_settings
 
 
 class JWTService:
-    def __init__(self) -> None:
-        self.config = get_settings()
+    config = get_settings()
 
-    def encode(self, user_id: str) -> str:
-        payload = {'user_id': user_id}
+    @staticmethod
+    def encode(user_id: str) -> str:
+
+        payload = {
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7),
+            'iat': datetime.datetime.utcnow(),
+            'sub': user_id
+        }
         return jwt.encode(payload,
-                          self.config.SECRET,
+                          "hybe-secret",
                           algorithm="HS256")
 
     @staticmethod
-    def decode_token(self, token: str) -> str:
+    def decode_token(token: str) -> str:
         try:
-            payload = jwt.decode(token, self.config.SECRET,
-                                 algorithms=["HS256"])
-            logging.info(payload)
+            payload = jwt.decode(token, "hybe-secret")
             return payload
         except jwt.ExpiredSignatureError:
             return 'Expired token'

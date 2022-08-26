@@ -16,6 +16,7 @@ class AuthService:
     def compare_hash(password: str, hash_pw: str):
         password = password.encode('utf8')
         hash_pw = hash_pw.encode('utf8')
+
         return bcrypt.checkpw(password, hash_pw)
 
     def login(self, username, email, password) -> Optional[Auth]:
