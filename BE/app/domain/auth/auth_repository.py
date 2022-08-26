@@ -13,7 +13,7 @@ class AuthRepository:
         auth_user = session.query(UserDTO).filter(
             (UserDTO.email == email)).first()
         if auth_user:
-            return Auth(auth_user.id, auth_user.username, auth_user.email,
-                        auth_user.hash_pw)
+            return Auth(auth_user.id, auth_user.email, auth_user.hash_pw,
+                        auth_user.token)
         else:
             return None

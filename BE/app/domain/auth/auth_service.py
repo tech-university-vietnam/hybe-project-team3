@@ -17,6 +17,7 @@ class AuthService:
     def compare_hash(password: str, hash_pw: str):
         password = password.encode('utf8')
         hash_pw = hash_pw.encode('utf8')
+
         return bcrypt.checkpw(password, hash_pw)
 
     def login(self, email, password) -> Optional[Auth]:
@@ -30,5 +31,4 @@ class AuthService:
                                 detail="Wrong email or password")
 
     def register(self, register_req: RegisterRequest) -> bool:
-        success = self.user_repo.create(register_req)
-        return success
+        return self.user_repo.create(register_req)

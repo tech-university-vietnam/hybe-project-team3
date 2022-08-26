@@ -17,13 +17,12 @@ class UserDTO(Base):
 
     # Login method
     username: Union[str, Column] = Column(String, nullable=True)
-    email: Union[str, Column] = Column(String, nullable=False)
+    email: Union[str, Column] = Column(String, nullable=False, unique=True)
     telephone: Union[str, Column] = Column(String, nullable=True)
     # Auth data
     hash_pw: Union[str, Column] = Column(String, nullable=False)
 
     # Additional info
-    address: Union[str, Column] = Column(String, nullable=True)
     avatar: Union[str, Column] = Column(String, nullable=True)
     # created_at: Union[datetime, Column] = Column(DateTime(timezone=True),
     #           server_default=func.now())
@@ -45,7 +44,6 @@ class UserDTO(Base):
             id=self.id,
             username=self.username,
             email=self.email,
-            address=self.address,
             telephone=self.telephone,
             avatar=self.avatar,
             work_for=self.hospital_id,
@@ -60,7 +58,6 @@ class UserDTO(Base):
             id=user.id,
             username=user.username,
             email=user.email,
-            address=user.address,
             telephone=user.telephone,
             avatar=user.avatar,
             work_for=user.work_for,

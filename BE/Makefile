@@ -3,7 +3,7 @@ postgres:
 createdb:
 	docker exec -it postgres14 createdb --username=postgres --owner=root hybe
 dropdb:
-	docker exec -it postgres14 dropdb hybe
+	docker exec -it postgres14 dropdb postgres
 test:
 	coverage run -m pytest
 server:
@@ -14,4 +14,6 @@ rebuildBE:
 	docker-compose up --build backend
 rebuildDB:
 	docker-compose up --build database
-.PHONY: postgres createdb dropdb test server rebuildBE rebuildDB
+lint:
+	flake8
+.PHONY: postgres createdb dropdb test server rebuildBE rebuildDB lint

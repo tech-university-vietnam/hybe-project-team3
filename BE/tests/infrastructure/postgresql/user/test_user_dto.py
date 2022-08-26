@@ -15,7 +15,6 @@ class TestUserDTO:
             id=1,
             username="foo",
             email="foo@gmail.com",
-            address="foooo",
             telephone="1",
             avatar="foo/bar",
             work_for=1,
@@ -39,7 +38,6 @@ class TestUserDTO:
             id=1,
             username="foo",
             email="foo@gmail.com",
-            address="foooo",
             telephone="1",
             avatar="foo/bar",
             work_for=1
