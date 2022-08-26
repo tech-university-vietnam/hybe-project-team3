@@ -10,7 +10,6 @@ ENV PYTHONBUFFERED 1
 # Copy files to image
 COPY ./requirements.txt /code/requirements.txt
 COPY . /code
-COPY .env /code/app
 
 # Remove tests folder
 RUN rm -rf /code/tests

@@ -11,11 +11,14 @@ services:
     build: ./BE
     ports:
       - 8000:8000
+    environment:
+      - ENV=dev
     links:
       - database
     command: uvicorn app.main:app --proxy-headers --host 0.0.0.0 --port 8000
     depends_on:
       - database
+    
 
   database:
     image: postgres:latest
