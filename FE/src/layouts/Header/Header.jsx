@@ -14,7 +14,9 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
-const Header = (props) => {
+const urlLogOut = "localhost:8000/logout";
+
+const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const [anchorAccount, setAnchorAccount] = useState(null);
   const [anchorNotification, setAnchorNotification] = useState(null);
   const [notifications, setNotifications] = useState([1, 2, 3]);
@@ -34,7 +36,13 @@ const Header = (props) => {
     setAnchorNotification(null);
   };
 
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    const token = localStorage.getItem("token");
+    axios
+      .post(urlLogOut, { headers: { Authorization: token } })
+      .then((response) => console.log(response))
+      .catch((error) => console.log("logout error is", error));
+  };
 
   return (
     <AppBar
@@ -56,7 +64,7 @@ const Header = (props) => {
           endIcon={<KeyboardArrowDownIcon />}
           sx={{ color: "black" }}
         >
-          Tony Stark
+          {email}
         </Button>
         <Menu
           id="account-menu"
@@ -84,7 +92,7 @@ const Header = (props) => {
         <Menu
           id="notification-menu"
           anchorEl={anchorNotification}
-          open={anchorNotification}
+          open={openNotification}
           onClose={handleClose}
           MenuListProps={{
             "aria-labelledby": "notification-button",
@@ -99,6 +107,8 @@ const Header = (props) => {
   );
 };
 
-Header.propTypes = {};
+Header.propTypes = {
+  email: PropTypes.string,
+};
 
 export default Header;
