@@ -44,7 +44,7 @@ class AuthenticationRoute:
     @router.post("/logout",
                  tags=["authentication"],
                  responses={
-                        401: {"description": "Missing bearer authorization"}})
+                     401: {"description": "Missing bearer authorization"}})
     def logout(self, data: LogoutRequest,
                user_id: str = Depends(jwt_service.validate_token)):
         if (self.user_service.delete_token(user_id, data.email)):
