@@ -3,11 +3,12 @@ from fastapi_utils.inferring_router import InferringRouter
 from fastapi.responses import JSONResponse
 from app.controllers.auth.auth_request import LogoutRequest
 from app.domain.user.user_service import UserService
-
+from sqlalchemy.orm import Session
 from app.controllers.auth.auth_request import RegisterRequest, LoginRequest
 from app.domain.auth.auth_service import AuthService
 from app.domain.auth.jwt_service import JWTService
 from fastapi import HTTPException, status, Depends
+from app import deps
 router = InferringRouter()
 
 
@@ -19,22 +20,26 @@ class AuthenticationRoute:
     user_service = UserService()
 
     @router.post("/login", tags=["authentication"])
-    def login(self, login_req: LoginRequest):
-        user = self.auth_service.login(**dict(login_req))
+    def login(self, login_req: LoginRequest,
+              db: Session = Depends(deps.get_db)):
+        user = self.auth_service.login(login_req.email, login_req.password, db)
         if user:
             token: str = self.jwt_service.encode(str(user.id))
-            if (self.user_service.add_new_token(user.id, token)):
+            if (self.user_service.add_new_token(user.id, token, db)):
                 return {"token": token}
             else:
                 raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            raise HTTPException(404, detail="wrong email or password")
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+                                detail="wrong email or password")
 
     @router.post("/register",
                  tags=["authentication"],
-                 responses={422: {"description": "Email is already taken"}})
-    def register(self, auth_req: RegisterRequest):
-        if (self.auth_service.register(auth_req)):
+                 responses={status.HTTP_422_UNPROCESSABLE_ENTITY:
+                            {"description": "Email is already taken"}})
+    def register(self, auth_req: RegisterRequest,
+                 db: Session = Depends(deps.get_db)):
+        if (self.auth_service.register(auth_req, db)):
             return JSONResponse(content={"msg": "Registered successully"},
                                 status_code=201)
         else:
@@ -43,12 +48,13 @@ class AuthenticationRoute:
 
     @router.post("/logout",
                  tags=["authentication"],
-                 responses={
-                     401: {"description": "Missing bearer authorization"}})
+                 responses={status.HTTP_401_UNAUTHORIZED:
+                            {"description": "Missing bearer authorization"}})
     def logout(self, data: LogoutRequest,
-               user_id: str = Depends(jwt_service.validate_token)):
-        if (self.user_service.delete_token(user_id, data.email)):
+               user_id: str = Depends(jwt_service.validate_token),
+               db: Session = Depends(deps.get_db)):
+        if (self.user_service.delete_token(user_id, data.email, db)):
             return JSONResponse(content={"msg": "logged out successfully"},
-                                status_code=200)
+                                status_code=status.HTTP_200_OK)
         else:
             raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR)

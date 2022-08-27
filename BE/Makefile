@@ -1,5 +1,5 @@
-postgres:
-	docker run --name hybe -p 5432:5432 -e POSTGRES_PASSWORD=example -d postgres
+postgres-test:
+	docker run -d --name test_db -e POSTGRES_PASSWORD=test -e POSTGRES_DB=test_db -p 5432:5432  postgres
 createdb:
 	docker exec -it postgres14 createdb --username=postgres --owner=root hybe
 dropdb:
@@ -16,4 +16,4 @@ rebuildDB:
 	docker-compose up --build database
 lint:
 	flake8
-.PHONY: postgres createdb dropdb test server rebuildBE rebuildDB lint
+.PHONY: postgres-test createdb dropdb test server rebuildBE rebuildDB lint

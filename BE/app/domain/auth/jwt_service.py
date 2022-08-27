@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 import jwt
+from app import deps
 
 from app.domain.user.user_repository import UserRepository
 from app.config import get_settings
@@ -21,7 +22,8 @@ class JWTService:
                           algorithm="HS256")
 
     def validate_token(self, http_authorization_credentials=Depends(
-                       reusable_oauth2)) -> Optional[str]:
+                       reusable_oauth2),
+                       db=Depends(deps.get_db)) -> Optional[str]:
         """
         Decode JWT token to get use_id => return user_id
         """
@@ -33,7 +35,8 @@ class JWTService:
                 user_id = payload.get('sub')
                 if (self.user_repo.check_token(
                         user_id,
-                        token=http_authorization_credentials.credentials)):
+                        token=http_authorization_credentials.credentials,
+                        db=db)):
                     return user_id
             except (jwt.ExpiredSignatureError,
                     jwt.InvalidTokenError):

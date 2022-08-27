@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker
 
 from app.config import get_settings
 
@@ -11,12 +11,10 @@ engine = create_engine(
 )
 
 SessionLocal = sessionmaker(
-    bind=engine,
+    autocommit=False, autoflush=False, bind=engine,
 )
 
 SessionLocal.configure(bind=engine)
-session: Session = SessionLocal()
-
 Base = declarative_base()
 
 
