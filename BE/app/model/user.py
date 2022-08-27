@@ -9,7 +9,6 @@ class User:
                  id: int,
                  username: str,
                  email: str,
-                 address: str,
                  telephone: str,
                  avatar: str,
                  work_for: int,
@@ -19,7 +18,6 @@ class User:
         self.id: int = id
         self.username: str = username
         self.email: str = email
-        self.address: str = address
         self.telephone: str = telephone
         self.avatar: str = avatar
         self.work_for: int = work_for

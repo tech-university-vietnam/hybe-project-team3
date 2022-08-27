@@ -1,26 +1,41 @@
-import logging
+from datetime import datetime, timedelta
+from typing import Optional
 import jwt
-from app.main import get_settings
+
+from app.domain.user.user_repository import UserRepository
+from app.config import get_settings
+from fastapi import Depends, HTTPException, status
+from app.main import reusable_oauth2
 
 
 class JWTService:
-    def __init__(self) -> None:
-        self.config = get_settings()
+    config = get_settings()
+    user_repo = UserRepository()
 
     def encode(self, user_id: str) -> str:
-        payload = {'user_id': user_id}
+        payload = {'exp': datetime.utcnow() + timedelta(days=7),
+                   'iat': datetime.utcnow(),
+                   'sub': user_id}
         return jwt.encode(payload,
                           self.config.SECRET,
                           algorithm="HS256")
 
-    @staticmethod
-    def decode_token(self, token: str) -> str:
-        try:
-            payload = jwt.decode(token, self.config.SECRET,
-                                 algorithms=["HS256"])
-            logging.info(payload)
-            return payload
-        except jwt.ExpiredSignatureError:
-            return 'Expired token'
-        except jwt.InvalidTokenError:
-            return 'Wrong token'
+    def validate_token(self, http_authorization_credentials=Depends(
+                       reusable_oauth2)) -> Optional[str]:
+        """
+        Decode JWT token to get use_id => return user_id
+        """
+        if http_authorization_credentials:
+            try:
+                payload = jwt.decode(
+                    http_authorization_credentials.credentials,
+                    self.config.SECRET, algorithms=["HS256"])
+                user_id = payload.get('sub')
+                if (self.user_repo.check_token(
+                        user_id,
+                        token=http_authorization_credentials.credentials)):
+                    return user_id
+            except (jwt.ExpiredSignatureError,
+                    jwt.InvalidTokenError):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,)

@@ -5,7 +5,7 @@ router = InferringRouter()
 
 
 @cbv(router)
-class AuthenticationRoute:
+class HospitalRoute:
     @router.get("/hospitals", tags=["hospitals"])
     def get_hospitals(self):
         dummy_hospitals = {
