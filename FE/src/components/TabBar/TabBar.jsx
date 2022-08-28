@@ -35,7 +35,7 @@ const TabBar = props => {
                             <ListItemIcon>
                                 <NotificationsActiveIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Inventory" />
+                            <ListItemText primary="Notification" />
                         </ListItemButton>
                     </ListItem>
                 </List>
