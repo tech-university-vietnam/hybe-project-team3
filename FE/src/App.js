@@ -3,19 +3,12 @@ import { Header } from "layouts/Header/Header";
 import { HomePage } from "pages/HomePage/HomePage"
 import Register from "pages/Register/Register";
 import Login from "pages/Login/Login";
+import Dashboard from "pages/Dashboard/Dashboard"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
 const App = () => (
-  <Router>
-    <Header />
-    <Routes>
-      <Route index element={<Login/>} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-    </Routes>
-    <Footer />
-  </Router>
+  <HomePage/>
 )
 
 export default App;
