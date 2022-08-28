@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import './MedicineItem.css'
 import { Button, Card, CardContent, CardHeader, Grid, IconButton, Typography } from '@mui/material'
 import VaccinesIcon from '@mui/icons-material/Vaccines'
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';

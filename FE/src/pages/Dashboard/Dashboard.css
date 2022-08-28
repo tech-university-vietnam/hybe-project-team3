@@ -3,3 +3,16 @@
     flex-direction: row;
     flex: 1
 }
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+}
