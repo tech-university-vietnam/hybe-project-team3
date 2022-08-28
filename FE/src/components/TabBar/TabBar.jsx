@@ -7,11 +7,14 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
 
 const TabBar = props => {
     return (
-        <Box sx={{
-            width: '100%',
-            maxWidth: 360,
-            // bgcolor: 'background.paper'
-        }}>
+
+        <Box
+            position='sticky'
+            sx={{
+                width: '100%',
+                maxWidth: 360
+                // bgcolor: 'background.paper'
+            }}>
             <nav>
                 <List>
                     <ListItem disablePadding>

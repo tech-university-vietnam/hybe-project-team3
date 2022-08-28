@@ -11,7 +11,7 @@ const MedicineItem = props => {
                 avatar={
                     <VaccinesIcon />
                 }
-                title={"Sinovac"}
+                title={props.name}
                 titleTypographyProps={{ variant: 'h6' }}
                 action={
                     <IconButton>
@@ -22,7 +22,7 @@ const MedicineItem = props => {
             <CardContent>
                 <Grid container direction="row">
                     <Grid item xs={11}>
-                        <Typography variant="body1">Expired date: {"20/10/2030"}</Typography>
+                        <Typography variant="body1">Expired date: {props.exp}</Typography>
                     </Grid>
                     <Grid item xs={1}>
                         <Button variant="contained" sx={{bgcolor: 'green'}}>Status</Button>
@@ -33,6 +33,9 @@ const MedicineItem = props => {
     )
 }
 
-MedicineItem.propTypes = {}
+MedicineItem.propTypes = {
+    name: PropTypes.string,
+    exp: PropTypes.string
+}
 
 export default MedicineItem
