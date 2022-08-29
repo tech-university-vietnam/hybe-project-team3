@@ -45,7 +45,7 @@ jobs:
         python-version: 3.8.13
     - name: Install dependencies
       run: |
-        sudo -H  python -m pip install --upgrade pip
+        python -m pip install --upgrade pip
         if [ -f BE/requirements.txt ]; then pip install -r BE/requirements.txt; fi
     - name: Lint with flake8
       run: |
