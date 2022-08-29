@@ -10,9 +10,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    # Docker Hub image that `postgres-job` executes in
-    container: node:latest
-
     # service containers to run with `postgres-job`
     services:
       # label used to access the service container
