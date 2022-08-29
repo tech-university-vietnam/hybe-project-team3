@@ -32,3 +32,20 @@ class User:
         if isinstance(o, User):
             return self.id == o.id
         return False
+
+
+class SafeUser:
+    """Safe User hide sensitive information as an entity."""
+
+    def __init__(self,
+                 username: str,
+                 email: str,
+                 work_for: int,
+                 created_at: Optional[datetime] = datetime.now(),
+                 updated_at: Optional[datetime] = datetime.now(),
+                 ):
+        self.username: str = username
+        self.email: str = email
+        self.work_for: int = work_for
+        self.created_at = created_at
+        self.updated_at = updated_at

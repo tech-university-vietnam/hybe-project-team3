@@ -1,16 +1,16 @@
 import pinject
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from fastapi import HTTPException, status, Depends
+from fastapi import HTTPException, status, Header
 from fastapi.responses import JSONResponse
+from app.controllers.user.schema import LoginResponse
 
 from app.controllers.user.auth_request import (
-    LoginRequest, RegisterRequest, LogoutRequest
-    )
+    LoginRequest, RegisterRequest, LogoutRequest)
 from app.services.auth_service import AuthService
 from app.services.jwt_service import JWTService
 from app.domains.user.user_service import UserService
-
+from app.controllers.Common.schema import CommonResponse
 router = InferringRouter()
 
 
@@ -24,7 +24,7 @@ class UserRoute:
         self.user_service: UserService = obj_graph.provide(UserService)
 
     @router.post("/login", tags=["users"])
-    def login(self, login_req: LoginRequest):
+    def login(self, login_req: LoginRequest) -> LoginResponse:
         user = self.auth_service.login(**dict(login_req))
         if user:
             token: str = self.jwt_service.encode(str(user.id))
@@ -38,7 +38,7 @@ class UserRoute:
     @router.post("/register",
                  tags=["authentication"],
                  responses={422: {"description": "Email is already taken"}})
-    def register(self, auth_req: RegisterRequest):
+    def register(self, auth_req: RegisterRequest) -> CommonResponse:
         if self.auth_service.register(auth_req):
             return JSONResponse(content={"msg": "Registered successully"},
                                 status_code=201)
@@ -51,17 +51,17 @@ class UserRoute:
                  responses={
                      401: {"description": "Missing bearer authorization"}})
     def logout(self, data: LogoutRequest,
-               user_id: str = Depends(JWTService.validate_token)):
+               authorization=Header()) -> CommonResponse:
+        user_id = self.jwt_service.validate_token(authorization)
         if self.user_service.delete_token(user_id, data.email):
             return JSONResponse(content={"msg": "logged out successfully"},
                                 status_code=200)
         else:
             raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    @router.get("/users/me", tags=["users"])
-    async def get_current_user(self):
-        return {"username": "fakecurrentuser"}
-
-    @router.get("/users/{username}", tags=["users"])
-    async def get_user(self, username: str):
-        return {"username": username}
+    @router.get("/user", tags=["users"])
+    async def get_user(self,
+                       authorization: str = Header()):
+        user_id = self.jwt_service.validate_token(authorization)
+        user = self.user_service.get_user_by_id(user_id)
+        return user

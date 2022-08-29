@@ -15,6 +15,9 @@ class UserService:
         user = self.user_repo.create(regis)
         return user and bool(user.id)
 
+    def get_user_by_id(self, user_id: str):
+        return self.user_repo.get_by_id(user_id)
+
     def update(self, user: User) -> Optional[User]:
         pass
 

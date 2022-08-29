@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer
 import os
 app = FastAPI(debug=True)
 
-reusable_oauth2 = HTTPBearer(scheme_name='Authorization', auto_error=False)
+reusable_oauth2 = HTTPBearer(scheme_name='Authorization')
 
 
 def setup(setup_app: FastAPI):
@@ -13,7 +13,7 @@ def setup(setup_app: FastAPI):
         create_tables,
         drop_tables)
     # drop table when test in local
-    if os.getenv('ENV', 'local') in ["test"]:
+    if os.getenv('ENV', 'local') == "test":
         drop_tables()
     create_tables()
 
