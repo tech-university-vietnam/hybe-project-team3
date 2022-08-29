@@ -7,10 +7,11 @@ from sqlalchemy.orm import sessionmaker
 from app.main import app
 from app.deps import get_db
 from app.infrastructure.postgresql.database import Base
+from app.config import get_settings
 
 # Create the new database session
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:example@localhost/postgres"
+SQLALCHEMY_DATABASE_URL = get_settings().DATABASE_URL
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
