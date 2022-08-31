@@ -21,11 +21,9 @@ class AuthService:
 
         return bcrypt.checkpw(password, hash_pw)
 
-    def login(self, email: str, password: str,
-              session
-              ) -> Optional[Auth]:
+    def login(self, email: str, password: str) -> Optional[Auth]:
         # Returns jwt token
-        auth_user = self.auth_repo.query_auth_user(email, session)
+        auth_user = self.auth_repo.query_auth_user(email)
 
         if auth_user and self.compare_hash(password, auth_user.hash_pw):
             return auth_user

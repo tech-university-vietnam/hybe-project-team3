@@ -11,10 +11,6 @@ session: Session = SessionLocal()
 
 Base = declarative_base()
 
-SessionLocal = sessionmaker(
-    bind=engine,
-)
-
 
 def import_models():
     from app.infrastructure.postgresql.user.user_dto import UserDTO

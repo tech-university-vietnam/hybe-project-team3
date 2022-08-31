@@ -5,7 +5,7 @@ createdb:
 dropdb:
 	docker exec -it postgres14 dropdb postgres
 test:
-	coverage run -m pytest
+	export ENV=test && coverage run -m pytest
 server:
 	uvicorn app.main:app --port 8000 --reload
 report:

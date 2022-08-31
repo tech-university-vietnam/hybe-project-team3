@@ -10,7 +10,7 @@ class AuthRepository:
 
     def __init__(self, database_repository: DatabaseRepository):
         self.db_repo = database_repository
-        self.db = self.db_repo.db
+        self.db = next(self.db_repo.get_db())
 
     def query_auth_user(self, email: str) -> Optional[Auth]:
         # Query from database here
