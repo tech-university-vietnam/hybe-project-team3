@@ -10,8 +10,10 @@ from app.model.auth import Auth
 
 
 class AuthService:
-    auth_repo = AuthRepository()
-    user_repo = UserRepository()
+
+    def __init__(self, auth_repository: AuthRepository, user_repository: UserRepository):
+        self.auth_repo = auth_repository
+        self.user_repo = user_repository
 
     @staticmethod
     def compare_hash(password: str, hash_pw: str):

@@ -10,7 +10,9 @@ from app.main import reusable_oauth2
 
 class JWTService:
     config = get_settings()
-    user_repo = UserRepository()
+
+    def __init__(self, user_repository: UserRepository):
+        self.user_repo = user_repository
 
     def encode(self, user_id: str) -> str:
         payload = {'exp': datetime.utcnow() + timedelta(days=7),
