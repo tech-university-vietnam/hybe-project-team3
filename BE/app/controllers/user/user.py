@@ -1,12 +1,12 @@
-from http.client import HTTPException
-
 import pinject
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 
-from app.controllers.user.auth_request import LoginRequest, RegisterRequest, LogoutRequest
+from app.controllers.user.auth_request import (
+    LoginRequest, RegisterRequest, LogoutRequest
+    )
 from app.services.auth_service import AuthService
 from app.services.jwt_service import JWTService
 from app.domains.user.user_service import UserService
