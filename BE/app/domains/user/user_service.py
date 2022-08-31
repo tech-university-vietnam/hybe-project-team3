@@ -1,7 +1,7 @@
 from typing import Optional
-from app.domain.user.user_repository import UserRepository
+from app.domains.user.user_repository import UserRepository
 
-from app.controllers.auth.auth_request import RegisterRequest
+from app.controllers.user.auth_request import RegisterRequest
 from app.model.user import User
 
 

@@ -1,8 +1,8 @@
 import logging
 from typing import Optional
 
-from app.controllers.auth.auth_request import RegisterRequest
-from app.domain.helpers.database_repository import DatabaseRepository
+from app.controllers.user.auth_request import RegisterRequest
+from app.domains.helpers.database_repository import DatabaseRepository
 
 from app.infrastructure.postgresql.user.user_dto import UserDTO
 from app.model.user import User
@@ -70,3 +70,9 @@ class UserRepository:
         except exc.SQLAlchemyError as e:
             logging.error(e)
             return False
+
+    def get_by_email(self, email: str) -> Optional[User]:
+        # Query from database here
+        user_dto = self.db.query(UserDTO).filter(
+            (UserDTO.email == email)).first()
+        return user_dto.to_entity()

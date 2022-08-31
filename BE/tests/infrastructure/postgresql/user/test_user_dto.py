@@ -1,4 +1,4 @@
-from app.controllers.auth.auth_request import RegisterRequest
+from app.controllers.user.auth_request import RegisterRequest
 
 from app.infrastructure.postgresql.user.user_dto import UserDTO
 from datetime import datetime

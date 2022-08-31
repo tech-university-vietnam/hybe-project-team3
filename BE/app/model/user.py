@@ -9,6 +9,8 @@ class User:
                  id: int,
                  username: str,
                  email: str,
+                 hash_pw: str,
+                 token: str,
                  telephone: str,
                  avatar: str,
                  work_for: int,
@@ -18,6 +20,8 @@ class User:
         self.id: int = id
         self.username: str = username
         self.email: str = email
+        self.hash_pw: str = hash_pw
+        self.token: str = token
         self.telephone: str = telephone
         self.avatar: str = avatar
         self.work_for: int = work_for
