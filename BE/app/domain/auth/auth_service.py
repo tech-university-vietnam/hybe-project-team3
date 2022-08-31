@@ -9,7 +9,8 @@ from app.model.auth import Auth
 
 class AuthService:
 
-    def __init__(self, auth_repository: AuthRepository, user_repository: UserRepository):
+    def __init__(self, auth_repository: AuthRepository,
+                 user_repository: UserRepository):
         self.auth_repo = auth_repository
         self.user_repo = user_repository
 
