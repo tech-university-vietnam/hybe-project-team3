@@ -16,12 +16,12 @@ class UserRepository:
         self.db_repo = database_repository
         self.db = self.db_repo.db
 
-    def create(self, regis: RegisterRequest) -> Optional[UserDTO]:
+    def create(self, regis: RegisterRequest) -> Optional[User]:
         try:
             user_dto = UserDTO.from_register_request(regis)
             self.db.add(user_dto)
             self.db.commit()
-            return user_dto
+            return user_dto.to_entity()
         except exc.SQLAlchemyError as e:
             logging.error(e)
             return
