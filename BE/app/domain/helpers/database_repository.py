@@ -6,7 +6,6 @@ class DatabaseRepository:
     def __init__(self):
         self.db: Session = session
 
-
     def get_db(self):
         try:
             yield self.db
