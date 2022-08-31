@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer
-from app.controllers.auth.auth_request import RegisterRequest
+from app.controllers.user.auth_request import RegisterRequest
 from app.infrastructure.postgresql.database import Base
 from app.model.user import User
 import bcrypt
@@ -44,6 +44,8 @@ class UserDTO(Base):
             id=self.id,
             username=self.username,
             email=self.email,
+            hash_pw=self.hash_pw,
+            token=self.token,
             telephone=self.telephone,
             avatar=self.avatar,
             work_for=self.hospital_id,

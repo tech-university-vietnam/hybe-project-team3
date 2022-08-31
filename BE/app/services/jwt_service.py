@@ -3,7 +3,7 @@ from typing import Optional
 import jwt
 from app import deps
 
-from app.domain.user.user_repository import UserRepository
+from app.domains.user.user_repository import UserRepository
 from app.config import get_settings
 from fastapi import Depends, HTTPException, status
 from app.main import reusable_oauth2

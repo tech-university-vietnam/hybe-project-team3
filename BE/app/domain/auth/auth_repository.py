@@ -1,6 +1,6 @@
 from typing import Optional
 
-from app.domain.helpers.database_repository import DatabaseRepository
+from app.domains.helpers.database_repository import DatabaseRepository
 from app.model.auth import Auth
 from app.infrastructure.postgresql.user.user_dto import UserDTO
 

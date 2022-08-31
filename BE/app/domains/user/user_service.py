@@ -1,7 +1,7 @@
 from typing import Optional
-from app.domain.user.user_repository import UserRepository
+from app.domains.user.user_repository import UserRepository
 
-from app.controllers.auth.auth_request import RegisterRequest
+from app.controllers.user.auth_request import RegisterRequest
 from app.model.user import User
 
 
@@ -12,8 +12,8 @@ class UserService:
         self.user_repo = user_repository
 
     def create(self, regis: RegisterRequest) -> bool:
-        user_dto = self.user_repo.create(regis)
-        return user_dto and bool(user_dto.id)
+        user = self.user_repo.create(regis)
+        return user and bool(user.id)
 
     def update(self, user: User) -> Optional[User]:
         pass
