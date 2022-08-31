@@ -32,5 +32,5 @@ class AuthService:
         else:
             return None
 
-    def register(self, register_req: RegisterRequest, db) -> bool:
-        return self.user_repo.create(register_req, db)
+    def register(self, register_req: RegisterRequest) -> bool:
+        return self.user_repo.create(register_req)
