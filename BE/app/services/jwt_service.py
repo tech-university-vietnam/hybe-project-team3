@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 import jwt
 
-from app.domain.user.user_repository import UserRepository
+from app.domains.user.user_repository import UserRepository
 from app.config import get_settings
 from fastapi import Depends, HTTPException, status
 from app.main import reusable_oauth2
@@ -10,7 +10,9 @@ from app.main import reusable_oauth2
 
 class JWTService:
     config = get_settings()
-    user_repo = UserRepository()
+
+    def __init__(self, user_repository: UserRepository):
+        self.user_repo = user_repository
 
     def encode(self, user_id: str) -> str:
         payload = {'exp': datetime.utcnow() + timedelta(days=7),

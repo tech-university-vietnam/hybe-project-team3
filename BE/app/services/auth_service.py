@@ -2,16 +2,16 @@ from typing import Optional
 import bcrypt
 
 from fastapi import HTTPException
-from app.controllers.auth.auth_request import RegisterRequest
-from app.domain.auth.auth_repository import AuthRepository
-from app.domain.user.user_repository import UserRepository
+from app.controllers.user.auth_request import RegisterRequest
+from app.domains.user.user_repository import UserRepository
 
 from app.model.auth import Auth
 
 
 class AuthService:
-    auth_repo = AuthRepository()
-    user_repo = UserRepository()
+
+    def __init__(self, user_repository: UserRepository):
+        self.user_repo = user_repository
 
     @staticmethod
     def compare_hash(password: str, hash_pw: str):
@@ -22,10 +22,12 @@ class AuthService:
 
     def login(self, email, password) -> Optional[Auth]:
         # Returns jwt token
-        auth_user = self.auth_repo.query_auth_user(email)
+        user = self.user_repo.get_by_email(email)
 
-        if auth_user and self.compare_hash(password, auth_user.hash_pw):
-            return auth_user
+        auth = Auth.from_user(user)
+
+        if auth and self.compare_hash(password, auth.hash_pw):
+            return auth
         else:
             raise HTTPException(status_code=404,
                                 detail="Wrong email or password")
