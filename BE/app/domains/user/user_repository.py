@@ -5,6 +5,7 @@ from app.controllers.user.auth_request import RegisterRequest
 from app.domains.helpers.database_repository import DatabaseRepository
 
 from app.infrastructure.postgresql.user.user_dto import UserDTO
+from app.infrastructure.postgresql.hospital.hospital_dto import HospitalDTO
 from app.model.user import User
 from sqlalchemy import update, exc, and_, select
 
@@ -22,6 +23,16 @@ class UserRepository:
             self.db.add(user_dto)
             self.db.commit()
             return user_dto.to_entity()
+        except exc.SQLAlchemyError as e:
+            logging.error(e)
+            return
+
+    def get_by_id(self, id: str):
+        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.user).where(
+            UserDTO.id == id)
+        try:
+            user_dto = self.db.execute(statement).scalar_one()
+            return user_dto.to_safe_entity()
         except exc.SQLAlchemyError as e:
             logging.error(e)
             return
@@ -56,7 +67,7 @@ class UserRepository:
             logging.error(e)
             return False
 
-    def check_token(self, user_id: str, token: str, db) -> bool:
+    def check_token(self, user_id: str, token: str) -> bool:
         statement = select(UserDTO.token).where(UserDTO.id == user_id)
         try:
             user = self.db.execute(statement).first()

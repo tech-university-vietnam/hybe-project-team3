@@ -1,12 +1,10 @@
 from datetime import datetime, timedelta
 from typing import Optional
 import jwt
-from app import deps
 
 from app.domains.user.user_repository import UserRepository
 from app.config import get_settings
-from fastapi import Depends, HTTPException, status
-from app.main import reusable_oauth2
+from fastapi import HTTPException, status
 
 
 class JWTService:
@@ -23,24 +21,22 @@ class JWTService:
                           self.config.SECRET,
                           algorithm="HS256")
 
-    def validate_token(self, http_authorization_credentials=Depends(
-                       reusable_oauth2),
-                       db=Depends(deps.get_db)) -> Optional[str]:
+    def validate_token(self, auth: str) -> Optional[str]:
         """
         Decode JWT token to get use_id => return user_id
         """
-        if http_authorization_credentials:
-            try:
-                payload = jwt.decode(
-                    http_authorization_credentials.credentials,
-                    self.config.SECRET, algorithms=["HS256"])
-                user_id = payload.get('sub')
-                if (self.user_repo.check_token(
-                        user_id,
-                        token=http_authorization_credentials.credentials,
-                        db=db)):
-                    return user_id
-            except (jwt.ExpiredSignatureError,
-                    jwt.InvalidTokenError):
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,)
+        try:
+            token = str.replace(str(auth), 'Bearer ', '')
+            payload = jwt.decode(
+                token,
+                self.config.SECRET, algorithms=["HS256"])
+            user_id = payload.get('sub')
+            if (self.user_repo.check_token(
+                    user_id,
+                    token=token)):
+                return user_id
+            else:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                    detail="token is invalid")
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
