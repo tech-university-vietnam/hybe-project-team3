@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
+
 from app.config import get_settings
 
 SQLALCHEMY_DATABASE_URL = get_settings().DATABASE_URL
@@ -19,8 +20,9 @@ Base = declarative_base()
 def import_models():
     from app.infrastructure.postgresql.user.user_dto import UserDTO
     from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
-
-    return [UserDTO, TrackingMedicineDTO]
+    from app.infrastructure.postgresql.hospital.hospital import HospitalDTO
+    from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
+    return [UserDTO, TrackingMedicineDTO, HospitalDTO, SourceOrderRequestDTO]
 
 
 def create_tables():

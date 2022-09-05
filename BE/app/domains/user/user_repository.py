@@ -3,10 +3,12 @@ from typing import Optional
 
 from app.controllers.user.auth_request import RegisterRequest
 from app.domains.helpers.database_repository import DatabaseRepository
+from app.domains.user.user_exception import EmailAlreadyRegisteredError, EmailNotFoundError
 
 from app.infrastructure.postgresql.user.user_dto import UserDTO
 from app.infrastructure.postgresql.hospital.hospital_dto import HospitalDTO
 from app.model.user import User, SafeUser
+from app.common.exceptions import DBError
 from sqlalchemy import update, exc, and_, select
 
 
@@ -23,9 +25,10 @@ class UserRepository:
             self.db.add(user_dto)
             self.db.commit()
             return user_dto.to_entity()
-        except exc.SQLAlchemyError as e:
-            logging.error(e)
-            return
+        except exc.IntegrityError:
+            raise EmailAlreadyRegisteredError
+        except exc.SQLAlchemyError:
+            raise DBError
 
     def get_by_id(self, id: str) -> Optional[SafeUser]:
         statement = select(UserDTO, HospitalDTO).join(HospitalDTO.user).where(
@@ -85,5 +88,8 @@ class UserRepository:
     def get_by_email(self, email: str) -> Optional[User]:
         # Query from database here
         user_dto = self.db.query(UserDTO).filter(
-            (UserDTO.email == email)).first()
-        return user_dto.to_entity()
+        (UserDTO.email == email)).first()
+        if user_dto:
+            return user_dto.to_entity()
+        else:
+            raise EmailNotFoundError

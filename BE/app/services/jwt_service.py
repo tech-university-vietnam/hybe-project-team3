@@ -25,18 +25,18 @@ class JWTService:
         """
         Decode JWT token to get use_id => return user_id
         """
-        try:
-            token = str.replace(str(auth), 'Bearer ', '')
-            payload = jwt.decode(
-                token,
-                self.config.SECRET, algorithms=["HS256"])
-            user_id = payload.get('sub')
-            if (self.user_repo.check_token(
-                    user_id,
-                    token=token)):
-                return user_id
-            else:
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                                    detail="token is invalid")
-        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        # try:
+        token = str.replace(str(auth), 'Bearer ', '')
+        payload = jwt.decode(
+            token,
+            self.config.SECRET, algorithms=["HS256"])
+        user_id = payload.get('sub')
+        if (self.user_repo.check_token(
+                user_id,
+                token=token)):
+            return user_id
+        else:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail="token is invalid")
+        # except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
