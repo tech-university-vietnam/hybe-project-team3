@@ -1,29 +1,29 @@
 import pinject
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from fastapi import HTTPException, status, Depends
 from fastapi.responses import JSONResponse
+from app.controllers.auth.auth_request import LogoutRequest
+from app.domain.user.user_service import UserService
 
-from app.controllers.user.auth_request import (
-    LoginRequest, RegisterRequest, LogoutRequest
-    )
-from app.services.auth_service import AuthService
-from app.services.jwt_service import JWTService
-from app.domains.user.user_service import UserService
+from app.controllers.auth.auth_request import RegisterRequest, LoginRequest
+from app.domain.auth.auth_service import AuthService
+from app.domain.auth.jwt_service import JWTService
+from fastapi import HTTPException, status, Depends
 
 router = InferringRouter()
 
 
 @cbv(router)
-class UserRoute:
+class AuthenticationRoute:
+
     def __init__(self):
         obj_graph = pinject.new_object_graph()
 
-        self.auth_service: AuthService = obj_graph.provide(AuthService)
-        self.jwt_service: JWTService = obj_graph.provide(JWTService)
-        self.user_service: UserService = obj_graph.provide(UserService)
+        self.auth_service = obj_graph.provide(AuthService)
+        self.jwt_service = obj_graph.provide(JWTService)
+        self.user_service = obj_graph.provide(UserService)
 
-    @router.post("/login", tags=["users"])
+    @router.post("/login", tags=["authentication"])
     def login(self, login_req: LoginRequest):
         user = self.auth_service.login(**dict(login_req))
         if user:
@@ -33,7 +33,8 @@ class UserRoute:
             else:
                 raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            raise HTTPException(404, detail="wrong email or password")
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+                                detail="wrong email or password")
 
     @router.post("/register",
                  tags=["authentication"],
@@ -48,20 +49,12 @@ class UserRoute:
 
     @router.post("/logout",
                  tags=["authentication"],
-                 responses={
-                     401: {"description": "Missing bearer authorization"}})
+                 responses={status.HTTP_401_UNAUTHORIZED:
+                            {"description": "Missing bearer authorization"}})
     def logout(self, data: LogoutRequest,
                user_id: str = Depends(JWTService.validate_token)):
         if self.user_service.delete_token(user_id, data.email):
             return JSONResponse(content={"msg": "logged out successfully"},
-                                status_code=200)
+                                status_code=status.HTTP_200_OK)
         else:
             raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    @router.get("/users/me", tags=["users"])
-    async def get_current_user(self):
-        return {"username": "fakecurrentuser"}
-
-    @router.get("/users/{username}", tags=["users"])
-    async def get_user(self, username: str):
-        return {"username": username}

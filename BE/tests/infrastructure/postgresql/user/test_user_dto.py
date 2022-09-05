@@ -18,6 +18,8 @@ class TestUserDTO:
             telephone="1",
             avatar="foo/bar",
             work_for=1,
+            hash_pw="asda",
+            token="asd",
             created_at=now,
             updated_at=now,
         )
@@ -26,6 +28,8 @@ class TestUserDTO:
 
         assert user.username == "foo"
         assert user.email == "foo@gmail.com"
+        assert user.hash_pw == "asda"
+        assert user.token == "asd"
 
         assert user.telephone == "1"
         assert user.work_for == 1
@@ -39,6 +43,8 @@ class TestUserDTO:
             username="foo",
             email="foo@gmail.com",
             telephone="1",
+            hash_pw="asda",
+            token="asd",
             avatar="foo/bar",
             work_for=1
         )
@@ -50,6 +56,8 @@ class TestUserDTO:
             user_dto.username
             == "foo"
         )
+        assert user.hash_pw == "asda"
+        assert user.token == "asd"
         assert (
             user_dto.email
             == "foo@gmail.com"

@@ -14,7 +14,7 @@ class UserRepository:
 
     def __init__(self, database_repository: DatabaseRepository):
         self.db_repo = database_repository
-        self.db = self.db_repo.db
+        self.db = next(self.db_repo.get_db())
 
     def create(self, regis: RegisterRequest) -> Optional[User]:
         try:
@@ -56,7 +56,7 @@ class UserRepository:
             logging.error(e)
             return False
 
-    def check_token(self, user_id: str, token: str) -> bool:
+    def check_token(self, user_id: str, token: str, db) -> bool:
         statement = select(UserDTO.token).where(UserDTO.id == user_id)
         try:
             user = self.db.execute(statement).first()
