@@ -1,9 +1,3 @@
-.dashboard-container {
-    display: flex;
-    flex-direction: row;
-    flex: 1
-}
-
 .content-container {
     display: flex;
     flex-direction: column;

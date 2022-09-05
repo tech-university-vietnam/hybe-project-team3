@@ -4,14 +4,14 @@ import { Button, Card, CardContent, CardHeader, Grid, IconButton, Typography } f
 import VaccinesIcon from '@mui/icons-material/Vaccines'
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 
-const MedicineItem = props => {
+const MedicineItem = ({name, expirationDate}) => {
     return (
-        <Card sx={{ width: '70rem' }}>
+        <Card sx={{ width: 1 }}>
             <CardHeader
                 avatar={
                     <VaccinesIcon />
                 }
-                title={props.name}
+                title={name}
                 titleTypographyProps={{ variant: 'h6' }}
                 action={
                     <IconButton>
@@ -22,7 +22,7 @@ const MedicineItem = props => {
             <CardContent>
                 <Grid container direction="row">
                     <Grid item xs={11}>
-                        <Typography variant="body1">Expired date: {props.exp}</Typography>
+                        <Typography variant="body1">Expired date: {expirationDate}</Typography>
                     </Grid>
                     <Grid item xs={1}>
                         <Button variant="contained" sx={{bgcolor: 'green'}}>Status</Button>

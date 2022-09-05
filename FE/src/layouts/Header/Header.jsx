@@ -50,6 +50,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
       sx={{
         backgroundColor: "white",
         boxShadow: "none",
+        borderBottom: '1px solid #C4C4C4'
       }}
     >
       <Toolbar sx={{ justifyContent: "flex-end" }}>

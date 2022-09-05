@@ -1,28 +1,44 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import InventoryIcon from '@mui/icons-material/Inventory'
 import FactCheckIcon from '@mui/icons-material/FactCheck'
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
 
-const TabBar = props => {
+const TabBar = () => {
     return (
-
         <Box
-            position='sticky'
             sx={{
-                width: '100%',
-                maxWidth: 360
+                width: '15vw',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                borderRight: '1px solid #C4C4C4',
                 // bgcolor: 'background.paper'
             }}>
             <nav>
-                <List>
+                <List
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1rem'
+                    }}
+                >
                     <ListItem disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
                                 <InventoryIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Inventory" />
+                            <ListItemText
+                                primary={
+                                    <Typography
+                                        style={{
+                                            fontWeight: 'bold'
+                                        }}>
+                                        TRACKED LIST
+                                    </Typography>
+                                }
+                            />
                         </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding>
@@ -30,7 +46,16 @@ const TabBar = props => {
                             <ListItemIcon>
                                 <FactCheckIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Wishlist" />
+                            <ListItemText
+                                primary={
+                                    <Typography
+                                        style={{
+                                            fontWeight: 'bold'
+                                        }}>
+                                        WISH LIST
+                                    </Typography>
+                                }
+                            />
                         </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding>
@@ -38,12 +63,21 @@ const TabBar = props => {
                             <ListItemIcon>
                                 <NotificationsActiveIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Notification" />
+                            <ListItemText
+                                primary={
+                                    <Typography
+                                        style={{
+                                            fontWeight: 'bold'
+                                        }}>
+                                        NOTIFICATION
+                                    </Typography>
+                                }
+                            />
                         </ListItemButton>
                     </ListItem>
                 </List>
             </nav>
-        </Box>
+        </Box >
     )
 }
 
