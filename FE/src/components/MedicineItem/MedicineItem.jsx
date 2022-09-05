@@ -1,41 +1,82 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Button, Card, CardContent, CardHeader, Grid, IconButton, Typography } from '@mui/material'
-import VaccinesIcon from '@mui/icons-material/Vaccines'
-import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import { React, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import {
+  Card,
+  CardContent,
+  Chip,
+  Grid,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 
-const MedicineItem = props => {
-    return (
-        <Card sx={{ width: '70rem' }}>
-            <CardHeader
-                avatar={
-                    <VaccinesIcon />
-                }
-                title={props.name}
-                titleTypographyProps={{ variant: 'h6' }}
-                action={
-                    <IconButton>
-                        <DeleteSweepIcon sx={{ color: 'red' }} />
-                    </IconButton>
-                }
+const MedicineItem = ({
+  medicineName = "Panadol",
+  hospitalName = "VinMec",
+  expirationDate = "10/12/2023",
+  status = "LISTED",
+  handleDelete = () => {},
+}) => {
+  const [badgeColor, setBadgeColor] = useState(() => {
+    if (status === "LISTED") {
+      return "primary";
+    } else if (status === "NOT LISTED") {
+      return "secondary";
+    } else {
+      return "success";
+    }
+  });
+
+  useEffect(() => {
+    if (status === "LISTED") {
+      setBadgeColor("primary");
+    } else if (status === "NOT LISTED") {
+      setBadgeColor("secondary");
+    } else {
+      setBadgeColor("success");
+    }
+  }, [status]);
+
+  return (
+    <Card sx={{ width: "70rem", marginBottom: "30px" }}>
+      <CardContent>
+        <Grid
+          container
+          sx={{ alignItems: "center", justifyContent: "space-between" }}
+        >
+          <Grid xs={3}>
+            <Typography>{medicineName}</Typography>
+          </Grid>
+          <Grid xs={3}>
+            <Typography>{hospitalName}</Typography>
+          </Grid>
+          <Grid xs={3}>
+            <Typography>{expirationDate}</Typography>
+          </Grid>
+          <Grid xs={2}>
+            <Chip
+              label={status}
+              color={badgeColor}
+              sx={{ fontWeight: "bold" }}
             />
-            <CardContent>
-                <Grid container direction="row">
-                    <Grid item xs={11}>
-                        <Typography variant="body1">Expired date: {props.exp}</Typography>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <Button variant="contained" sx={{bgcolor: 'green'}}>Status</Button>
-                    </Grid>
-                </Grid>
-            </CardContent>
-        </Card>
-    )
-}
+          </Grid>
+          <Grid>
+            <IconButton onClick={handleDelete}>
+              <DeleteSweepIcon sx={{ color: "red" }} />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
+};
 
 MedicineItem.propTypes = {
-    name: PropTypes.string,
-    exp: PropTypes.string
-}
+  hospitalName: PropTypes.string,
+  medicineName: PropTypes.string,
+  expirationDate: PropTypes.string,
+  status: PropTypes.string,
+  handleDelete: PropTypes.func,
+};
 
-export default MedicineItem
+export default MedicineItem;
