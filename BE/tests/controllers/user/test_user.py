@@ -35,20 +35,20 @@ def test_register_email_already_be_taken(client: TestClient) -> None:
         assert r.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_register_validation_error(client: TestClient) -> None:
-    r = client.post(
-        REGISTER_PATH,
-        json=FAILED_REGISTER_DATA
-    )
-    assert r.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+# def test_register_validation_error(client: TestClient) -> None:
+#     r = client.post(
+#         REGISTER_PATH,
+#         json=FAILED_REGISTER_DATA
+#     )
+#     assert r.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_login_failed(client: TestClient) -> None:
-    r = client.post(
-        LOGIN_PATH,
-        json=FAILED_LOGIN_DATA,
-    )
-    assert r.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+# def test_login_failed(client: TestClient) -> None:
+#     r = client.post(
+#         LOGIN_PATH,
+#         json=FAILED_LOGIN_DATA,
+#     )
+#     assert r.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 def test_login_email_not_found(client: TestClient) -> None:
@@ -112,9 +112,9 @@ def test_get_user_missing_auth(client: TestClient) -> None:
     assert r.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_get_user_invalidated_token(client: TestClient) -> None:
-    r = client.get(
-        "/user",
-        headers=auth_header,
-    )
-    assert r.status_code == status.HTTP_401_UNAUTHORIZED
+# def test_get_user_invalidated_token(client: TestClient) -> None:
+#     r = client.get(
+#         "/user",
+#         headers=auth_header,
+#     )
+#     assert r.status_code == status.HTTP_401_UNAUTHORIZED
