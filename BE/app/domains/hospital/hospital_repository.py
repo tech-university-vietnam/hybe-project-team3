@@ -26,10 +26,7 @@ HOSPITAL_NAMES = [
 ]
 
 
-class HospitalRepository:
-    def __init__(self, database_repository: DatabaseRepository):
-        self.db_repo = database_repository
-        self.db = next(self.db_repo.get_db())
+class HospitalRepository(DatabaseRepository):
 
     def get_hospitals(self) -> Optional[List[Dict]]:
         statement = select(HospitalDTO.id, HospitalDTO.name)

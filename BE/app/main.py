@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.security import HTTPBearer
 from app.infrastructure.postgresql import init_db
+import os
 
 init_db(show_logs=True)
-import os
 app = FastAPI(debug=True)
 
 reusable_oauth2 = HTTPBearer(scheme_name='Authorization')

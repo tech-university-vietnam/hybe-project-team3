@@ -5,16 +5,19 @@ from fastapi.responses import JSONResponse
 
 from app.controllers.user.auth_request import (
     LoginRequest, RegisterRequest, LogoutRequest)
-from app.services.auth_service import AuthService
-from app.services.jwt_service import JWTService
+from app.services import AuthService, JWTService
 from app.domains.user.user_service import UserService
 from app.controllers.Common.schema import CommonResponse
+from app import register_class
+
+
 router = InferringRouter()
 
 
 @cbv(router)
 class UserRoute:
-    def __init__(self, auth_service: AuthService, jwt_service: JWTService, user_service: UserService):
+    def __init__(self, auth_service: AuthService, jwt_service: JWTService,
+                 user_service: UserService):
         self.auth_service: AuthService = auth_service
         self.jwt_service: JWTService = jwt_service
         self.user_service: UserService = user_service
@@ -56,12 +59,10 @@ class UserRoute:
             raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @router.get("/user", tags=["users"])
-    async def get_user(self,
-                       authorization: str = Header()):
+    async def get_user(self, authorization: str = Header()):
         user_id = self.jwt_service.validate_token(authorization)
         user = self.user_service.get_user_by_id(user_id)
         return user
 
-from app import register_class
 
 register_class(UserRoute)

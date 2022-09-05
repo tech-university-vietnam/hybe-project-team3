@@ -47,27 +47,16 @@ class TestFunctionalTestUserDTO(FunctionalTestCase):
             token="asd",
             avatar="foo/bar",
             work_for=1,
-            hash_pw="xxx",
-            token="xxx"
         )
 
         user_dto = UserDTO.from_entity(user)
 
         assert user.id == 1
-        assert (
-                user_dto.username
-                == "foo"
-        )
+        assert user_dto.username == "foo"
         assert user.hash_pw == "asda"
         assert user.token == "asd"
-        assert (
-                user_dto.email
-                == "foo@gmail.com"
-        )
-        assert (
-                user_dto.telephone
-                == "1"
-        )
+        assert user_dto.email == "foo@gmail.com"
+        assert user_dto.telephone == "1"
         assert user_dto.work_for == 1
         assert isinstance(user_dto.created_at, datetime)
         assert isinstance(user_dto.updated_at, datetime)
@@ -81,10 +70,7 @@ class TestFunctionalTestUserDTO(FunctionalTestCase):
 
         user_dto = UserDTO.from_register_request(register_request)
 
-        assert (
-                user_dto.email
-                == "foo@gmail.com"
-        )
+        assert user_dto.email == "foo@gmail.com"
         password = register_request.password.encode('utf8')
         hash_pw = user_dto.hash_pw.encode('utf8')
 

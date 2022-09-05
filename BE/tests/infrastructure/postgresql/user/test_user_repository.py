@@ -11,4 +11,5 @@ class TestUserRepository(FunctionalTestCase):
         return inject(UserRepository)
 
     def test_create(self):
-        self.repo.create(RegisterRequest(email="paul@mckinsey.com", password="xx", work_for=1))
+        self.repo.create(RegisterRequest(email="paul@mckinsey.com",
+                                         password="xx", work_for=1))
