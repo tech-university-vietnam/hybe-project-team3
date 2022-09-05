@@ -1,11 +1,12 @@
 import os
 from functools import lru_cache
 from pydantic import BaseSettings
+import os
 
 
 def get_env_file():
-    filename = '.'.join(['.env', os.getenv('ENV', 'local')])
-    env_filepath = os.path.join(os.getcwd(), filename)
+    filename = '.'.join(['.env', os.getenv('ENV', 'test')])
+    env_filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
 
     return env_filepath
 

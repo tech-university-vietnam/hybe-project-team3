@@ -3,7 +3,7 @@ from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer
 from app.controllers.user.auth_request import RegisterRequest
-from app.infrastructure.postgresql.database import Base
+from app.infrastructure.postgresql import Base
 from app.model.user import User
 import bcrypt
 

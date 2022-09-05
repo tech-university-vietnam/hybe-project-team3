@@ -16,12 +16,10 @@ router = InferringRouter()
 
 @cbv(router)
 class UserRoute:
-    def __init__(self):
-        obj_graph = pinject.new_object_graph()
-
-        self.auth_service: AuthService = obj_graph.provide(AuthService)
-        self.jwt_service: JWTService = obj_graph.provide(JWTService)
-        self.user_service: UserService = obj_graph.provide(UserService)
+    def __init__(self, auth_service: AuthService, jwt_service: JWTService, user_service: UserService):
+        self.auth_service: AuthService = auth_service
+        self.jwt_service: JWTService = jwt_service
+        self.user_service: UserService = user_service
 
     @router.get("/login", tags=["users"])
     def login(self, login_req: LoginRequest):
@@ -65,3 +63,7 @@ class UserRoute:
     @router.get("/users/{username}", tags=["users"])
     async def get_user(self, username: str):
         return {"username": username}
+
+from app import register_class
+
+register_class(UserRoute)
