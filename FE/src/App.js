@@ -3,7 +3,7 @@ import { Header } from "layouts/Header/Header";
 import { HomePage } from "pages/HomePage/HomePage"
 import Register from "pages/Register/Register";
 import Login from "pages/Login/Login";
-import Dashboard from "pages/TrackItem/TrackItem"
+import Dashboard from "pages/TrackItem/TrackedList"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
