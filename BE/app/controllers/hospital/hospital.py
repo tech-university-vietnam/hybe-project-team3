@@ -2,7 +2,10 @@ from typing import List
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi.responses import JSONResponse
+from pinject import finding
+
 from app.controllers.hospital import schema
+from app.domains.hospital.hospital_repository import HospitalRepository
 from app.domains.hospital.hostpital_service import HospitalService
 import pinject
 from fastapi import status
@@ -13,8 +16,7 @@ router = InferringRouter()
 class HospitalRoute:
     def __init__(self) -> None:
         obj_graph = pinject.new_object_graph()
-        self.hospital_service: HospitalService = obj_graph.provide(
-            HospitalService)
+        self.hospital_service: HospitalService = obj_graph.provide(HospitalService)
 
     @router.get("/hospitals", tags=["hospitals"])
     def get_hospitals(self) -> List[schema.HospitalItem]:

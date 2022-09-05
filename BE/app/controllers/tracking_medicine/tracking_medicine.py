@@ -18,7 +18,7 @@ class TrackingMedicineRoute:
         obj_graph = pinject.new_object_graph()
         self.medicine_service: MedicineService = obj_graph.provide(MedicineService)
 
-    @router.get("/tracking-medicines", tags=["medicine"], response_model=List[TrackingMedicinePayload])
+    @router.get("/tracking-medicines", tags=["medicine"], response_model=List[TrackingMedicine])
     def list_trackings(self):
         return self.medicine_service.list()
 
