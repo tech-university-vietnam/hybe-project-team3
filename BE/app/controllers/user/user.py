@@ -18,7 +18,6 @@ router = InferringRouter()
 class UserRoute:
     def __init__(self):
         obj_graph = pinject.new_object_graph()
-
         self.auth_service: AuthService = obj_graph.provide(AuthService)
         self.jwt_service: JWTService = obj_graph.provide(JWTService)
         self.user_service: UserService = obj_graph.provide(UserService)

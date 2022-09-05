@@ -14,8 +14,9 @@ Base = declarative_base()
 
 def import_models():
     from app.infrastructure.postgresql.user.user_dto import UserDTO
+    from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
 
-    return [UserDTO]
+    return [UserDTO, TrackingMedicineDTO]
 
 
 def create_tables():
