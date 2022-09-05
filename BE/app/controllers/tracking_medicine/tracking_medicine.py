@@ -1,5 +1,3 @@
-import logging
-from datetime import datetime
 from typing import List
 
 import pinject
@@ -7,28 +5,10 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 
 from app.controllers.tracking_medicine.model import TrackingMedicinePayload
-from app.domains.medicine.medicine_service import MedicalService
+from app.domains.medicine.medicine_service import MedicineService
 from app.model.tracking_medicine import TrackingMedicine
 
 router = InferringRouter()
-
-
-def dummy_tracking_medicine(index: int) -> TrackingMedicinePayload:
-    return TrackingMedicinePayload(
-        name="name-%s" % index,
-        number=index,
-        status='init',
-        buy_price=0.0,
-        manufacturer=index,
-        expired_date=datetime.now(),
-        created_at=datetime.now(),
-        created_by=index,
-        image="Base64 encoded image",
-        hospital_id=index,
-    )
-
-
-DUMMY_MEDICINES = list(map(dummy_tracking_medicine, range(100)))
 
 
 @cbv(router)
@@ -36,7 +16,7 @@ class TrackingMedicineRoute:
 
     def __init__(self):
         obj_graph = pinject.new_object_graph()
-        self.medicine_service: MedicalService = obj_graph.provide(MedicalService)
+        self.medicine_service: MedicineService = obj_graph.provide(MedicineService)
 
     @router.get("/tracking-medicines", tags=["medicine"], response_model=List[TrackingMedicinePayload])
     def list_trackings(self):
