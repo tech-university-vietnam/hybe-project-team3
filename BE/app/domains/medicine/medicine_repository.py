@@ -40,6 +40,11 @@ class MedicineRepository(MedicineStatus):
 
         return medicine_dto and medicine_dto.to_entity()
 
+    def get_by_name(self, name: str) -> Optional[List[TrackingMedicine]]:
+        medicine_list: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
+            (TrackingMedicineDTO.name == name)).all()
+        return medicine_list
+
     def create(self, medicine: TrackingMedicinePayload, user: SafeUser) -> Optional[TrackingMedicine]:
         try:
             medicine_dto = TrackingMedicineDTO.from_tracking_medicine_payload(medicine)

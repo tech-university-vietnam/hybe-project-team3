@@ -1,7 +1,7 @@
 from typing import List
 
 import pinject
-from fastapi import Header, Depends
+from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
@@ -12,10 +12,9 @@ from app.domains.medicine.medicine_service import MedicineService
 from app.domains.user.user_service import UserService
 from app.model.tracking_medicine import TrackingMedicine
 from app.services.jwt_service import JWTService
-from fastapi.security import HTTPBearer, OAuth2PasswordBearer, HTTPAuthorizationCredentials
-
+from fastapi.security import HTTPAuthorizationCredentials
+from app.main import oauth2_scheme
 router = InferringRouter()
-oauth2_scheme = HTTPBearer(scheme_name='token')
 
 
 @cbv(router)
