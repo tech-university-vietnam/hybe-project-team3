@@ -10,12 +10,8 @@ from app.model.user import User
 from sqlalchemy import update, exc, and_, select
 
 
-class UserRepository:
+class UserRepository(DatabaseRepository):
     """User Repository defines a repository interface for user entity."""
-
-    def __init__(self, database_repository: DatabaseRepository):
-        self.db_repo = database_repository
-        self.db = next(self.db_repo.get_db())
 
     def create(self, regis: RegisterRequest) -> Optional[User]:
         try:

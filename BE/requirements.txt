@@ -1,5 +1,6 @@
 fastapi~=0.79.0
 uvicorn
+pinject==0.14.1
 flake8
 pytest
 pyte

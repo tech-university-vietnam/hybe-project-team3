@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from fastapi.security import HTTPBearer
+from app.infrastructure.postgresql import init_db
+
+init_db(show_logs=True)
 import os
 app = FastAPI(debug=True)
 

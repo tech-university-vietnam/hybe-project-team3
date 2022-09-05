@@ -2,14 +2,14 @@ from app.controllers.user.auth_request import RegisterRequest
 
 from app.infrastructure.postgresql.user.user_dto import UserDTO
 from datetime import datetime
-
 from app.model.user import User
+from tests import FunctionalTestCase
 import bcrypt
 
 now = datetime.now()
 
 
-class TestUserDTO:
+class TestFunctionalTestUserDTO(FunctionalTestCase):
     def test_to_entity_model_should_create_entity_instance(self):
         user_dto = UserDTO(
             id=1,
@@ -46,25 +46,27 @@ class TestUserDTO:
             hash_pw="asda",
             token="asd",
             avatar="foo/bar",
-            work_for=1
+            work_for=1,
+            hash_pw="xxx",
+            token="xxx"
         )
 
         user_dto = UserDTO.from_entity(user)
 
         assert user.id == 1
         assert (
-            user_dto.username
-            == "foo"
+                user_dto.username
+                == "foo"
         )
         assert user.hash_pw == "asda"
         assert user.token == "asd"
         assert (
-            user_dto.email
-            == "foo@gmail.com"
+                user_dto.email
+                == "foo@gmail.com"
         )
         assert (
-            user_dto.telephone
-            == "1"
+                user_dto.telephone
+                == "1"
         )
         assert user_dto.work_for == 1
         assert isinstance(user_dto.created_at, datetime)
@@ -80,8 +82,8 @@ class TestUserDTO:
         user_dto = UserDTO.from_register_request(register_request)
 
         assert (
-            user_dto.email
-            == "foo@gmail.com"
+                user_dto.email
+                == "foo@gmail.com"
         )
         password = register_request.password.encode('utf8')
         hash_pw = user_dto.hash_pw.encode('utf8')

@@ -1,9 +1,7 @@
-import pinject
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import HTTPException, status, Header
 from fastapi.responses import JSONResponse
-from app.controllers.user.schema import LoginResponse
 
 from app.controllers.user.auth_request import (
     LoginRequest, RegisterRequest, LogoutRequest)
@@ -16,15 +14,13 @@ router = InferringRouter()
 
 @cbv(router)
 class UserRoute:
-    def __init__(self):
-        obj_graph = pinject.new_object_graph()
+    def __init__(self, auth_service: AuthService, jwt_service: JWTService, user_service: UserService):
+        self.auth_service: AuthService = auth_service
+        self.jwt_service: JWTService = jwt_service
+        self.user_service: UserService = user_service
 
-        self.auth_service: AuthService = obj_graph.provide(AuthService)
-        self.jwt_service: JWTService = obj_graph.provide(JWTService)
-        self.user_service: UserService = obj_graph.provide(UserService)
-
-    @router.post("/login", tags=["users"])
-    def login(self, login_req: LoginRequest) -> LoginResponse:
+    @router.get("/login", tags=["users"])
+    def login(self, login_req: LoginRequest):
         user = self.auth_service.login(**dict(login_req))
         if user:
             token: str = self.jwt_service.encode(str(user.id))
@@ -65,3 +61,7 @@ class UserRoute:
         user_id = self.jwt_service.validate_token(authorization)
         user = self.user_service.get_user_by_id(user_id)
         return user
+
+from app import register_class
+
+register_class(UserRoute)
