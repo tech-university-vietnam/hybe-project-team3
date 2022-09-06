@@ -38,12 +38,14 @@ class SafeUser:
     """Safe User hide sensitive information as an entity."""
 
     def __init__(self,
+                 id: int,
                  username: str,
                  email: str,
                  work_for: int,
                  created_at: Optional[datetime] = datetime.now(),
                  updated_at: Optional[datetime] = datetime.now(),
                  ):
+        self.id: int = id
         self.username: str = username
         self.email: str = email
         self.work_for: int = work_for

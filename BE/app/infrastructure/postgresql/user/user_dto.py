@@ -67,9 +67,10 @@ class UserDTO(Base):
 
     def to_safe_entity(self) -> SafeUser:
         return SafeUser(
+            id=self.id,
             username=self.username,
             email=self.email,
-            work_for=self.hospital.name,
+            work_for=self.hospital.id,
             created_at=self.created_at,
             updated_at=self.updated_at
         )
