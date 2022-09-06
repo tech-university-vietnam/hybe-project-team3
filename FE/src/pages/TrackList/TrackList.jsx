@@ -10,7 +10,6 @@ import MedicineItems from "components/MedicineItems/MedicineItems";
 const TrackList = (props) => {
   const [page, setPage] = useState(1);
   const data = Array(10).fill("item");
-  console.log(data);
 
   // needs to filter data here
   // needs to handle pagination here

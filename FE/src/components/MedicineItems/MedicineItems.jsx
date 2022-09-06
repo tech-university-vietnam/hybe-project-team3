@@ -4,17 +4,30 @@ import MedicineItem from "components/MedicineItem/MedicineItem";
 const MedicineItems = ({ medicineItems }) => {
   return (
     <div>
-      {medicineItems.map(({ medicineName, hospitalName, expirationDate }) => (
-        <MedicineItem
-          medicineName={medicineName}
-          hospitalName={hospitalName}
-          expirationDate={expirationDate}
-        />
-      ))}
+      {medicineItems.map(
+        ({ id, medicineName, hospitalName, expirationDate }) => (
+          <MedicineItem
+            key={id}
+            medicineName={medicineName}
+            hospitalName={hospitalName}
+            expirationDate={expirationDate}
+          />
+        )
+      )}
     </div>
   );
 };
 
-MedicineItems.propTypes = {};
+MedicineItems.propTypes = {
+  medicineItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      hospitalName: PropTypes.string,
+      medicineName: PropTypes.string,
+      expirationDate: PropTypes.string,
+      status: PropTypes.string,
+      handleDelete: PropTypes.func,
+    })
+  ),
+};
 
 export default MedicineItems;
