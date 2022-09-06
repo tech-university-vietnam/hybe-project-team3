@@ -10,6 +10,12 @@ import {
 } from "@mui/material";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 
+const badgeColorMap = {
+  LISTED: "primary",
+  "NOT LISTED": "secondary",
+  "FINISHED LISTING": "success",
+};
+
 const MedicineItem = ({
   medicineName,
   hospitalName,
@@ -17,25 +23,11 @@ const MedicineItem = ({
   status,
   handleDelete,
 }) => {
-  const [badgeColor, setBadgeColor] = useState(() => {
-    if (status === "LISTED") {
-      return "primary";
-    } else if (status === "NOT LISTED") {
-      return "secondary";
-    } else {
-      return "success";
-    }
-  });
+  const [badgeColor, setBadgeColor] = useState(() => badgeColorMap[status]);
 
   useEffect(() => {
-    if (status === "LISTED") {
-      setBadgeColor("primary");
-    } else if (status === "NOT LISTED") {
-      setBadgeColor("secondary");
-    } else {
-      setBadgeColor("success");
-    }
-  }, [status]);
+    setBadgeColor(badgeColorMap[status]);
+  }, [status, badgeColor]);
 
   return (
     <Card sx={{ width: "70rem", marginBottom: "30px" }}>
