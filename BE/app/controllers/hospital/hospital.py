@@ -3,7 +3,6 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi.responses import JSONResponse
 from app.controllers.hospital import schema
-from app.domains.hospital.hostpital_service import HospitalService
 from fastapi import status
 from app import register_class
 
@@ -11,9 +10,9 @@ from app import register_class
 router = InferringRouter()
 
 
-@cbv(router)
+
 class HospitalRoute:
-    def __init__(self, hospital_service: HospitalService) -> None:
+    def __init__(self, hospital_service) -> None:
         self.hospital_service = hospital_service
 
     @router.get("/hospitals", tags=["hospitals"])
@@ -27,6 +26,11 @@ class HospitalRoute:
         self.hospital_service.hospital_seed()
         return JSONResponse(status_code=status.HTTP_201_CREATED,
                             content={"msg": "success"})
+
+@cbv(router)
+class HospitalRoot(HospitalRoute):
+    def __init__(self, hospital_service) -> None:
+        super().__init__(hospital_service)
 
 
 register_class(HospitalRoute)

@@ -1,11 +1,7 @@
-from contextlib import asynccontextmanager
-from contextlib import contextmanager
 
 import pinject
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from . import database
 from app.config import get_settings
 from app import register_spec
 
@@ -31,10 +27,13 @@ def init_db(show_logs=True, test=False):
     global Base
     Base = declarative_base()
     if test:
+        Base.metadata.drop_all(bind=_engine)
         Base.metadata.create_all(bind=_engine)
+
 
 def drop_db():
     Base.metadata.drop_all(bind=_engine)
+
 
 def session_scope():
     global _Session

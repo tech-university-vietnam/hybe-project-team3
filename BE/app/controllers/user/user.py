@@ -8,7 +8,6 @@ from app.controllers.user.auth_request import (
 from app.services import AuthService, JWTService
 from app.domains.user.user_service import UserService
 from app.controllers.Common.schema import CommonResponse
-from app import register_class
 
 
 router = InferringRouter()
@@ -16,8 +15,8 @@ router = InferringRouter()
 
 @cbv(router)
 class UserRoute:
-    def __init__(self, auth_service: AuthService, jwt_service: JWTService,
-                 user_service: UserService):
+    def __init__(self, auth_service, jwt_service,
+                 user_service):
         self.auth_service: AuthService = auth_service
         self.jwt_service: JWTService = jwt_service
         self.user_service: UserService = user_service
@@ -64,5 +63,3 @@ class UserRoute:
         user = self.user_service.get_user_by_id(user_id)
         return user
 
-
-register_class(UserRoute)
