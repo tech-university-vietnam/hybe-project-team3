@@ -21,7 +21,7 @@ const style = {
   p: 4,
 };
 
-const AddItemButton = ({ type }) => {
+const AddItemButton = ({ type, handleListChange }) => {
   const [open, setOpen] = useState(false);
 
   const onAddButtonClick = () => {
@@ -47,7 +47,7 @@ const AddItemButton = ({ type }) => {
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                     Add an item to tracked list
                 </Typography>
-                <AddItemForm handleClose={handleClose}/>
+                <AddItemForm handleClose={handleClose} handleListChange={handleListChange}/>
             </Box>
         </Modal>
     </>
@@ -56,7 +56,7 @@ const AddItemButton = ({ type }) => {
 
 AddItemButton.propTypes = {
   type: PropTypes.string,
-  onClickHandler: PropTypes.func
+  handleListChange: PropTypes.func
 }
 
 export default AddItemButton
