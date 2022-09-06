@@ -8,6 +8,7 @@ from app.controllers.tracking_medicine.tracking_medicine import TrackingMedicine
 from app.domains.helpers.database_repository import DatabaseRepository
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
 from app.model.tracking_medicine import TrackingMedicine
+from app.model.user import SafeUser
 
 
 class MedicineStatus:
@@ -40,13 +41,12 @@ class MedicineRepository(MedicineStatus):
 
         return medicine_dto and medicine_dto.to_entity()
 
-    def create(self, medicine: TrackingMedicinePayload) -> Optional[TrackingMedicine]:
+    def create(self, medicine: TrackingMedicinePayload, user: SafeUser) -> Optional[TrackingMedicine]:
         try:
             medicine_dto = TrackingMedicineDTO.from_tracking_medicine_payload(medicine)
-            medicine_dto.status = self.calculate_status(medicine_dto)
-            # Todo: encode token to obtain user's hospital id
-            medicine_dto.hospital_id = 0
-            medicine_dto.created_by = 0
+            medicine_dto.status = MedicineStatus.calculate_create_status(medicine_dto)
+            medicine_dto.hospital_id = user.work_for
+            medicine_dto.created_by = user.id
 
             self.db.add(medicine_dto)
             self.db.commit()
