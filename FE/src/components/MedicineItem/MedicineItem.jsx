@@ -11,11 +11,11 @@ import {
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 
 const MedicineItem = ({
-  medicineName = "Panadol",
-  hospitalName = "VinMec",
-  expirationDate = "10/12/2023",
-  status = "LISTED",
-  handleDelete = () => {},
+  medicineName,
+  hospitalName,
+  expirationDate,
+  status,
+  handleDelete,
 }) => {
   const [badgeColor, setBadgeColor] = useState(() => {
     if (status === "LISTED") {

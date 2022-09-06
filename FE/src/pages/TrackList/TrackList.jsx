@@ -9,7 +9,7 @@ import MedicineItems from "components/MedicineItems/MedicineItems";
 
 const TrackList = (props) => {
   const [page, setPage] = useState(1);
-  const data = Array(10).fill("item");
+  const data = Array(10).fill({medicineName: "Panadol", hospitalName: "VinMec", expirationDate: "10/12/2023", status: "LISTED", handleDelete: () => {}});
 
   // needs to filter data here
   // needs to handle pagination here
