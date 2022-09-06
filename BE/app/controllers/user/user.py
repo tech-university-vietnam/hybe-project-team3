@@ -10,7 +10,7 @@ from app.controllers.user.auth_request import (
 from app.services.auth_service import AuthService
 from app.services.jwt_service import JWTService
 from app.domains.user.user_service import UserService
-from app.controllers.Common.schema import CommonResponse
+from app.controllers.common.schema import CommonResponse
 router = InferringRouter()
 
 

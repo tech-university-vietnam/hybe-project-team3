@@ -11,10 +11,13 @@ class MedicineService:
         return self.medicine_repo.get(id)
 
     def list(self):
-        return list(map(lambda medicine: medicine.to_entity(), self.medicine_repo.list()))
+        return self.medicine_repo.list()
 
     def create(self, payload: TrackingMedicinePayload):
         return self.medicine_repo.create(payload)
 
     def update(self, id: int, payload: TrackingMedicinePayload):
         return self.medicine_repo.update(id, payload)
+
+    def delete(self, id: int):
+        return self.medicine_repo.delete(id)

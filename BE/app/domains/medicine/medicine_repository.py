@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import exc, delete, update
 
@@ -16,8 +16,8 @@ class MedicineRepository:
         self.db_repo = database_repository
         self.db = self.db_repo.db
 
-    def list(self):
-        return self.db.query(TrackingMedicineDTO).all()
+    def list(self) -> List[TrackingMedicine]:
+        return list(map(lambda m: m.to_entity(), self.db.query(TrackingMedicineDTO).all()))
 
     def get(self, id: int) -> Optional[TrackingMedicine]:
         medicine_dto: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
@@ -57,7 +57,7 @@ class MedicineRepository:
             logging.error(e)
             return
 
-    def delete_by_id(self, id: str) -> bool:
+    def delete(self, id: int) -> bool:
         statement = delete(TrackingMedicineDTO).where(TrackingMedicineDTO.id == id)
         try:
             self.db.execute(statement)

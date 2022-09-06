@@ -43,14 +43,17 @@ class HospitalRepository:
             return None
 
     def seed_hospitals(self) -> Optional[List]:
+        statement = select(HospitalDTO.id, HospitalDTO.name)
+
         try:
-            results = self.db.query(HospitalDTO).all()
-            if not results:
-                results = [
+            results = self.db.execute(statement)
+            if not results.first():
+                results = self.db.bulk_save_objects([
                     HospitalDTO.from_mock_data(
-                        name=name, telephone='Fake phone number',
-                        address="fake address") for name in HOSPITAL_NAMES]
-                self.db.bulk_save_objects(results, return_defaults=True)
+                        name=name, telephone="012334567",
+                        address=name) for name in HOSPITAL_NAMES
+                ], return_defaults=True
+                )
                 self.db.commit()
                 return results
         except exc.SQLAlchemyError as e:

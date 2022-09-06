@@ -2,8 +2,6 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from app.model.tracking_medicine import TrackingMedicine
-
 
 class TrackingMedicinePayload(BaseModel):
     name: str
