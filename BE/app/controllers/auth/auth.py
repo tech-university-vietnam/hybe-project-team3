@@ -2,13 +2,15 @@ import pinject
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi.responses import JSONResponse
-from app.controllers.auth.auth_request import LogoutRequest
-from app.domain.user.user_service import UserService
 
-from app.controllers.auth.auth_request import RegisterRequest, LoginRequest
-from app.domain.auth.auth_service import AuthService
-from app.domain.auth.jwt_service import JWTService
+from app.controllers.user.auth_request import LogoutRequest, LoginRequest, RegisterRequest
+from app.domains.user.user_service import UserService
+
+
 from fastapi import HTTPException, status, Depends
+
+from app.services.auth_service import AuthService
+from app.services.jwt_service import JWTService
 
 router = InferringRouter()
 

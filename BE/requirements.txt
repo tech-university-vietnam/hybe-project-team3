@@ -15,4 +15,3 @@ pytest-cov
 requests
 python-dotenv
 pinject
-Faker

@@ -10,7 +10,7 @@ from app.controllers.user.auth_request import (
 from app.services.auth_service import AuthService
 from app.services.jwt_service import JWTService
 from app.domains.user.user_service import UserService
-from app.controllers.Common.schema import CommonResponse
+from app.controllers.common.schema import CommonResponse
 router = InferringRouter()
 
 
@@ -18,7 +18,6 @@ router = InferringRouter()
 class UserRoute:
     def __init__(self):
         obj_graph = pinject.new_object_graph()
-
         self.auth_service: AuthService = obj_graph.provide(AuthService)
         self.jwt_service: JWTService = obj_graph.provide(JWTService)
         self.user_service: UserService = obj_graph.provide(UserService)

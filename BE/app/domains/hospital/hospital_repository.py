@@ -4,7 +4,6 @@ import logging
 from sqlalchemy.sql import select
 from app.infrastructure.postgresql.hospital.hospital_dto import HospitalDTO
 from app.domains.helpers.database_repository import DatabaseRepository
-from faker import Faker
 
 HOSPITAL_NAMES = [
     "Hồ Chí Minh city 115 Emergency center"
@@ -45,14 +44,14 @@ class HospitalRepository:
 
     def seed_hospitals(self) -> Optional[List]:
         statement = select(HospitalDTO.id, HospitalDTO.name)
+
         try:
             results = self.db.execute(statement)
-            if (not results.first()):
-                fake = Faker()
+            if not results.first():
                 results = self.db.bulk_save_objects([
                     HospitalDTO.from_mock_data(
-                        name=name, telephone=fake.phone_number(),
-                        address=fake.address()) for name in HOSPITAL_NAMES
+                        name=name, telephone="012334567",
+                        address=name) for name in HOSPITAL_NAMES
                 ], return_defaults=True
                 )
                 self.db.commit()
