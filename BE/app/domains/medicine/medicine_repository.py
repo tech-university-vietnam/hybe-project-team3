@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta, datetime
 from typing import Optional, List
 
 from sqlalchemy import exc, delete, update
@@ -9,7 +10,21 @@ from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import Tr
 from app.model.tracking_medicine import TrackingMedicine
 
 
-class MedicineRepository:
+class MedicineStatus:
+
+    @staticmethod
+    def calculate_create_status(medicine_dto: TrackingMedicineDTO):
+
+        expired_date = medicine_dto.expired_date
+        last_near_expired_date = expired_date - timedelta(days=60)
+
+        if expired_date <= last_near_expired_date:
+            return 'Not listed'
+        else:
+            return 'Expired'
+
+
+class MedicineRepository(MedicineStatus):
     """User Repository defines a repository interface for user entity."""
 
     def __init__(self, database_repository: DatabaseRepository):
@@ -28,11 +43,17 @@ class MedicineRepository:
     def create(self, medicine: TrackingMedicinePayload) -> Optional[TrackingMedicine]:
         try:
             medicine_dto = TrackingMedicineDTO.from_tracking_medicine_payload(medicine)
+            medicine_dto.status = self.calculate_status(medicine_dto)
+            # Todo: encode token to obtain user's hospital id
+            medicine_dto.hospital_id = 0
+            medicine_dto.created_by = 0
+
             self.db.add(medicine_dto)
             self.db.commit()
-            logging.info(medicine_dto)
             return medicine_dto.to_entity()
         except exc.SQLAlchemyError as e:
+
+            print(e)
             logging.error(e)
             return
 
