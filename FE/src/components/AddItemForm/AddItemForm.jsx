@@ -2,25 +2,39 @@ import React, { useState } from "react";
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import axios from "axios";
+import moment from "moment";
 
-const AddItemForm = ({handleClose}) => {
-    const [medicineName, setMedicineName] = useState(null);
+let addTrackingMedicineUrl = 'http://localhost:8000/tracking-medicine'
+
+const AddItemForm = ({ handleClose }) => {
+    const [medicineName, setMedicineName] = useState('');
     const [expirationDate, setExpirationDate] = useState(null);
-
-    const handleMedicineNameChange = (newMedicineName) => {
-        setMedicineName(newMedicineName);
+    
+    const handleMedicineNameChange = (event) => {
+        setMedicineName(event.target.value);
     }
 
     const handleExpirationDateChange = (newDate) => {
         setExpirationDate(newDate);
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (medicineName === null || expirationDate === null) {
 
         }
-        // call api
+        const date = moment(expirationDate).format('YYYY-MM-DDTHH:MM:SSZ')
+        await postTrackingMedicine(date);
+    }
 
+    const postTrackingMedicine = async (date) => {
+        
+        const body = {
+            "name": medicineName,
+            "expirationDate": date
+        }
+        console.log(body)
+        // await axios.post(addTrackingMedicineUrl, body)
     }
 
     return (
@@ -51,7 +65,7 @@ const AddItemForm = ({handleClose}) => {
                 }}
             >
                 <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-                <Button variant="contained" onClick={handleSubmit}>Submit</Button>
+                <Button variant="contained" onClick={handleSubmit} disabled={!medicineName || !expirationDate}>Submit</Button>
             </Box>
         </>
     );
