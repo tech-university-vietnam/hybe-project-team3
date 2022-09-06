@@ -14,7 +14,7 @@ import { RegisterSchema } from "../../Utils/validation/RegisterSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 
-const RegisterForm = (props) => {
+const RegisterForm = () => {
   const [error, setError] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [hospitals, setHospitals] = useState([]);
@@ -31,8 +31,9 @@ const RegisterForm = (props) => {
   const getHospitalList = async () => {
     let url = "http://localhost:8000/hospitals";
     try {
-      const response = await axios.get(url);
-      setHospitals(response.data.hospitals);
+      const response = await axios.get(url)
+        .then(result => result.data)
+      setHospitals(response);
       setIsLoading(false);
     } catch {
       setError(true);

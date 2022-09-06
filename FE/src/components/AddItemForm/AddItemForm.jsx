@@ -34,7 +34,8 @@ const AddItemForm = ({ handleClose }) => {
             "expirationDate": date
         }
         console.log(body)
-        // await axios.post(addTrackingMedicineUrl, body)
+        const response = await axios.post(addTrackingMedicineUrl, body);
+        console.log(response)
     }
 
     return (
