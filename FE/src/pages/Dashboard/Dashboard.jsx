@@ -12,14 +12,13 @@ const Dashboard = (props) => {
   const data = Array(10).fill("item");
   console.log(data);
 
-  const [selectedStatus, SetSelectedStatus] = useState([]);
+  const [selectedStatuses, SetSelectedStatuses] = useState([]);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    SetSelectedStatus(
-      // On autofill we get a stringified value.
+    SetSelectedStatuses(
       typeof value === 'string' ? value.split(',') : value,
     );
   };
@@ -38,7 +37,7 @@ const Dashboard = (props) => {
           />
           <Filter
             statuses={["LISTED", "NOT LISTED", "FINISHED LISTING"]}
-            selectedStatuses={selectedStatus}
+            selectedStatuses={selectedStatuses}
             handleChange={handleChange}
           />
         </div>
