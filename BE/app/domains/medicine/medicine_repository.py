@@ -52,8 +52,6 @@ class MedicineRepository(MedicineStatus):
             self.db.commit()
             return medicine_dto.to_entity()
         except exc.SQLAlchemyError as e:
-
-            print(e)
             logging.error(e)
             return
 
