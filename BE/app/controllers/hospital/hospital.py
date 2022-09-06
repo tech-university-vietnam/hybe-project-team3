@@ -1,19 +1,22 @@
 from typing import List
-from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi.responses import JSONResponse
+from app import inject
 from app.controllers.hospital import schema
+from app.domains.hospital import HospitalService
 from fastapi import status
 from app import register_class
-
+from fastapi_utils.cbv import cbv
 
 router = InferringRouter()
 
 
-
+@cbv(router)
 class HospitalRoute:
-    def __init__(self, hospital_service) -> None:
-        self.hospital_service = hospital_service
+
+    @property
+    def hospital_service(self) -> HospitalService:
+        return inject(HospitalService)
 
     @router.get("/hospitals", tags=["hospitals"])
     def get_hospitals(self) -> List[schema.HospitalItem]:
@@ -26,11 +29,6 @@ class HospitalRoute:
         self.hospital_service.hospital_seed()
         return JSONResponse(status_code=status.HTTP_201_CREATED,
                             content={"msg": "success"})
-
-@cbv(router)
-class HospitalRoot(HospitalRoute):
-    def __init__(self, hospital_service) -> None:
-        super().__init__(hospital_service)
 
 
 register_class(HospitalRoute)

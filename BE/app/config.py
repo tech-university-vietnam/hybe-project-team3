@@ -5,9 +5,9 @@ import os
 
 
 def get_env_file():
-    filename = '.'.join(['.env', os.getenv('ENV', 'test')])
+    filename = '.'.join(['.env', os.getenv('ENV', 'local')])
     env_filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
-
+    print(env_filepath)
     return env_filepath
 
 

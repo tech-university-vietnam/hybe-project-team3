@@ -2,7 +2,11 @@ from fastapi import FastAPI
 from app.infrastructure.postgresql import init_db
 import os
 
-init_db(show_logs=True)
+if os.getenv('ENV', 'local') == "test":
+    print('go here')
+    init_db(test=True)
+else:
+    init_db(test=False)
 app = FastAPI(debug=True)
 
 

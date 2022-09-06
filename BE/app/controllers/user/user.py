@@ -8,20 +8,24 @@ from app.controllers.user.auth_request import (
 from app.services import AuthService, JWTService
 from app.domains.user.user_service import UserService
 from app.controllers.Common.schema import CommonResponse
-
+from app import inject
 
 router = InferringRouter()
 
 
 @cbv(router)
 class UserRoute:
-    def __init__(self, auth_service, jwt_service,
-                 user_service):
-        self.auth_service: AuthService = auth_service
-        self.jwt_service: JWTService = jwt_service
-        self.user_service: UserService = user_service
+    @property
+    def user_service(self) -> UserService:
+        return inject(UserService)
+    @property
+    def jwt_service(self) -> JWTService:
+        return inject(JWTService)
+    @property
+    def auth_service(self) -> AuthService:
+        return inject(AuthService)
 
-    @router.get("/login", tags=["users"])
+    @router.post("/login", tags=["users"])
     def login(self, login_req: LoginRequest):
         user = self.auth_service.login(**dict(login_req))
         if user:

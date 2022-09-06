@@ -10,6 +10,7 @@ ClientClass = None
 Base = None
 _engine = None
 SQLALCHEMY_DATABASE_URL = get_settings().DATABASE_URL
+print(SQLALCHEMY_DATABASE_URL)
 
 
 class AsyncSessionBindingSpec(pinject.BindingSpec):
