@@ -29,17 +29,18 @@ const RegisterForm = () => {
   });
 
   const getHospitalList = async () => {
-    let url = "http://localhost:8000/hospitals";
-    try {
-      const response = await axios.get(url)
-        .then(result => result.data)
-      setHospitals(response);
-      setIsLoading(false);
-    } catch {
-      setError(true);
-      setStatusMessage("Could not get hospital list. Please try again");
-      setIsLoading(false);
-    }
+    let url = "http://localhost:8000/hospital";
+    await axios.get(url)
+      .then(result => result.data)
+      .then(response => {
+        setHospitals(response);
+        setIsLoading(false);
+      })
+      .catch(_ => {
+        setError(true);
+        setStatusMessage("Could not get hospital list. Please try again");
+        setIsLoading(false);
+      })
   };
 
   const onSubmit = async (data) => {
