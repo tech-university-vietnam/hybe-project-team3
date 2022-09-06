@@ -9,7 +9,7 @@ from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import Tr
 from app.model.tracking_medicine import TrackingMedicine
 
 
-class MedicalRepository:
+class MedicineRepository:
     """User Repository defines a repository interface for user entity."""
 
     def __init__(self, database_repository: DatabaseRepository):

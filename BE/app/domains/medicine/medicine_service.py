@@ -1,20 +1,20 @@
 from app.controllers.tracking_medicine.model import TrackingMedicinePayload
-from app.domains.medicine.medicine_repository import MedicalRepository
+from app.domains.medicine.medicine_repository import MedicineRepository
 
 
 class MedicineService:
 
-    def __init__(self, medical_repository: MedicalRepository):
-        self.medical_repo = medical_repository
+    def __init__(self, medicine_repository: MedicineRepository):
+        self.medicine_repo = medicine_repository
 
     def get(self, id: int):
-        return self.medical_repo.get(id)
+        return self.medicine_repo.get(id)
 
     def list(self):
-        return list(map(lambda medicine: medicine.to_entity(), self.medical_repo.list()))
+        return list(map(lambda medicine: medicine.to_entity(), self.medicine_repo.list()))
 
     def create(self, payload: TrackingMedicinePayload):
-        return self.medical_repo.create(payload)
+        return self.medicine_repo.create(payload)
 
     def update(self, id: int, payload: TrackingMedicinePayload):
-        return self.medical_repo.update(id, payload)
+        return self.medicine_repo.update(id, payload)
