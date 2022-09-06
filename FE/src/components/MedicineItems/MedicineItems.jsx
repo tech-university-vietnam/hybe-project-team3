@@ -5,12 +5,14 @@ const MedicineItems = ({ medicineItems }) => {
   return (
     <div>
       {medicineItems.map(
-        ({ id, medicineName, hospitalName, expirationDate }) => (
+        ({ id, medicineName, hospitalName, expirationDate, status, handleDelete }) => (
           <MedicineItem
             key={id}
             medicineName={medicineName}
             hospitalName={hospitalName}
             expirationDate={expirationDate}
+            status={status}
+            handleDelete={handleDelete}
           />
         )
       )}
