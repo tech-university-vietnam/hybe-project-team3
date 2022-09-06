@@ -6,7 +6,7 @@ from app.domains.helpers.database_repository import DatabaseRepository
 
 from app.infrastructure.postgresql.user.user_dto import UserDTO
 from app.infrastructure.postgresql.hospital.hospital_dto import HospitalDTO
-from app.model.user import User
+from app.model.user import User, SafeUser
 from sqlalchemy import update, exc, and_, select
 
 
@@ -27,7 +27,7 @@ class UserRepository:
             logging.error(e)
             return
 
-    def get_by_id(self, id: str):
+    def get_by_id(self, id: str) -> Optional[SafeUser]:
         statement = select(UserDTO, HospitalDTO).join(HospitalDTO.user).where(
             UserDTO.id == id)
         try:
