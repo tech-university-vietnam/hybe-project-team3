@@ -8,7 +8,7 @@ import { Box, Button, Container, TextField, Typography } from "@mui/material";
 // TODO: call backend api to login
 // TODO: error handling for incorrect email/password
 
-let loginUrl = "localhost:8000/login";
+let loginUrl = "http://localhost:8000/login";
 
 const LoginForm = () => {
   const [loginError, setLoginError] = useState(null);

@@ -29,7 +29,7 @@ const RegisterForm = () => {
   });
 
   const getHospitalList = async () => {
-    let url = "http://localhost:8000/hospital";
+    let url = "http://localhost:8000/hospitals";
     await axios.get(url)
       .then(result => result.data)
       .then(response => {

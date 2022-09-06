@@ -31,11 +31,14 @@ const AddItemForm = ({ handleClose }) => {
         
         const body = {
             "name": medicineName,
-            "expirationDate": date
+            "expired_date": date,
+            "number": 0
         }
-        console.log(body)
-        const response = await axios.post(addTrackingMedicineUrl, body);
-        console.log(response)
+        await axios.post(addTrackingMedicineUrl, body, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }).then(response => console.log(response));
     }
 
     return (
