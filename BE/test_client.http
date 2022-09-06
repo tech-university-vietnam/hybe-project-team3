@@ -1,0 +1,35 @@
+GET http://127.0.0.1:8000/hospitals/seed
+
+###
+POST http://127.0.0.1:8000/register
+Content-Type: application/json
+
+{
+    "email": "string2",
+    "password": "string",
+    "work_for": 1
+}
+
+
+###
+POST http://127.0.0.1:8000/login
+Content-Type: application/json
+
+{
+    "email": "string",
+    "password": "string"
+}
+
+###
+GET http://127.0.0.1:8000/user
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjI4NzEyMTcsImlhdCI6MTY2MjI2NjQxNywic3ViIjoiNCJ9.XCWfYph9m0sYU4QimYEGY22T-lp6jN7PVjHavmhHC_M
+
+
+###
+POST http://127.0.0.1:8000/logout
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjI4NzEyMTcsImlhdCI6MTY2MjI2NjQxNywic3ViIjoiNCJ9.XCWfYph9m0sYU4QimYEGY22T-lp6jN7PVjHavmhHC_M
+Content-Type: application/json
+
+{
+    "email": "string"
+}

@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import Union
 
-from sqlalchemy import Column, String, DateTime, Integer
-from app.controllers.auth.auth_request import RegisterRequest
+from sqlalchemy import Column, String, DateTime, Integer, ForeignKey
+from app.model.user import SafeUser
+from app.controllers.user.auth_request import RegisterRequest
 from app.infrastructure.postgresql.database import Base
 from app.model.user import User
 import bcrypt
@@ -11,7 +12,7 @@ import bcrypt
 class UserDTO(Base):
     """userDTO is a data transfer object associated with User entity."""
 
-    __tablename__ = "User"
+    __tablename__ = "user"
     id: Union[int, Column] = Column(Integer, primary_key=True,
                                     autoincrement=True)
 
@@ -34,19 +35,18 @@ class UserDTO(Base):
     # jwt token
     token: Union[str, Column] = Column(String, nullable=True)
     token_created_at: Union[str, Column] = Column(String, nullable=True)
-    # Foreign key, Todo: Remove mock
-    # hospital_id: Union[int, Column] = Column()
-    hospital_id = 1
-    work_for: Union[int, Column] = Column(Integer, nullable=False)
+    work_for: Union[int, Column] = Column(Integer, ForeignKey("hospital.id"))
 
     def to_entity(self) -> User:
         return User(
             id=self.id,
             username=self.username,
             email=self.email,
+            hash_pw=self.hash_pw,
+            token=self.token,
             telephone=self.telephone,
             avatar=self.avatar,
-            work_for=self.hospital_id,
+            work_for=self.work_for,
             created_at=self.created_at,
             updated_at=self.updated_at,
         )
@@ -63,6 +63,15 @@ class UserDTO(Base):
             work_for=user.work_for,
             created_at=now,
             updated_at=now,
+        )
+
+    def to_safe_entity(self) -> SafeUser:
+        return SafeUser(
+            username=self.username,
+            email=self.email,
+            work_for=self.hospital.name,
+            created_at=self.created_at,
+            updated_at=self.updated_at
         )
 
     @staticmethod
