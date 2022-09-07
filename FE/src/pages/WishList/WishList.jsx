@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Pagination, Alert } from "@mui/material";
-import PropTypes from "prop-types";
 import axios from "axios";
 import AddItemButton from "components/AddItemButton/AddItemButton";
 import MedicineItems from "components/MedicineItems/MedicineItems";
@@ -11,7 +10,7 @@ import "./WishList.css";
 const getWishListUrl = "http://localhost:8000/source-orders";
 const deleteWishListUrl = "http://localhost:8000/source-order";
 
-const WishList = (props) => {
+const WishList = () => {
   const [wishListItems, setWishListItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
@@ -20,7 +19,7 @@ const WishList = (props) => {
     "RESOLVED",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const filteredWishListItems = useMemo(() => {
     return wishListItems.filter((wishListItem) =>
       selectedStatuses.includes(wishListItem.status)
