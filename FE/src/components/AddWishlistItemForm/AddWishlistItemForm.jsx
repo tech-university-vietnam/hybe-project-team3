@@ -1,19 +1,47 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Box, Button, TextField, Typography } from '@mui/material';
+import axios from 'axios';
 
-const AddItemForm = ({handleClose}) => {
+const addWishlistMedicineUrl = 'http://localhost:8000/source-order';
+
+const AddItemForm = ({ handleClose, handleListChange }) => {
     const [medicineName, setMedicineName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(false);
 
-    const handleMedicineNameChange = (_, name) => {
-        setMedicineName(name)
+    const handleMedicineNameChange = (event) => {
+        setError(false);
+        setMedicineName(event.target.value);
     }
 
-    const handleSubmit = () => {
-        
-    }
+    const handleSubmit = async () => {
+        setIsSubmitting(true);
+        await postWishlistMedicine()
+            .then((response) => {
+                if (response.status > 200 && response.status < 300) {
+                    console.log(response.status)
+                    setError(false);
+                    handleListChange();
+                    handleClose();
+                }
+            })
+            .catch(() => setError(true));
+        setIsSubmitting(false);
+
+    };
+
+    const postWishlistMedicine = async () => {
+        const body = {
+            name: medicineName
+        };
+        return await axios
+            .post(addWishlistMedicineUrl, body, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+    };
 
     return (
         <>
@@ -58,6 +86,9 @@ const AddItemForm = ({handleClose}) => {
     )
 }
 
-AddItemForm.propTypes = {}
+AddItemForm.propTypes = {
+    handleClose: PropTypes.func,
+    handleListChange: PropTypes.func
+}
 
 export default AddItemForm
