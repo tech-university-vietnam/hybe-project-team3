@@ -3,6 +3,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginSchema } from "Utils/validation/LoginSchema";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import useAuth from "../../Utils/hooks/auth.js";
 
@@ -13,6 +14,7 @@ let loginUrl = "http://localhost:8000/login";
 
 const LoginForm = () => {
   const [loginError, setLoginError] = useState(null);
+  const navigate = useNavigate();
   const { login } = useAuth();
 
   const {
@@ -24,16 +26,15 @@ const LoginForm = () => {
   });
 
   const onSubmit = (data) => {
-    // axios
-    //   .post(loginUrl, data)
-    //   .then((response) => {
-    //     console.log(response);
-    //     localStorage.setItem("token", response.data.token);
-    //   })
+    let success = true;
     login(data)
       .catch((error) => {
+        success = false;
         setLoginError(error.data.msg);
       });
+    if (success) {
+      navigate("/");
+    }
   };
 
   return (
