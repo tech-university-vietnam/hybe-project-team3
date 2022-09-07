@@ -1,7 +1,8 @@
 import logging
-from datetime import timedelta, datetime
+from datetime import datetime, tzinfo
 from typing import Optional, List
 
+from pytz import UTC
 from sqlalchemy import exc, delete, update
 
 from app.controllers.tracking_medicine.tracking_medicine import TrackingMedicinePayload
@@ -14,12 +15,10 @@ from app.model.user import SafeUser
 class MedicineStatus:
 
     @staticmethod
-    def calculate_create_status(medicine_dto: TrackingMedicineDTO):
+    def calculate_create_status(expired_date: datetime):
+        _now = datetime.utcnow()
 
-        expired_date = medicine_dto.expired_date
-        last_near_expired_date = expired_date - timedelta(days=60)
-
-        if expired_date <= last_near_expired_date:
+        if _now <= expired_date.replace(tzinfo=None):
             return 'Not listed'
         else:
             return 'Expired'
@@ -44,7 +43,7 @@ class MedicineRepository(MedicineStatus):
     def create(self, medicine: TrackingMedicinePayload, user: SafeUser) -> Optional[TrackingMedicine]:
         try:
             medicine_dto = TrackingMedicineDTO.from_tracking_medicine_payload(medicine)
-            medicine_dto.status = MedicineStatus.calculate_create_status(medicine_dto)
+            medicine_dto.status = MedicineStatus.calculate_create_status(medicine_dto.expired_date)
             medicine_dto.hospital_id = user.work_for
             medicine_dto.created_by = user.id
 
