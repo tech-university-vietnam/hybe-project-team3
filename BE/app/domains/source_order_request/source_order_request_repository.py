@@ -1,4 +1,4 @@
-from sqlalchemy import exc, delete, update
+from sqlalchemy import exc, delete, update, desc
 import logging
 from app.common.exceptions import DBError
 from app.domains.source_order_request.source_order_request_exceptions import RequestNotExistError
@@ -23,7 +23,9 @@ class SourceOrderRequestRepository:
 
     def list(self):
         try:
-            result = list(map(lambda m: m.to_entity(), self.db.query(SourceOrderRequestDTO).all()))
+            result = list(map(lambda m: m.to_entity(),
+            self.db.query(SourceOrderRequestDTO).order_by(
+                desc(SourceOrderRequestDTO.created_at)).all()))
             return result
         except exc.SQLAlchemyError as e:
             logging.error(e)
