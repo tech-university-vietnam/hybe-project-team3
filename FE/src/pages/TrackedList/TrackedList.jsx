@@ -15,24 +15,24 @@ const TrackedList = () => {
     []
   );
 
-
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
     "LISTED",
     "NOT LISTED",
     "FINISHED LISTING",
+    "EXPIRED",
   ]);
-
   const [errorMessage, setErrorMessage] = useState("");
+  const [filteredMedicines, setFilteredMedicines] = useState([]);
 
   const PER_PAGE = 7;
 
-  const count = Math.ceil(listOfTrackedMedicineItems.length / PER_PAGE);
-  const _DATA = usePagination(listOfTrackedMedicineItems, PER_PAGE);
+  const count = Math.ceil(filteredMedicines.length / PER_PAGE);
+  const filteredMedicineItems = usePagination(filteredMedicines, PER_PAGE);
 
   const handleChange = (e, p) => {
     setCurrentPage(p);
-    _DATA.jump(p);
+    filteredMedicineItems.jump(p);
   };
 
   const handleFilterChange = (event) => {
@@ -40,15 +40,11 @@ const TrackedList = () => {
       target: { value },
     } = event;
     setSelectedStatuses(typeof value === "string" ? value.split(",") : value);
-    // - filter the `listOfTrackedMedicineItems` based on the `selectedStatuses`
-    // - set the result of the filter to `listOfTrackedMedicineItemsToDisplay`
-    // setListOfTrackedMedicineToDisplay(
-    //   selectedStatuses.map((selectedStatus) =>
-    //     listOfTrackedMedicineItems.filter(
-    //       (trackedMedicineItem) => trackedMedicineItem.status === selectedStatus
-    //     )
-    //   )
-    // );
+    setFilteredMedicines(
+      listOfTrackedMedicineItems.filter((medicineItem) =>
+        selectedStatuses.map((status) => medicineItem.status === status)
+      )
+    );
   };
 
   const getAllTrackedMedicineItems = async () => {
@@ -58,12 +54,7 @@ const TrackedList = () => {
     } catch (error) {
       console.log("Error getting list of tracked medicine items", error);
     }
-    // setNumberOfTrackedMedicineItems(listOfTrackedMedicineItems.length);
-    // setCurrentPage(1);
-    // calculateNumberOfPage();
-    // handleSlicingDataForPagination();
   };
-  //
   const handleDeleteMedicineItem = async (id) => {
     try {
       await axios.delete(`http://localhost:8000/tracking-medicine/${id}`);
@@ -78,23 +69,17 @@ const TrackedList = () => {
     // ** when the page first loads**:
     // - fetch data for tracked medicine items ✅
     // - set that data into `listOfTrackedMedicineItems` ✅
-    // - count how many elements in `listOfTrackedMedicineItems` ✅
-    // - set that numberOfTrackedMedicineItems ✅
-    // - call `calculateNumberOfPage` to set `numberOfPage` ✅
-    // - call `handleSlicingDataForPagination` to set list to display for 1st page ✅
+    // - filter the data into `filteredMedicines`
     getAllTrackedMedicineItems();
   }, []);
 
-  // WHENEVER USER CLICKS ON ANOTHER PAGE ✅:
-  // - call `handlePageChange` to set `currentPage` and slice data at the same time ✅
-
-  // WHENEVER USER CLICKS ON FILTER:
-  // - filter the `listOfTrackedMedicineItems` based on the `selectedStatuses`
-  // - set the result of the filter to `listOfTrackedMedicineItemsToDisplay`
-
-  // WHENEVER USER CLICKS ON DELETE: ✅
-  // - call `handleDeleteMedicineItem` ✅
-  // - when the operation is successful, call API to get the updated list of tracked items ✅
+  useEffect(() => {
+    setFilteredMedicines(
+      listOfTrackedMedicineItems.filter((medicineItem) =>
+        selectedStatuses.map((status) => medicineItem.status === status)
+      )
+    );
+  }, [listOfTrackedMedicineItems, selectedStatuses]);
 
   return (
     <div className="content-container">
@@ -102,13 +87,13 @@ const TrackedList = () => {
       <div className="content-header">
         <AddItemButton type="tracked list" />
         <Pagination
-        count={count}
-        size="large"
-        page={currentPage}
-        variant="outlined"
-        shape="rounded"
-        onChange={handleChange}
-      />
+          count={count}
+          size="large"
+          page={currentPage}
+          variant="outlined"
+          shape="rounded"
+          onChange={handleChange}
+        />
         <Filter
           statuses={["LISTED", "NOT LISTED", "FINISHED LISTING"]}
           selectedStatuses={selectedStatuses}
@@ -117,7 +102,7 @@ const TrackedList = () => {
       </div>
       <div className="data-container">
         <MedicineItems
-          medicineItems={_DATA.currentData()}
+          medicineItems={filteredMedicineItems.currentData()}
           handleDelete={handleDeleteMedicineItem}
         />
       </div>
