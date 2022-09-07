@@ -14,6 +14,9 @@ const badgeColorMap = {
   LISTED: "primary",
   "NOT LISTED": "secondary",
   "FINISHED LISTING": "success",
+  AVAILABLE: "primary",
+  "unavailable": "secondary",
+  RESOLVED: "success"
 };
 
 const MedicineItem = ({
