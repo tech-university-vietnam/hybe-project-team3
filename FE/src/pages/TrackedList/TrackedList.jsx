@@ -8,7 +8,8 @@ import axios from "axios";
 import { useEffect } from "react";
 import usePagination from "../../Utils/hooks/pagination";
 
-let url = "http://localhost:8000/tracking-medicines";
+const getMedicinesUrl = "http://localhost:8000/tracking-medicines";
+const deleteMedicineUrl = "http://localhost:8000/tracking-medicine";
 
 const TrackedList = () => {
   const [listOfTrackedMedicineItems, setListOfTrackedMedicineItems] = useState(
@@ -49,7 +50,7 @@ const TrackedList = () => {
 
   const getAllTrackedMedicineItems = async () => {
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(getMedicinesUrl);
       setListOfTrackedMedicineItems(response.data);
     } catch (error) {
       console.log("Error getting list of tracked medicine items", error);
@@ -57,7 +58,7 @@ const TrackedList = () => {
   };
   const handleDeleteMedicineItem = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/tracking-medicine/${id}`);
+      await axios.delete(`${deleteMedicineUrl}/${id}`);
       await getAllTrackedMedicineItems();
     } catch (error) {
       console.log("Error deleting item", error);
