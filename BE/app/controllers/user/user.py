@@ -56,7 +56,7 @@ class UserRoute:
                      401: {"description": "Missing bearer authorization"}})
     def logout(self, data: LogoutRequest,
                bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)) -> CommonResponse:
-        user_id = self.jwt_service.validate_token(bearer_auth)
+        user_id = self.jwt_service.validate_token(bearer_auth.credentials)
         if self.user_service.delete_token(user_id, data.email):
             return JSONResponse(content={"msg": "logged out successfully"},
                                 status_code=200)
@@ -65,6 +65,6 @@ class UserRoute:
 
     @router.get("/user", tags=["users"])
     def get_user(self, bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
-        user_id = self.jwt_service.validate_token(bearer_auth)
+        user_id = self.jwt_service.validate_token(bearer_auth.credentials)
         user = self.user_service.get_user_by_id(user_id)
         return user
