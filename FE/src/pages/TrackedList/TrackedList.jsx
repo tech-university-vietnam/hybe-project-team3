@@ -41,9 +41,18 @@ const TrackedList = () => {
   const handleChange = (e, p) => {
     setCurrentPage(p);
     filteredMedicineItems.jump(p);
+  };
 
-  const handleListChange = () => {
-    //TODO: call get list api
+  const handleListChange = async () => {
+    try {
+      await getAllTrackedMedicineItems();
+    } catch (error) {
+      console.log(
+        "Error getting updated tracked medicines list in handleListChange",
+        error
+      );
+      setErrorMessage(error.detail.msg);
+    }
   };
 
   const handleFilterChange = (event) => {
@@ -55,15 +64,27 @@ const TrackedList = () => {
 
   const getAllTrackedMedicineItems = async () => {
     try {
-      const response = await axios.get(getMedicinesUrl);
+      const response = await axios.get(getMedicinesUrl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       setListOfTrackedMedicineItems(response.data);
     } catch (error) {
-      console.log("Error getting list of tracked medicine items", error);
+      console.log(
+        "Error getting list of tracked medicines list in getAllTrackedMedicineItems",
+        error
+      );
+      setErrorMessage(error.detail.msg);
     }
   };
   const handleDeleteMedicineItem = async (id) => {
     try {
-      await axios.delete(`${deleteMedicineUrl}/${id}`);
+      await axios.delete(`${deleteMedicineUrl}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       await getAllTrackedMedicineItems();
     } catch (error) {
       console.log("Error deleting item", error);
@@ -83,7 +104,10 @@ const TrackedList = () => {
     <div className="content-container">
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <div className="content-header">
-        <AddItemButton type="tracked list" handleListChange={handleListChange} />
+        <AddItemButton
+          type="tracked list"
+          handleListChange={handleListChange}
+        />
         <Pagination
           count={count}
           size="large"
