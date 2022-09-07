@@ -1,9 +1,8 @@
 import logging
-from datetime import datetime, tzinfo
+from datetime import datetime
 from typing import Optional, List
 
-from pytz import UTC
-from sqlalchemy import exc, delete, update
+from sqlalchemy import exc, delete, update, desc
 
 from app.controllers.tracking_medicine.tracking_medicine import TrackingMedicinePayload
 from app.domains.helpers.database_repository import DatabaseRepository
@@ -32,7 +31,9 @@ class MedicineRepository(MedicineStatus):
         self.db = self.db_repo.db
 
     def list(self) -> List[TrackingMedicine]:
-        return list(map(lambda m: m.to_entity(), self.db.query(TrackingMedicineDTO).all()))
+        return list(map(lambda m: m.to_entity(),
+                    self.db.query(TrackingMedicineDTO).order_by(
+                    desc(TrackingMedicineDTO.created_at)).all()))
 
     def get(self, id: int) -> Optional[TrackingMedicine]:
         medicine_dto: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
