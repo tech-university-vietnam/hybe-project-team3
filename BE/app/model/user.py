@@ -9,6 +9,8 @@ class User:
                  id: int,
                  username: str,
                  email: str,
+                 hash_pw: str,
+                 token: str,
                  telephone: str,
                  avatar: str,
                  work_for: int,
@@ -18,6 +20,8 @@ class User:
         self.id: int = id
         self.username: str = username
         self.email: str = email
+        self.hash_pw: str = hash_pw
+        self.token: str = token
         self.telephone: str = telephone
         self.avatar: str = avatar
         self.work_for: int = work_for
@@ -28,3 +32,22 @@ class User:
         if isinstance(o, User):
             return self.id == o.id
         return False
+
+
+class SafeUser:
+    """Safe User hide sensitive information as an entity."""
+
+    def __init__(self,
+                 id: int,
+                 username: str,
+                 email: str,
+                 work_for: int,
+                 created_at: Optional[datetime] = datetime.now(),
+                 updated_at: Optional[datetime] = datetime.now(),
+                 ):
+        self.id: int = id
+        self.username: str = username
+        self.email: str = email
+        self.work_for: int = work_for
+        self.created_at = created_at
+        self.updated_at = updated_at
