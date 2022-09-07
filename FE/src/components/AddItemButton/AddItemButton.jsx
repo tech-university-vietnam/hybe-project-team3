@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import AddIcon from '@mui/icons-material/Add';
 import { Modal, Box, Typography, Button } from "@mui/material";
 import AddItemForm from 'components/AddItemForm/AddItemForm';
-import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 
 const style = {
   display: 'flex',
@@ -12,7 +11,6 @@ const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
-  gap: '1rem',
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
