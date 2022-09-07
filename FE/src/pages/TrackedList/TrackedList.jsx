@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AddItemButton from "../../components/AddItemButton/AddItemButton";
 import "./TrackedList.css";
 import { Pagination, Alert } from "@mui/material";
 import MedicineItems from "components/MedicineItems/MedicineItems";
 import Filter from "components/Filter/Filter";
 import axios from "axios";
-import { useEffect } from "react";
 import usePagination from "../../Utils/hooks/pagination";
-import { useMemo } from "react";
+import "./TrackedList.css";
 
 const getMedicinesUrl = "http://localhost:8000/tracking-medicines";
 const deleteMedicineUrl = "http://localhost:8000/tracking-medicine";
@@ -20,7 +19,7 @@ const TrackedList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
     "LISTED",
-    "NOT LISTED",
+    "Not listed",
     "FINISHED LISTING",
     "EXPIRED",
   ]);
@@ -29,7 +28,7 @@ const TrackedList = () => {
 
   const filteredMedicines = useMemo(() => {
     return listOfTrackedMedicineItems.filter((medicineItem) =>
-      selectedStatuses.map((status) => medicineItem.status === status)
+      selectedStatuses.includes(medicineItem.status)
     );
   }, [listOfTrackedMedicineItems, selectedStatuses]);
 
@@ -38,7 +37,7 @@ const TrackedList = () => {
   const count = Math.ceil(filteredMedicines.length / PER_PAGE);
   const filteredMedicineItems = usePagination(filteredMedicines, PER_PAGE);
 
-  const handleChange = (e, p) => {
+  const handlePageChange = (e, p) => {
     setCurrentPage(p);
     filteredMedicineItems.jump(p);
   };
@@ -114,10 +113,10 @@ const TrackedList = () => {
           page={currentPage}
           variant="outlined"
           shape="rounded"
-          onChange={handleChange}
+          onChange={handlePageChange}
         />
         <Filter
-          statuses={["LISTED", "NOT LISTED", "FINISHED LISTING"]}
+          statuses={["LISTED", "Not listed", "FINISHED LISTING"]}
           selectedStatuses={selectedStatuses}
           handleChange={handleFilterChange}
         />
@@ -134,7 +133,7 @@ const TrackedList = () => {
         page={currentPage}
         variant="outlined"
         shape="rounded"
-        onChange={handleChange}
+        onChange={handlePageChange}
       />
     </div>
   );

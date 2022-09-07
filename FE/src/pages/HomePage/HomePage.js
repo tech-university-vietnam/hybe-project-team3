@@ -7,13 +7,15 @@ import Header from "../../layouts/Header/Header";
 import TabBar from '../../components/TabBar/TabBar'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TrackedList from "pages/TrackedList/TrackedList";
+import WishList from "pages/WishList/WishList";
 
 export const HomePage = () => (
     <div className='page-container'>
       <TabBar className='tab-bar'/>
       <div className='dashboard-container'>
         <Header />
-        <TrackedList />
+        {/* <TrackedList /> */}
+        <WishList />
       </div>
     </div>
 );
