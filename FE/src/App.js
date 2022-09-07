@@ -8,13 +8,20 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const App = () => (
   <Router>
-    <Header />
     <Routes>
-      <Route index element={<Login/>} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route
+        path='/'
+        element={<HomePage />}
+      />
+      <Route
+        path='/login'
+        element={<Login />}
+      />
+      <Route
+        path='/register'
+        element={<Register />}
+      />
     </Routes>
-    <Footer />
   </Router>
 )
 
