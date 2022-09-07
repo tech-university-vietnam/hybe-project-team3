@@ -17,6 +17,7 @@ const badgeColorMap = {
 };
 
 const MedicineItem = ({
+  id,
   medicineName,
   hospitalName,
   expirationDate,
@@ -53,7 +54,11 @@ const MedicineItem = ({
             />
           </Grid>
           <Grid>
-            <IconButton onClick={handleDelete}>
+            <IconButton
+              onClick={() => {
+                handleDelete(id);
+              }}
+            >
               <DeleteSweepIcon sx={{ color: "red" }} />
             </IconButton>
           </Grid>

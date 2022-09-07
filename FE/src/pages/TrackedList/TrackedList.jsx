@@ -1,51 +1,96 @@
 import React, { useState } from "react";
 import AddItemButton from "../../components/AddItemButton/AddItemButton";
 import "./TrackedList.css";
-import { Pagination } from "@mui/material";
+import { Pagination, Alert } from "@mui/material";
 import MedicineItems from "components/MedicineItems/MedicineItems";
 import Filter from "components/Filter/Filter";
+import axios from "axios";
+import { useEffect } from "react";
+import usePagination from "../../Utils/hooks/pagination";
+import { useMemo } from "react";
+
+const getMedicinesUrl = "http://localhost:8000/tracking-medicines";
+const deleteMedicineUrl = "http://localhost:8000/tracking-medicine";
 
 const TrackedList = () => {
+  const [listOfTrackedMedicineItems, setListOfTrackedMedicineItems] = useState(
+    []
+  );
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [selectedStatuses, setSelectedStatuses] = useState([
+    "LISTED",
+    "NOT LISTED",
+    "FINISHED LISTING",
+    "EXPIRED",
+  ]);
+  const [errorMessage, setErrorMessage] = useState("");
+  // const [filteredMedicines, setFilteredMedicines] = useState([]);
 
-  const data = Array(10).fill({
-    medicineName: "Panadol",
-    hospitalName: "VinMec",
-    expirationDate: "10/12/2023",
-    status: "LISTED",
-    handleDelete: () => {},
-  });
+  const filteredMedicines = useMemo(() => {
+    return listOfTrackedMedicineItems.filter((medicineItem) =>
+      selectedStatuses.map((status) => medicineItem.status === status)
+    );
+  }, [listOfTrackedMedicineItems, selectedStatuses]);
 
-  // needs to filter data here
-  // needs to handle pagination here
+  const PER_PAGE = 7;
+
+  const count = Math.ceil(filteredMedicines.length / PER_PAGE);
+  const filteredMedicineItems = usePagination(filteredMedicines, PER_PAGE);
+
+  const handleChange = (e, p) => {
+    setCurrentPage(p);
+    filteredMedicineItems.jump(p);
 
   const handleListChange = () => {
     //TODO: call get list api
-  }
-
-  const handlePageChange = (_, pageNumber) => {
-    setCurrentPage(pageNumber);
   };
 
   const handleFilterChange = (event) => {
     const {
       target: { value },
     } = event;
-    setSelectedStatuses(
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  }
+    setSelectedStatuses(typeof value === "string" ? value.split(",") : value);
+  };
+
+  const getAllTrackedMedicineItems = async () => {
+    try {
+      const response = await axios.get(getMedicinesUrl);
+      setListOfTrackedMedicineItems(response.data);
+    } catch (error) {
+      console.log("Error getting list of tracked medicine items", error);
+    }
+  };
+  const handleDeleteMedicineItem = async (id) => {
+    try {
+      await axios.delete(`${deleteMedicineUrl}/${id}`);
+      await getAllTrackedMedicineItems();
+    } catch (error) {
+      console.log("Error deleting item", error);
+      setErrorMessage(error.detail.msg);
+    }
+  };
+
+  useEffect(() => {
+    // ** when the page first loads**:
+    // - fetch data for tracked medicine items ✅
+    // - set that data into `listOfTrackedMedicineItems` ✅
+    // - filter the data into `filteredMedicines`
+    getAllTrackedMedicineItems();
+  }, []);
 
   return (
     <div className="content-container">
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <div className="content-header">
         <AddItemButton type="tracked list" handleListChange={handleListChange} />
         <Pagination
-          count={10}
-          variant="outlined"
+          count={count}
+          size="large"
           page={currentPage}
-          onChange={handlePageChange}
+          variant="outlined"
+          shape="rounded"
+          onChange={handleChange}
         />
         <Filter
           statuses={["LISTED", "NOT LISTED", "FINISHED LISTING"]}
@@ -54,13 +99,18 @@ const TrackedList = () => {
         />
       </div>
       <div className="data-container">
-        <MedicineItems medicineItems={data} />
+        <MedicineItems
+          medicineItems={filteredMedicineItems.currentData()}
+          handleDelete={handleDeleteMedicineItem}
+        />
       </div>
       <Pagination
-        count={10}
-        variant="outlined"
+        count={count}
+        size="large"
         page={currentPage}
-        onChange={handlePageChange}
+        variant="outlined"
+        shape="rounded"
+        onChange={handleChange}
       />
     </div>
   );

@@ -1,13 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import MedicineItem from "components/MedicineItem/MedicineItem";
-const MedicineItems = ({ medicineItems }) => {
+const MedicineItems = ({ medicineItems, handleDelete }) => {
   return (
     <div>
       {medicineItems.map(
-        ({ id, medicineName, hospitalName, expirationDate, status, handleDelete }) => (
+        ({ id, name: medicineName, hospitalName, expirationDate, status }) => (
           <MedicineItem
             key={id}
+            id={id}
             medicineName={medicineName}
             hospitalName={hospitalName}
             expirationDate={expirationDate}
