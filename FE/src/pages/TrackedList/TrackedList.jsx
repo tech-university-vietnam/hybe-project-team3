@@ -20,6 +20,10 @@ const TrackedList = () => {
   // needs to filter data here
   // needs to handle pagination here
 
+  const handleListChange = () => {
+    //TODO: call get list api
+  }
+
   const handlePageChange = (_, pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -36,7 +40,7 @@ const TrackedList = () => {
   return (
     <div className="content-container">
       <div className="content-header">
-        <AddItemButton type="tracked list" />
+        <AddItemButton type="tracked list" handleListChange={handleListChange} />
         <Pagination
           count={10}
           variant="outlined"
