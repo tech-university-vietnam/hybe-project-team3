@@ -41,6 +41,9 @@ const TrackedList = () => {
   const handleChange = (e, p) => {
     setCurrentPage(p);
     filteredMedicineItems.jump(p);
+
+  const handleListChange = () => {
+    //TODO: call get list api
   };
 
   const handleFilterChange = (event) => {
@@ -80,7 +83,7 @@ const TrackedList = () => {
     <div className="content-container">
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <div className="content-header">
-        <AddItemButton type="tracked list" />
+        <AddItemButton type="tracked list" handleListChange={handleListChange} />
         <Pagination
           count={count}
           size="large"

@@ -1,8 +1,9 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
 class TrackingMedicine(BaseModel):
     id: int
     name: str
-    number: int
+    number: Optional[int]
     status: str

@@ -9,7 +9,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TrackedList from "pages/TrackedList/TrackedList";
 
 export const HomePage = () => (
-  <Router>
     <div className='page-container'>
       <TabBar className='tab-bar'/>
       <div className='dashboard-container'>
@@ -17,5 +16,4 @@ export const HomePage = () => (
         <TrackedList />
       </div>
     </div>
-  </Router>
 );
