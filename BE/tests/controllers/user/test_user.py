@@ -98,6 +98,11 @@ def test_logout_success(client: TestClient) -> None:
         json={"email": "test"}
     )
     assert r.status_code == status.HTTP_200_OK
+    r = client.get(
+        "/user",
+        headers=auth_header
+    )
+    assert r.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 def test_get_user_missing_auth(client: TestClient) -> None:

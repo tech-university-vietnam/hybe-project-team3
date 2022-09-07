@@ -47,9 +47,9 @@ def test_get_tracking_medicine_list(client: TestClient) -> None:
     )
     assert r.status_code == status.HTTP_200_OK
     data = r.json()
-    assert data[-1]['name'] == "foo"
+    assert data[0]['name'] == "foo"
     global medicine_id
-    medicine_id = data[-1]['id']
+    medicine_id = data[0]['id']
 
 
 def test_update_tracking_medicine(client: TestClient) -> None:
@@ -64,7 +64,7 @@ def test_update_tracking_medicine(client: TestClient) -> None:
         "/tracking-medicines",
     )
     data = r.json()
-    assert data[-1]['name'] == "foo2"
+    assert data[0]['name'] == "foo2"
 
 
 def test_delete_tracking_medicine(client: TestClient) -> None:
@@ -77,4 +77,4 @@ def test_delete_tracking_medicine(client: TestClient) -> None:
         "/tracking-medicines",
     )
     data = r.json()
-    assert data[-1]['name'] != "foo"
+    assert data[0]['name'] != "foo"
