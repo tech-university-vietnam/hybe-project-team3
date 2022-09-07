@@ -5,7 +5,7 @@ import InventoryIcon from '@mui/icons-material/Inventory'
 import FactCheckIcon from '@mui/icons-material/FactCheck'
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
 
-const TabBar = () => {
+const TabBar = ({ currentTab, handleChangeTab }) => {
     return (
         <Box
             sx={{
@@ -24,8 +24,13 @@ const TabBar = () => {
                         gap: '1rem'
                     }}
                 >
-                    <ListItem disablePadding>
-                        <ListItemButton>
+                    <ListItem
+                        disablePadding
+                        sx={{
+                            backgroundColor: currentTab === 'tracked-list' ? '#0079D8' : 'none',
+                        }}
+                    >
+                        <ListItemButton onClick={() => handleChangeTab('tracked-list')}>
                             <ListItemIcon>
                                 <InventoryIcon />
                             </ListItemIcon>
@@ -33,7 +38,8 @@ const TabBar = () => {
                                 primary={
                                     <Typography
                                         style={{
-                                            fontWeight: 'bold'
+                                            fontWeight: 'bold',
+                                            color: currentTab === 'tracked-list' ? 'white' : 'black'
                                         }}>
                                         TRACKED LIST
                                     </Typography>
@@ -41,8 +47,13 @@ const TabBar = () => {
                             />
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton>
+                    <ListItem
+                        disablePadding
+                        sx={{
+                            backgroundColor: currentTab === 'wishlist' ? '#0079D8' : 'none',
+                        }}
+                    >
+                        <ListItemButton onClick={() => handleChangeTab('wishlist')}>
                             <ListItemIcon>
                                 <FactCheckIcon />
                             </ListItemIcon>
@@ -50,7 +61,8 @@ const TabBar = () => {
                                 primary={
                                     <Typography
                                         style={{
-                                            fontWeight: 'bold'
+                                            fontWeight: 'bold',
+                                            color: currentTab === 'wishlist' ? 'white' : 'black'
                                         }}>
                                         WISH LIST
                                     </Typography>
@@ -58,8 +70,13 @@ const TabBar = () => {
                             />
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton>
+                    <ListItem
+                        disablePadding
+                        sx={{
+                            backgroundColor: currentTab === 'notification' ? '#0079D8' : 'none',
+                        }}
+                    >
+                        <ListItemButton onClick={() => handleChangeTab('notification')}>
                             <ListItemIcon>
                                 <NotificationsActiveIcon />
                             </ListItemIcon>
@@ -67,7 +84,8 @@ const TabBar = () => {
                                 primary={
                                     <Typography
                                         style={{
-                                            fontWeight: 'bold'
+                                            fontWeight: 'bold',
+                                            color: currentTab === 'notification' ? 'white' : 'black'
                                         }}>
                                         NOTIFICATION
                                     </Typography>
@@ -81,6 +99,8 @@ const TabBar = () => {
     )
 }
 
-TabBar.propTypes = {}
+TabBar.propTypes = {
+    handleChangeTab: PropTypes.func
+}
 
 export default TabBar
