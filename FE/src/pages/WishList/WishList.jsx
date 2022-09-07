@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Pagination, Alert } from "@mui/material";
 import axios from "axios";
-import AddItemButton from "components/AddItemButton/AddItemButton";
+import AddItemButton from "components/AddWishlistItemButton/AddWishlistItemButton";
 import MedicineItems from "components/MedicineItems/MedicineItems";
 import usePagination from "../../Utils/hooks/pagination";
 import Filter from "components/Filter/Filter";
@@ -32,6 +32,18 @@ const WishList = () => {
     filteredWishListItems,
     PER_PAGE
   );
+
+  const handleListChange = async () => {
+    try {
+      await getAllWishListItems();
+    } catch (error) {
+      console.log(
+        "Error getting updated wishlist in handleListChange",
+        error
+      );
+      setErrorMessage(error.detail.msg);
+    }
+  }
 
   const handleFilterChange = (event) => {
     const {
@@ -84,7 +96,7 @@ const WishList = () => {
     <div className="content-container">
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <div className="content-header">
-        <AddItemButton type="tracked list" />
+        <AddItemButton type="tracked list" handleListChange={handleListChange}/>
         <Pagination
           count={count}
           size="large"

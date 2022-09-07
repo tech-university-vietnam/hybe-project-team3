@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import AddIcon from '@mui/icons-material/Add';
 import { Modal, Box, Typography, Button } from "@mui/material";
-import AddItemForm from 'components/AddItemForm/AddItemForm';
+import AddItemForm from 'components/AddTrackingItemForm/AddTrackingItemForm';
 
 const style = {
   display: 'flex',
@@ -19,7 +19,7 @@ const style = {
   p: 4,
 };
 
-const AddItemButton = ({ type, handleListChange }) => {
+const AddItemButton = ({ handleListChange }) => {
   const [open, setOpen] = useState(false);
 
   const onAddButtonClick = () => {
@@ -33,7 +33,7 @@ const AddItemButton = ({ type, handleListChange }) => {
   return (
     <>
       <Button variant="outlined" onClick={onAddButtonClick} startIcon={<AddIcon />}>
-        Add item to {type}
+        Add item to tracked list
       </Button>
       <Modal
             open={open}
@@ -53,7 +53,6 @@ const AddItemButton = ({ type, handleListChange }) => {
 }
 
 AddItemButton.propTypes = {
-  type: PropTypes.string,
   handleListChange: PropTypes.func
 }
 

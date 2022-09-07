@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import AddItemButton from "../../components/AddItemButton/AddItemButton";
+import AddItemButton from "../../components/AddTrackingItemButton/AddTrackingItemButton";
 import "./TrackedList.css";
 import { Pagination, Alert } from "@mui/material";
 import MedicineItems from "components/MedicineItems/MedicineItems";
@@ -104,7 +104,6 @@ const TrackedList = () => {
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <div className="content-header">
         <AddItemButton
-          type="tracked list"
           handleListChange={handleListChange}
         />
         <Pagination
