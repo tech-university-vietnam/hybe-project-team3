@@ -7,6 +7,7 @@ import Filter from "components/Filter/Filter";
 import axios from "axios";
 import { useEffect } from "react";
 import usePagination from "../../Utils/hooks/pagination";
+import { useMemo } from "react";
 
 const getMedicinesUrl = "http://localhost:8000/tracking-medicines";
 const deleteMedicineUrl = "http://localhost:8000/tracking-medicine";
@@ -24,7 +25,13 @@ const TrackedList = () => {
     "EXPIRED",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [filteredMedicines, setFilteredMedicines] = useState([]);
+  // const [filteredMedicines, setFilteredMedicines] = useState([]);
+
+  const filteredMedicines = useMemo(() => {
+    return listOfTrackedMedicineItems.filter((medicineItem) =>
+      selectedStatuses.map((status) => medicineItem.status === status)
+    );
+  }, [listOfTrackedMedicineItems, selectedStatuses]);
 
   const PER_PAGE = 7;
 
@@ -41,11 +48,6 @@ const TrackedList = () => {
       target: { value },
     } = event;
     setSelectedStatuses(typeof value === "string" ? value.split(",") : value);
-    setFilteredMedicines(
-      listOfTrackedMedicineItems.filter((medicineItem) =>
-        selectedStatuses.map((status) => medicineItem.status === status)
-      )
-    );
   };
 
   const getAllTrackedMedicineItems = async () => {
@@ -73,14 +75,6 @@ const TrackedList = () => {
     // - filter the data into `filteredMedicines`
     getAllTrackedMedicineItems();
   }, []);
-
-  useEffect(() => {
-    setFilteredMedicines(
-      listOfTrackedMedicineItems.filter((medicineItem) =>
-        selectedStatuses.map((status) => medicineItem.status === status)
-      )
-    );
-  }, [listOfTrackedMedicineItems, selectedStatuses]);
 
   return (
     <div className="content-container">
