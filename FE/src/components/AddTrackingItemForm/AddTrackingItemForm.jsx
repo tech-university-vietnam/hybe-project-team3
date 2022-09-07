@@ -25,25 +25,9 @@ const AddItemForm = ({ handleClose, handleListChange }) => {
   };
 
   const handleSubmit = async () => {
-    if (medicineName === null || expirationDate === null) {
-    }
     const date = moment(expirationDate).format("YYYY-MM-DDTHH:MM:SSZ");
-    await postTrackingMedicine(date);
-  };
-
-  const postTrackingMedicine = async (date) => {
-    const body = {
-      name: medicineName,
-      expired_date: date,
-      number: 0,
-    };
     setIsSubmitting(true);
-    await axios
-      .post(addTrackingMedicineUrl, body, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+    await postTrackingMedicine(date)
       .then((response) => {
         if (response.status > 200 && response.status < 300) {
           setError(false);
@@ -53,6 +37,21 @@ const AddItemForm = ({ handleClose, handleListChange }) => {
       })
       .catch(() => setError(true));
     setIsSubmitting(false);
+
+  };
+
+  const postTrackingMedicine = async (date) => {
+    const body = {
+      name: medicineName,
+      expired_date: date,
+      number: 0,
+    };
+    return await axios
+    .post(addTrackingMedicineUrl, body, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
   };
 
   return (

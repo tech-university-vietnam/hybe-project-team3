@@ -12,6 +12,7 @@ psycopg2
 pyjwt~=2.4.0
 pytest
 pytest-cov
+pytz
 requests
 python-dotenv
 pinject
