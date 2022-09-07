@@ -25,13 +25,14 @@ const LoginForm = () => {
     resolver: yupResolver(LoginSchema),
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     let success = true;
-    login(data)
+    await login(data)
       .catch((error) => {
         success = false;
         setLoginError(error.data.msg);
       });
+    console.log(success)
     if (success) {
       navigate("/");
     }

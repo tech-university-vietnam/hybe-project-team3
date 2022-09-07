@@ -5,6 +5,7 @@ import Register from "pages/Register/Register";
 import Login from "pages/Login/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "Utils/hooks/auth";
+import RequireAuth from "Utils/routes/RequireAuth";
 
 
 const App = () => (
@@ -13,7 +14,11 @@ const App = () => (
       <Routes>
         <Route
           path='/'
-          element={<HomePage />}
+          element={
+            <RequireAuth>
+              <HomePage />
+            </RequireAuth>
+          }
         />
         <Route
           path='/login'
