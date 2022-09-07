@@ -4,25 +4,28 @@ import { HomePage } from "pages/HomePage/HomePage"
 import Register from "pages/Register/Register";
 import Login from "pages/Login/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "Utils/hooks/auth";
 
 
 const App = () => (
-  <Router>
-    <Routes>
-      <Route
-        path='/'
-        element={<HomePage />}
-      />
-      <Route
-        path='/login'
-        element={<Login />}
-      />
-      <Route
-        path='/register'
-        element={<Register />}
-      />
-    </Routes>
-  </Router>
+  <AuthProvider>
+    <Router>
+      <Routes>
+        <Route
+          path='/'
+          element={<HomePage />}
+        />
+        <Route
+          path='/login'
+          element={<Login />}
+        />
+        <Route
+          path='/register'
+          element={<Register />}
+        />
+      </Routes>
+    </Router>
+  </AuthProvider>
 )
 
 export default App;

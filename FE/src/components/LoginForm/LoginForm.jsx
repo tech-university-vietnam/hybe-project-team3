@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginSchema } from "Utils/validation/LoginSchema";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import useAuth from "../../Utils/hooks/auth.js";
 
 // TODO: call backend api to login
 // TODO: error handling for incorrect email/password
@@ -12,6 +13,7 @@ let loginUrl = "http://localhost:8000/login";
 
 const LoginForm = () => {
   const [loginError, setLoginError] = useState(null);
+  const { login } = useAuth();
 
   const {
     register,
@@ -22,12 +24,13 @@ const LoginForm = () => {
   });
 
   const onSubmit = (data) => {
-    axios
-      .post(loginUrl, data)
-      .then((response) => {
-        console.log(response);
-        localStorage.setItem("token", response.data.token);
-      })
+    // axios
+    //   .post(loginUrl, data)
+    //   .then((response) => {
+    //     console.log(response);
+    //     localStorage.setItem("token", response.data.token);
+    //   })
+    login(data)
       .catch((error) => {
         setLoginError(error.data.msg);
       });
