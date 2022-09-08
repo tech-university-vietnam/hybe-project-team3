@@ -14,7 +14,7 @@ class JWTService:
         self.user_repo = user_repository
 
     def encode(self, user_id: str) -> str:
-        payload = {'exp': datetime.utcnow() + timedelta(days=7),
+        payload = {'exp': datetime.utcnow() + timedelta(seconds=30),
                    'iat': datetime.utcnow(),
                    'sub': user_id}
         return jwt.encode(payload,
