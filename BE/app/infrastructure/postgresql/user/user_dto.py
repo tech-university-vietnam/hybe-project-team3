@@ -75,7 +75,7 @@ class UserDTO(Base):
             id=self.id,
             username=self.username,
             email=self.email,
-            work_for=self.hospital.name,
+            work_for=self.work_for,
             created_at=self.created_at,
             updated_at=self.updated_at
         )

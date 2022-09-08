@@ -3,11 +3,13 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+
 class NotificationIdPayload(BaseModel):
     id: int
-class NotificationActionPayload(BaseModel):
-    id: int
 
+
+class Notification:
+    id: int
     souring_id: int
     sourcing_type: str
     sourcing_name: str
