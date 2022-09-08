@@ -50,6 +50,11 @@ const Notifications = ({
         anchorEl={anchorNotification}
         open={openNotification}
         onClose={handleClose}
+        PaperProps={{
+          style: {
+            maxHeight: 450,
+          },
+        }}
         MenuListProps={{
           "aria-labelledby": "notification-button",
         }}
