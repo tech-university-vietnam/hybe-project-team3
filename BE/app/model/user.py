@@ -43,3 +43,7 @@ class SafeUser(BaseModel):
     work_for: int
     created_at: datetime
     updated_at: datetime
+
+
+class DetailUser(SafeUser):
+    pass
