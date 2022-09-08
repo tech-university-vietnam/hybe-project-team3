@@ -38,9 +38,13 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
     setAnchorNotification(null);
   };
 
-  const handleLogout = () => {
-    logout()
-      .catch((error) => console.log("logout error is", error));
+  const handleLogout = async () => {
+    let success = true;
+    await logout()
+      .catch((error) => {
+        console.log("logout error is", error);
+        success = false;
+      });
   };
 
   return (
