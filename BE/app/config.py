@@ -16,7 +16,6 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = get_env_file()
-        print(env_file)
         env_file_encoding = 'utf-8'
 
 

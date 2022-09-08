@@ -51,9 +51,7 @@ class UserRoute:
                                 detail="Email is already taken")
 
     @router.post("/logout",
-                 tags=["authentication"],
-                 responses={
-                     401: {"description": "Missing bearer authorization"}})
+                 tags=["authentication"])
     def logout(self, data: LogoutRequest,
                bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)) -> CommonResponse:
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
