@@ -14,59 +14,12 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const [anchorAccount, setAnchorAccount] = useState(null);
   const [anchorNotification, setAnchorNotification] = useState(null);
   const [notificationBadgeCount, setNotificationBadgeCount] = useState(0);
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: "warningExpired",
-      hospitalName: "VinMec",
-      medicineName: "Advil",
-      status: "init",
-      seenStatus: "not seen",
-    },
-    {
-      id: 2,
-      type: "notifySold",
-      hospitalName: "VinMec",
-      medicineName: "Advil",
-      status: "init",
-      seenStatus: "not seen",
-    },
-    {
-      id: 3,
-      type: "notifyAvailable",
-      hospitalName: "VinMec",
-      medicineName: "Advil",
-      status: "init",
-      seenStatus: "not seen",
-    },
-    {
-      id: 4,
-      type: "warningExpired",
-      hospitalName: "VinMec",
-      medicineName: "Advil",
-      status: "approved",
-      seenStatus: "seen",
-    },
-    {
-      id: 6,
-      type: "warningExpired",
-      hospitalName: "VinMec",
-      medicineName: "Advil",
-      status: "declined",
-      seenStatus: "seen",
-    },
-    {
-      id: 5,
-      type: "notifyAvailable",
-      hospitalName: "VinMec",
-      medicineName: "Advil",
-      status: "approved",
-      seenStatus: "seen",
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
   const openAccount = Boolean(anchorAccount);
   const openNotification = Boolean(anchorNotification);
+
+  console.log("notifications", notifications);
 
   const handleClickAccount = (event) => {
     setAnchorAccount(event.currentTarget);
@@ -99,17 +52,6 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
       .catch((error) => console.log("logout error is", error));
   };
 
-  // const getNotifications = async () => {
-  //   setInterval(async () => {
-  //     try {
-  //       const response = await axios.get(urlGetNotSeenNotifications)
-  //       setNotificationBadgeCount(response.data.length)
-  //     } catch {
-
-  //     }
-  //   }, 2000)
-  // };
-
   useEffect(() => {
     let interval = setInterval(async () => {
       try {
@@ -122,7 +64,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
       } catch (error) {
         console.log("Cannot call API at interval", error);
       }
-    }, 2000);
+    }, 100000);
 
     return () => {
       clearInterval(interval);

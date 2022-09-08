@@ -4,20 +4,11 @@ import { Button, Typography, Paper } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
-// status === "init" => render button approve and decline
 
-// status === "declined" => shows a message that user has declined to list item
-// when user clicks "Cancel", change status to "Resolved"
-// change from "Finished listing" -> "Resolved"
+// have to trigger a re-render when user clicks on onApprove or onDecline
 
-// status === "declined" => shows a message that user has declined to buy from this hospital
-
-// BE checks what type of notification
-// if type === "warningExpired" => change status to "Resolved"
-// if type === "notifySold" => keep status as available
-
-const urlDecline = "http://localhost:8000/notification/decline";
-const urlApprove = "http://localhost:8000/notification/approve";
+const urlDecline = "http://localhost:8000/notification/declined";
+const urlApprove = "http://localhost:8000/notification/approved";
 
 const NotificationItem = ({
   id,
@@ -64,10 +55,10 @@ const NotificationItem = ({
         {medicineName} in your Tracked List is about to expire!
         {status === "init" && (
           <div>
-            <Button onClick={() => onDecline({id})} startIcon={<CloseIcon />}>
+            <Button onClick={() => onDecline({ id })} startIcon={<CloseIcon />}>
               Cancel
             </Button>
-            <Button onClick={() => onApprove({id})} startIcon={<CheckIcon />}>
+            <Button onClick={() => onApprove({ id })} startIcon={<CheckIcon />}>
               List
             </Button>
           </div>
@@ -87,7 +78,7 @@ const NotificationItem = ({
   }
   if (typeOfNotification === "notifySold") {
     return (
-      <Paper elevation={0} onClick={() => onApprove({id})}>
+      <Paper elevation={0} onClick={() => onApprove({ id })}>
         Someone has bought your medicine, click here to view detail
       </Paper>
     );
@@ -97,10 +88,10 @@ const NotificationItem = ({
       {medicineName} in your Wish List has just been listed by {hospitalName}
       {status === "init" && (
         <div>
-          <Button onClick={() => onDecline({id})} startIcon={<CloseIcon />}>
+          <Button onClick={() => onDecline({ id })} startIcon={<CloseIcon />}>
             Decline
           </Button>
-          <Button onClick={() => onApprove({id})} startIcon={<CheckIcon />}>
+          <Button onClick={() => onApprove({ id })} startIcon={<CheckIcon />}>
             Buy
           </Button>
         </div>

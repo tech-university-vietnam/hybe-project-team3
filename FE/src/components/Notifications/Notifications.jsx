@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import NotificationItem from "components/NotificationItem/NotificationItem";
-import { Badge, IconButton, Menu, MenuItem } from "@mui/material";
+import { Badge, Button, IconButton, Menu, MenuItem } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
 // This component will render out a list of NotificationItem component
@@ -17,6 +17,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 // **wishListNotification**:
 // notifyAvailable
 // *1c. medicine A in your WishList has just been listed by hospital X
+const numberOfNotificationToShow = 3;
 
 const Notifications = ({
   notifications,
@@ -26,6 +27,11 @@ const Notifications = ({
   handleClickNotification,
   handleClose,
 }) => {
+  const [next, setNext] = useState(numberOfNotificationToShow);
+
+  const handleMoreNotifications = () => {
+    setNext(next + numberOfNotificationToShow);
+  };
   return (
     <div>
       <IconButton
@@ -48,8 +54,9 @@ const Notifications = ({
           "aria-labelledby": "notification-button",
         }}
       >
-        {notifications.map(
-          ({ id, type, hospitalName, medicineName, status }) => (
+        {notifications
+          .slice(0, next)
+          .map(({ id, type, hospitalName, medicineName, status }) => (
             <MenuItem
               key={id}
               disabled={status === "init" ? false : true}
@@ -64,8 +71,14 @@ const Notifications = ({
                 medicineName={medicineName}
               />
             </MenuItem>
-          )
-        )}
+          ))}
+        <Button
+          className="mt-4"
+          onClick={handleMoreNotifications}
+          disabled={notifications.length === next ? true : false}
+        >
+          Load more
+        </Button>
       </Menu>
     </div>
   );
