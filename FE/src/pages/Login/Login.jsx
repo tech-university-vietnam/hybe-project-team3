@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import LoginForm from "components/LoginForm/LoginForm";
+import useAuth from "../../Utils/hooks/auth";
 
 const Login = () => {
-  return <LoginForm />;
+  return <LoginForm/>
 };
 
 Login.propTypes = {};

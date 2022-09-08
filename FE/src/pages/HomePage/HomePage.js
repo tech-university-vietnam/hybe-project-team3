@@ -10,12 +10,13 @@ import TrackedList from "pages/TrackedList/TrackedList";
 import WishList from "pages/WishList/WishList";
 import Notification from "pages/Notification/Notification";
 
+const dashboard = {
+  'tracked-list': <TrackedList/>,
+  'wishlist': <WishList/>,
+  'notification': <Notification/>
+}
+
 export const HomePage = () => {
-  const dashboard = {
-    'tracked-list': <TrackedList/>,
-    'wishlist': <WishList/>,
-    'notification': <Notification/>
-  }
   const [currentTab, setCurrentTab] = useState('tracked-list')
 
   const handleChangeTab = (tab) => {

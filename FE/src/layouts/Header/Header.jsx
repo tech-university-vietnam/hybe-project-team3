@@ -13,13 +13,15 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import useAuth from "../../Utils/hooks/auth.js"
 
-const urlLogOut = "localhost:8000/logout";
+const urlLogOut = "http://localhost:8000/logout";
 
 const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const [anchorAccount, setAnchorAccount] = useState(null);
   const [anchorNotification, setAnchorNotification] = useState(null);
   const [notifications, setNotifications] = useState([1, 2, 3]);
+  const { logout } = useAuth();
 
   const openAccount = Boolean(anchorAccount);
   const openNotification = Boolean(anchorNotification);
@@ -36,12 +38,13 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
     setAnchorNotification(null);
   };
 
-  const handleLogout = () => {
-    const token = localStorage.getItem("token");
-    axios
-      .post(urlLogOut, { headers: { Authorization: token } })
-      .then((response) => console.log(response))
-      .catch((error) => console.log("logout error is", error));
+  const handleLogout = async () => {
+    let success = true;
+    await logout()
+      .catch((error) => {
+        console.log("logout error is", error);
+        success = false;
+      });
   };
 
   return (
