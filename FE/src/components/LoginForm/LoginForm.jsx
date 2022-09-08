@@ -10,8 +10,6 @@ import useAuth from "../../Utils/hooks/auth.js";
 // TODO: call backend api to login
 // TODO: error handling for incorrect email/password
 
-let loginUrl = "http://localhost:8000/login";
-
 const LoginForm = () => {
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();

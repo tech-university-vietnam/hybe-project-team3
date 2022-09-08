@@ -6,9 +6,7 @@ import MedicineItems from "components/MedicineItems/MedicineItems";
 import usePagination from "../../Utils/hooks/pagination";
 import Filter from "components/Filter/Filter";
 import "./WishList.css";
-
-const getWishListUrl = "http://localhost:8000/source-orders";
-const deleteWishListUrl = "http://localhost:8000/source-order";
+import { deleteSourceOrder, getSourceOrders } from "Utils/api/sourceOrder";
 
 const WishList = () => {
   const [wishListItems, setWishListItems] = useState([]);
@@ -59,11 +57,7 @@ const WishList = () => {
 
   const handleDeleteWishListItem = async (id) => {
     try {
-      await axios.delete(`${deleteWishListUrl}/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await deleteSourceOrder(id);
       await getAllWishListItems();
     } catch (error) {
       console.log("Error deleting item", error);
@@ -73,11 +67,7 @@ const WishList = () => {
 
   const getAllWishListItems = async () => {
     try {
-      const response = await axios.get(getWishListUrl, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await getSourceOrders();
       setWishListItems(response.data);
     } catch (error) {
       console.log(

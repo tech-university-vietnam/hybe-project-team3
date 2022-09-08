@@ -5,8 +5,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import axios from "axios";
 import moment from "moment";
-
-let addTrackingMedicineUrl = "http://localhost:8000/tracking-medicine";
+import { postTrackingMedicine } from "Utils/api/medicine";
 
 const AddItemForm = ({ handleClose, handleListChange }) => {
   const [medicineName, setMedicineName] = useState("");
@@ -27,7 +26,7 @@ const AddItemForm = ({ handleClose, handleListChange }) => {
   const handleSubmit = async () => {
     const date = moment(expirationDate).format("YYYY-MM-DDTHH:MM:SSZ");
     setIsSubmitting(true);
-    await postTrackingMedicine(date)
+    await postTrackingMedicine(medicineName, date)
       .then((response) => {
         if (response.status > 200 && response.status < 300) {
           setError(false);
@@ -37,22 +36,8 @@ const AddItemForm = ({ handleClose, handleListChange }) => {
       })
       .catch(() => setError(true));
     setIsSubmitting(false);
-
   };
 
-  const postTrackingMedicine = async (date) => {
-    const body = {
-      name: medicineName,
-      expired_date: date,
-      number: 0,
-    };
-    return await axios
-    .post(addTrackingMedicineUrl, body, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-  };
 
   return (
     <>
