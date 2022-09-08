@@ -24,7 +24,7 @@ const Notifications = ({
   notificationBadgeCount,
   anchorNotification,
   openNotification,
-  handleClickNotification,
+  handleNotificationDropDownClick,
   handleClose,
 }) => {
   const [next, setNext] = useState(numberOfNotificationToShow);
@@ -39,7 +39,7 @@ const Notifications = ({
         aria-controls={anchorNotification ? "notification-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={anchorNotification ? "true" : undefined}
-        onClick={handleClickNotification}
+        onClick={handleNotificationDropDownClick}
       >
         <Badge badgeContent={notificationBadgeCount} color="error">
           <NotificationsIcon />
@@ -87,7 +87,7 @@ const Notifications = ({
 Notifications.propTypes = {
   anchorNotification: PropTypes.object,
   openNotification: PropTypes.bool,
-  handleClickNotification: PropTypes.func,
+  handleNotificationDropDownClick: PropTypes.func,
   handleClose: PropTypes.func,
 };
 

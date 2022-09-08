@@ -19,13 +19,12 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const openAccount = Boolean(anchorAccount);
   const openNotification = Boolean(anchorNotification);
 
-  console.log("notifications", notifications);
-
   const handleClickAccount = (event) => {
     setAnchorAccount(event.currentTarget);
   };
 
-  const handleClickNotification = async (event) => {
+  const handleNotificationDropDownClick = async (event) => {
+    setNotificationBadgeCount(0);
     setAnchorNotification(event.currentTarget);
     try {
       const response = await axios.get(urlGetAllNotifications, {
@@ -60,16 +59,16 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        setNotificationBadgeCount(response.data.length);
+        setNotificationBadgeCount(response.data.notseen_noti);
       } catch (error) {
         console.log("Cannot call API at interval", error);
       }
-    }, 100000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [notificationBadgeCount]);
 
   return (
     <AppBar
@@ -111,7 +110,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
           notificationBadgeCount={notificationBadgeCount}
           anchorNotification={anchorNotification}
           openNotification={openNotification}
-          handleClickNotification={handleClickNotification}
+          handleNotificationDropDownClick={handleNotificationDropDownClick}
           handleClose={handleClose}
         />
       </Toolbar>
