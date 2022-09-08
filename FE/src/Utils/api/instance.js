@@ -1,8 +1,6 @@
 import axios from "axios";
 import useAuth from "../hooks/auth"
 
-const axiosInstance = axios.create();
-
 export default {
     setupInterceptors: (history) => {
         axios.interceptors.request.use(
@@ -23,7 +21,7 @@ export default {
         }, async function (error) {
             if (error.response.status === 401) {
                 localStorage.clear();
-                history.push('/login');
+                history.go('/login');
             }
             return Promise.reject(error);
         });
