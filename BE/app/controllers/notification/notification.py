@@ -95,9 +95,9 @@ class NotificationRoute:
             item['seenStatus'] = "seen"
         return DUMMY_NOTIFICATIONS
 
-    @router.post("/notification/approve", tags=["notification"],
+    @router.post("/notification/approved", tags=["notification"],
                  status_code=status.HTTP_200_OK)
-    def approve(
+    def approved(
         self,
         payload: NotificationIdPayload,
         bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
@@ -106,13 +106,13 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        DUMMY_NOTIFICATIONS[payload.id - 1]["status"] = "approve"
+        DUMMY_NOTIFICATIONS[payload.id - 1]["status"] = "approved"
         return DUMMY_NOTIFICATIONS[payload.id - 1]
 
 
-    @router.post("/notification/decline", tags=["notification"],
+    @router.post("/notification/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
-    def decline(
+    def declined(
         self,
         payload: NotificationIdPayload,
         bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
@@ -127,7 +127,7 @@ class NotificationRoute:
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
-        DUMMY_NOTIFICATIONS[payload.id - 1]["status"] = "decline"
+        DUMMY_NOTIFICATIONS[payload.id - 1]["status"] = "declined"
         return DUMMY_NOTIFICATIONS[payload.id - 1]
 
     @router.get("/notification/notseen", tags=["notification"],

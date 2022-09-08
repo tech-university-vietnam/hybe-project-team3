@@ -36,7 +36,6 @@ def test_get_notseen_notification_quantity_first(client: TestClient) -> None:
         headers=auth_header,
     )
     data = r.json()
-    print(data)
     assert r.status_code == status.HTTP_200_OK
     assert data['notseen_noti'] == 3
 
@@ -47,7 +46,6 @@ def test_get_notifications(client: TestClient) -> None:
         headers=auth_header,
     )
     data = r.json()
-    print(data)
     assert r.status_code == status.HTTP_200_OK
     for item in data:
         assert item['seenStatus'] == "seen"
@@ -59,31 +57,27 @@ def test_get_notseen_notification_quantity_after(client: TestClient) -> None:
         headers=auth_header,
     )
     data = r.json()
-    print(data)
     assert r.status_code == status.HTTP_200_OK
     assert data['notseen_noti'] == 0
 
 
-
 def test_approve_notification(client: TestClient) -> None:
     r = client.post(
-        f"{NOTI_PREFIX}/approve",
+        f"{NOTI_PREFIX}/approved",
         headers=auth_header,
         json={"id": 1}
     )
     data = r.json()
-    print(data)
     assert r.status_code == status.HTTP_200_OK
-    assert data['status'] == "approve"
+    assert data['status'] == "approved"
 
 
 def test_declined_notification(client: TestClient) -> None:
     r = client.post(
-        f"{NOTI_PREFIX}/decline",
+        f"{NOTI_PREFIX}/declined",
         headers=auth_header,
         json={"id": 1}
     )
     data = r.json()
-    print(data)
     assert r.status_code == status.HTTP_200_OK
-    assert data['status'] == "decline"
+    assert data['status'] == "declined"
