@@ -10,7 +10,9 @@ from sqlalchemy.orm import sessionmaker, Session
 from app.config import get_settings
 
 SQLALCHEMY_DATABASE_URL = get_settings().DATABASE_URL
+
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
 SessionLocal = sessionmaker(bind=engine)
 session: Session = SessionLocal()
 
@@ -22,7 +24,9 @@ def import_models():
     from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
     from app.infrastructure.postgresql.hospital.hospital import HospitalDTO
     from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
-    return [UserDTO, TrackingMedicineDTO, HospitalDTO, SourceOrderRequestDTO]
+    from app.infrastructure.postgresql.notiffication.notification import NotificationDTO
+
+    return [UserDTO, TrackingMedicineDTO, HospitalDTO, SourceOrderRequestDTO, NotificationDTO]
 
 
 def create_tables():

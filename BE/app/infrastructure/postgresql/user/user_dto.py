@@ -2,11 +2,12 @@ from datetime import datetime
 from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer, ForeignKey
+
 from sqlalchemy.orm import relationship
+
 from app.model.user import SafeUser
 from app.controllers.user.auth_request import RegisterRequest
 from app.infrastructure.postgresql.database import Base
-from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
 from app.model.user import User
 import bcrypt
 
@@ -14,7 +15,7 @@ import bcrypt
 class UserDTO(Base):
     """userDTO is a data transfer object associated with User entity."""
 
-    __tablename__ = "user"
+    __tablename__ = "User"
     id: Union[int, Column] = Column(Integer, primary_key=True,
                                     autoincrement=True)
 
@@ -37,9 +38,9 @@ class UserDTO(Base):
     # jwt token
     token: Union[str, Column] = Column(String, nullable=True)
     token_created_at: Union[str, Column] = Column(String, nullable=True)
-    work_for: Union[int, Column] = Column(Integer, ForeignKey("hospital.id"))
+    work_for: Union[int, Column] = Column(Integer, ForeignKey("Hospital.id"))
     source_order_request = relationship("SourceOrderRequestDTO",
-                                        backref="user")
+                                        backref=__tablename__)
 
     def to_entity(self) -> User:
         return User(

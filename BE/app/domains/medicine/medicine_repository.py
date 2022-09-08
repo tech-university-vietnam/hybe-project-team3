@@ -22,6 +22,8 @@ class MedicineStatus:
         else:
             return 'Expired'
 
+    # def
+
 
 class MedicineRepository(MedicineStatus):
     """User Repository defines a repository interface for user entity."""

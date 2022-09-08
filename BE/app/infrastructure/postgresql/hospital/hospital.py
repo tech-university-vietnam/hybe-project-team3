@@ -2,7 +2,8 @@ from datetime import datetime
 from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer
-from BE.app.model.hospital import HospitalItem
+from sqlalchemy.orm import relationship
+from app.model.hospital import HospitalItem
 from app.infrastructure.postgresql.database import Base
 from app.model.hospital import Hospital
 
@@ -20,6 +21,7 @@ class HospitalDTO(Base):
     address: Union[str, Column] = Column(String, nullable=False)
     join_date: Union[datetime, Column] = Column(DateTime(timezone=True),
                                                 nullable=True)
+    user = relationship("UserDTO", backref=__tablename__)
 
     def to_entity(self) -> Hospital:
         return Hospital(
@@ -44,5 +46,16 @@ class HospitalDTO(Base):
             name=hospital.name,
             telephone=hospital.telephone,
             address=hospital.address,
+            join_date=now,
+        )
+
+    @staticmethod
+    def from_mock_data(
+            name: str, telephone: str, address: str) -> "HospitalDTO":
+        now = datetime.now()
+        return HospitalDTO(
+            name=name,
+            telephone=telephone,
+            address=address,
             join_date=now,
         )

@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.security import HTTPBearer
 import os
+
+from app.crons.notify_expired_mecidine import setup_cron
+
 app = FastAPI(debug=True)
 oauth2_scheme = HTTPBearer(scheme_name='token')
 
@@ -20,6 +23,8 @@ def setup(setup_app: FastAPI):
     setup_app.include_router(hospital_router)
     setup_app.include_router(tracking_medicine_router)
     setup_app.include_router(source_order_request_router)
+
+    setup_cron(app, debug=False)
 
 
 setup(app)

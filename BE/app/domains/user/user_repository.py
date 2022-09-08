@@ -6,7 +6,7 @@ from app.domains.helpers.database_repository import DatabaseRepository
 from app.domains.user.user_exception import EmailAlreadyRegisteredError, EmailNotFoundError
 
 from app.infrastructure.postgresql.user.user_dto import UserDTO
-from app.infrastructure.postgresql.hospital.hospital_dto import HospitalDTO
+from app.infrastructure.postgresql.hospital.hospital import HospitalDTO
 from app.model.user import User, SafeUser
 from app.common.exceptions import DBError
 from sqlalchemy import update, exc, and_, select
