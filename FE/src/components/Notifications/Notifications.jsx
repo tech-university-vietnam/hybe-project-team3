@@ -1,45 +1,81 @@
-import React from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import NotificationItem from "components/NotificationItem/NotificationItem";
+import { Badge, IconButton, Menu, MenuItem } from "@mui/material";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 // This component will render out a list of NotificationItem component
 // This component will call the API at a set interval to get updates on any new
 // notification from the BE
 
-// 2 types of notifications:
-// - Notification for near-expired medicines (trackedListNotification)
-// - Notification for medicine in wishlist becomes available (wishListNotification)
+// **trackedListNotification**:
+// warningExpired
+// 1. medicineName in your tracked list is about to expire, click here to list it!
+// notifySold
+// *2a. someone has bought your medicine, click here to view the contact info
 
-// trackedListNotification:
-// medicineName in your tracked list is about to expire, click here to list it!
+// **wishListNotification**:
+// notifyAvailable
+// *1c. medicine A in your WishList has just been listed by hospital X
 
-// wishListNotification:
-// medicineName in your WishList has just become available!
-
-// NEED TO KNOW:
-// - what will the information from BE looks like for the 2 types of notifications
-
-const Notifications = (props) => {
-  // call BE to get the list of notifications
-  // .map over the array of notifications, for each element render the <NotificationItem />
-  // and pass it the type of notification and medicineName
-
-  const getNotifications = async () => {
-    try {
-      await axios.get();
-    } catch (error) {
-      console.log("Error getting list of notifications", error);
-    }
-  };
+const Notifications = ({
+  notifications,
+  notificationBadgeCount,
+  anchorNotification,
+  openNotification,
+  handleClickNotification,
+  handleClose,
+}) => {
   return (
     <div>
-      Notifications
-      <NotificationItem />
+      <IconButton
+        id="notification-button"
+        aria-controls={anchorNotification ? "notification-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={anchorNotification ? "true" : undefined}
+        onClick={handleClickNotification}
+      >
+        <Badge badgeContent={notificationBadgeCount} color="error">
+          <NotificationsIcon />
+        </Badge>
+      </IconButton>
+      <Menu
+        id="notification-menu"
+        anchorEl={anchorNotification}
+        open={openNotification}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "notification-button",
+        }}
+      >
+        {notifications.map(
+          ({ id, type, hospitalName, medicineName, status }) => (
+            <MenuItem
+              key={id}
+              disabled={status === "init" ? false : true}
+              divider
+              sx={{ height: "70px" }}
+            >
+              <NotificationItem
+                id={id}
+                typeOfNotification={type}
+                status={status}
+                hospitalName={hospitalName}
+                medicineName={medicineName}
+              />
+            </MenuItem>
+          )
+        )}
+      </Menu>
     </div>
   );
 };
 
-Notifications.propTypes = {};
+Notifications.propTypes = {
+  anchorNotification: PropTypes.object,
+  openNotification: PropTypes.bool,
+  handleClickNotification: PropTypes.func,
+  handleClose: PropTypes.func,
+};
 
 export default Notifications;

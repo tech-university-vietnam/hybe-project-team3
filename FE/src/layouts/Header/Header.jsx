@@ -1,25 +1,69 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
-import {
-  AppBar,
-  Button,
-  Badge,
-  IconButton,
-  Menu,
-  MenuItem,
-  Toolbar,
-} from "@mui/material";
+import { AppBar, Button, Menu, MenuItem, Toolbar } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Notifications from "components/Notifications/Notifications";
 
 const urlLogOut = "localhost:8000/logout";
+const urlGetAllNotifications = "http://localhost:8000/notifications";
+const urlGetNotSeenNotifications = "http://localhost:8000/notification/notseen";
 
 const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const [anchorAccount, setAnchorAccount] = useState(null);
   const [anchorNotification, setAnchorNotification] = useState(null);
-  const [notifications, setNotifications] = useState([1, 2, 3]);
+  const [notificationBadgeCount, setNotificationBadgeCount] = useState(0);
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      type: "warningExpired",
+      hospitalName: "VinMec",
+      medicineName: "Advil",
+      status: "init",
+      seenStatus: "not seen",
+    },
+    {
+      id: 2,
+      type: "notifySold",
+      hospitalName: "VinMec",
+      medicineName: "Advil",
+      status: "init",
+      seenStatus: "not seen",
+    },
+    {
+      id: 3,
+      type: "notifyAvailable",
+      hospitalName: "VinMec",
+      medicineName: "Advil",
+      status: "init",
+      seenStatus: "not seen",
+    },
+    {
+      id: 4,
+      type: "warningExpired",
+      hospitalName: "VinMec",
+      medicineName: "Advil",
+      status: "approved",
+      seenStatus: "seen",
+    },
+    {
+      id: 6,
+      type: "warningExpired",
+      hospitalName: "VinMec",
+      medicineName: "Advil",
+      status: "declined",
+      seenStatus: "seen",
+    },
+    {
+      id: 5,
+      type: "notifyAvailable",
+      hospitalName: "VinMec",
+      medicineName: "Advil",
+      status: "approved",
+      seenStatus: "seen",
+    },
+  ]);
 
   const openAccount = Boolean(anchorAccount);
   const openNotification = Boolean(anchorNotification);
@@ -28,9 +72,20 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
     setAnchorAccount(event.currentTarget);
   };
 
-  const handleClickNotification = (event) => {
+  const handleClickNotification = async (event) => {
     setAnchorNotification(event.currentTarget);
+    try {
+      const response = await axios.get(urlGetAllNotifications, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setNotifications(response.data);
+    } catch (error) {
+      console.log("Not able to ");
+    }
   };
+
   const handleClose = () => {
     setAnchorAccount(null);
     setAnchorNotification(null);
@@ -44,13 +99,43 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
       .catch((error) => console.log("logout error is", error));
   };
 
+  // const getNotifications = async () => {
+  //   setInterval(async () => {
+  //     try {
+  //       const response = await axios.get(urlGetNotSeenNotifications)
+  //       setNotificationBadgeCount(response.data.length)
+  //     } catch {
+
+  //     }
+  //   }, 2000)
+  // };
+
+  useEffect(() => {
+    let interval = setInterval(async () => {
+      try {
+        const response = await axios.get(urlGetNotSeenNotifications, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setNotificationBadgeCount(response.data.length);
+      } catch (error) {
+        console.log("Cannot call API at interval", error);
+      }
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <AppBar
       position="sticky"
       sx={{
         backgroundColor: "white",
         boxShadow: "none",
-        borderBottom: '1px solid #C4C4C4'
+        borderBottom: "1px solid #C4C4C4",
       }}
     >
       <Toolbar sx={{ justifyContent: "flex-end" }}>
@@ -79,30 +164,14 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
           <MenuItem onClick={handleLogout}>Log out</MenuItem>
         </Menu>
 
-        <IconButton
-          id="notification-button"
-          aria-controls={anchorNotification ? "notification-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={anchorNotification ? "true" : undefined}
-          onClick={handleClickNotification}
-        >
-          <Badge badgeContent={5} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <Menu
-          id="notification-menu"
-          anchorEl={anchorNotification}
-          open={openNotification}
-          onClose={handleClose}
-          MenuListProps={{
-            "aria-labelledby": "notification-button",
-          }}
-        >
-          {notifications.map((notification, index) => (
-            <MenuItem key={index}>Notification</MenuItem>
-          ))}
-        </Menu>
+        <Notifications
+          notifications={notifications}
+          notificationBadgeCount={notificationBadgeCount}
+          anchorNotification={anchorNotification}
+          openNotification={openNotification}
+          handleClickNotification={handleClickNotification}
+          handleClose={handleClose}
+        />
       </Toolbar>
     </AppBar>
   );
