@@ -10,7 +10,6 @@ from app.model.tracking_medicine import TrackingMedicine
 
 
 class NotificationDTO(Base):
-    """userDTO is a data transfer object associated with User entity."""
 
     __tablename__ = "Notification"
     id: Union[int, Column] = Column(Integer, primary_key=True,
