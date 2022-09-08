@@ -37,8 +37,8 @@ def test_create_source_order(client: TestClient) -> None:
         headers=auth_header,
         json={"name": "foo"}
     )
-    assert r.status_code == status.HTTP_201_CREATED
     data = r.json()
+    assert r.status_code == status.HTTP_201_CREATED
     assert data['name'] == "foo"
 
 

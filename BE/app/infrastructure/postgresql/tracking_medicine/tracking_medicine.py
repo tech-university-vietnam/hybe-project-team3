@@ -2,13 +2,15 @@ from datetime import datetime
 from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer, Float
-from app.controllers.tracking_medicine.tracking_medicine import TrackingMedicinePayload
+
+from app.controllers.tracking_medicine.model import TrackingMedicinePayload
 from app.infrastructure.postgresql.database import Base
 from app.model.tracking_medicine import TrackingMedicine
 from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
 
 
 class TrackingMedicineDTO(Base):
+
     """userDTO is a data transfer object associated with User entity."""
 
     __tablename__ = "TrackingMedicine"
