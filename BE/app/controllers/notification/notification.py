@@ -48,7 +48,7 @@ DUMMY_NOTIFICATIONS = [
       "seenStatus": "seen"
     },
     {
-      "id": 6,
+      "id": 5,
       "type": "warningExpired",
       "hospitalName": "VinMec",
       "medicineName": "Advil",
@@ -56,7 +56,7 @@ DUMMY_NOTIFICATIONS = [
       "seenStatus": "seen"
     },
     {
-      "id": 5,
+      "id": 6,
       "type": "notifyAvailable",
       "hospitalName": "VinMec",
       "medicineName": "Advil",
@@ -83,7 +83,7 @@ class NotificationRoute:
 
     @router.get("/notifications", tags=["notification"],
                  status_code=status.HTTP_200_OK)
-    def get(
+    def get_list(
         self,
         bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
 
@@ -94,6 +94,20 @@ class NotificationRoute:
         for item in  DUMMY_NOTIFICATIONS:
             item['seenStatus'] = "seen"
         return DUMMY_NOTIFICATIONS
+
+    @router.get("/notification/seed", tags=["notification"],
+                 status_code=status.HTTP_200_OK)
+    def seed(self):
+        DUMMY_NOTIFICATIONS.append({
+            "id": len(DUMMY_NOTIFICATIONS)+1,
+            "type": "notifyAvailable",
+            "hospitalName": "VinMec",
+            "medicineName": "Advil",
+            "status": "approved",
+            "seenStatus": "not seen"
+        })
+        print(DUMMY_NOTIFICATIONS)
+        return {"msg": "ok"}
 
     @router.post("/notification/approved", tags=["notification"],
                  status_code=status.HTTP_200_OK)
