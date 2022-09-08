@@ -24,6 +24,7 @@ class NotificationDTO(Base):
     sourcing_name: Union[str, Column] = Column(String)
 
     status: Union[str, Column] = Column(String)  # Approve/Reject button, init when first created
+    seen_status: Union[str, Column] = Column(String, default='Not seen')
     description: Union[str, Column] = Column(String)  # Text shown in UI
 
     # For buyer

@@ -7,7 +7,7 @@ from app.domains.user.user_exception import EmailAlreadyRegisteredError, EmailNo
 
 from app.infrastructure.postgresql.user.user_dto import UserDTO
 from app.infrastructure.postgresql.hospital.hospital import HospitalDTO
-from app.model.user import User, SafeUser
+from app.model.user import User, SafeUser, DetailUser
 from app.common.exceptions import DBError
 from sqlalchemy import update, exc, and_, select
 
@@ -36,6 +36,16 @@ class UserRepository:
         try:
             user_dto = self.db.execute(statement).scalar_one()
             return user_dto.to_safe_entity()
+        except exc.SQLAlchemyError as e:
+            logging.error(e)
+            return
+
+    def get_detail_by_id(self, id: str) -> Optional[DetailUser]:
+        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.user).where(
+            UserDTO.id == id)
+        try:
+            user_dto: UserDTO = self.db.execute(statement).scalar_one()
+            return user_dto.to_detail_entity()
         except exc.SQLAlchemyError as e:
             logging.error(e)
             return

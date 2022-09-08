@@ -5,7 +5,7 @@ from sqlalchemy import Column, String, DateTime, Integer, ForeignKey
 
 from sqlalchemy.orm import relationship
 
-from app.model.user import SafeUser
+from app.model.user import SafeUser, DetailUser
 from app.controllers.user.auth_request import RegisterRequest
 from app.infrastructure.postgresql.database import Base
 from app.model.user import User
@@ -56,10 +56,10 @@ class UserDTO(Base):
             updated_at=self.updated_at,
         )
 
-    @staticmethod
-    def from_entity(user: User) -> "UserDTO":
+    @classmethod
+    def from_entity(cls, user: User) -> "UserDTO":
         now = datetime.now()
-        return UserDTO(
+        return cls(
             id=user.id,
             username=user.username,
             email=user.email,
@@ -75,18 +75,28 @@ class UserDTO(Base):
             id=self.id,
             username=self.username,
             email=self.email,
-            work_for=self.hospital.id,
+            work_for=self.hospital.name,
             created_at=self.created_at,
             updated_at=self.updated_at
         )
 
-    @staticmethod
-    def from_register_request(regis_req: RegisterRequest) -> "UserDTO":
+    def to_detail_entity(self) -> DetailUser:
+        return DetailUser(
+            id=self.id,
+            username=self.username,
+            email=self.email,
+            work_for=self.work_for,
+            created_at=self.created_at,
+            updated_at=self.updated_at
+        )
+
+    @classmethod
+    def from_register_request(cls, regis_req: RegisterRequest) -> "UserDTO":
         salt = bcrypt.gensalt()
         password = regis_req.password.encode('utf8')
         pwhash = bcrypt.hashpw(password, salt).decode('utf8')
         now = datetime.now()
-        return UserDTO(
+        return cls(
             hash_pw=pwhash,
             email=regis_req.email,
             work_for=regis_req.work_for,

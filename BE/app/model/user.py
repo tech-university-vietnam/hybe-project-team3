@@ -51,3 +51,7 @@ class SafeUser:
         self.work_for: int = work_for
         self.created_at = created_at
         self.updated_at = updated_at
+
+
+class DetailUser(SafeUser):
+    pass
