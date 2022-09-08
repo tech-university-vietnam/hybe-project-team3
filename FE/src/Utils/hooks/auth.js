@@ -53,6 +53,9 @@ function useAuth() {
                     setAuthed(null);
                 })
         },
+        requireLogin() {
+            setAuthed(null)
+        }
     };
 }
 
