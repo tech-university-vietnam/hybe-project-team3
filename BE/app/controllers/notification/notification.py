@@ -146,7 +146,7 @@ class NotificationRoute:
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
         count = 0
-        for item in  DUMMY_NOTIFICATIONS:
+        for item in DUMMY_NOTIFICATIONS:
             if item['seenStatus'] == "not seen":
-                count+=1
+                count += 1
         return {"notseen_noti": count}
