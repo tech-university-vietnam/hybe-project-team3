@@ -17,7 +17,7 @@ class SourceOrderRequestDTO(Base):
                                     autoincrement=True)
 
     name: Union[str, Column] = Column(String, nullable=False)
-    status: Union[str, Column] = Column(String, default="unavailable", nullable=True)
+    status: Union[str, Column] = Column(String, default="Unavailable", nullable=True)
     created_by: Union[int, Column] = Column(Integer, ForeignKey("user.id"))
     created_at: Union[datetime, Column] = Column(DateTime, default=datetime.now(), nullable=True)
     updated_at: Union[datetime, Column] = Column(DateTime, default=datetime.now(), nullable=True)
