@@ -39,4 +39,5 @@ class JWTService:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                                     detail="token is invalid")
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail="token is invalid")
