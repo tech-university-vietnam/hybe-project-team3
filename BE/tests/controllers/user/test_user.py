@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from fastapi import status
 import pytest
-from app.domains.user.user_exception import EmailAlreadyRegisteredError, EmailNotFoundError
+from app.domains.user.user_exception import EmailAlreadyRegisteredError
 
 REGISTER_DATA = {"email": "test", "password": "123", "work_for": 1}
 FAILED_REGISTER_DATA = {"email": "test", "password": "123"}

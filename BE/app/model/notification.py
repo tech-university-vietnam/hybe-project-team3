@@ -3,8 +3,9 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-
-class Notification(BaseModel):
+class NotificationIdPayload(BaseModel):
+    id: int
+class NotificationActionPayload(BaseModel):
     id: int
 
     souring_id: int
