@@ -1,23 +1,10 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Box, IconButton, Modal, Typography } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { Close } from "@mui/icons-material";
+import { Box, DialogContent, DialogTitle } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import AvailableHospital from "components/AvailableHospital/AvailableHospital";
+import './AvailablePopup.css'
 
-const style = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '1rem',
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 const AvailablePopup = (props) => {
   const [availableHospitals, setAvailableHospitals] = useState([
@@ -50,24 +37,43 @@ const AvailablePopup = (props) => {
       hospital: "Hospital",
       contact: "0123 456 789",
       expired: "12/12/2022"
+    },
+    {
+      id: 6,
+      hospital: "Hospital",
+      contact: "0123 456 789",
+      expired: "12/12/2022"
+    },
+    {
+      id: 7,
+      hospital: "Hospital",
+      contact: "0123 456 789",
+      expired: "12/12/2022"
     }
   ]);
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
-  return <Modal
+  return <Dialog
     open={true}
     // onClose={handleClose}
-    aria-labelledby="modal-modal-title"
-    aria-describedby="modal-modal-description"
+    aria-labelledby="scroll-dialog-title"
+    aria-describedby="scroll-dialog-description"
   >
-    <Box sx={style}>
-      <Typography id="modal-modal-title" variant="h6" component="h2">
-        Panadol
-      </Typography>
-      
-    </Box>
-  </Modal>;
+    <DialogTitle id="scroll-dialog-title">Medicine name</DialogTitle>
+    <DialogContent dividers={true}>
+      <Box sx={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+      {availableHospitals.map((item) =>
+        <AvailableHospital
+          key={item.id}
+          hospital={item.hospital}
+          contact={item.contact}
+          expired={item.expired} />
+      )}
+      </Box>
+    </DialogContent>
+  </Dialog>
+
 };
 
 AvailablePopup.propTypes = {};
