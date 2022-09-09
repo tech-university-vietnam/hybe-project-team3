@@ -106,7 +106,6 @@ class NotificationRoute:
             "status": "approved",
             "seenStatus": "not seen"
         })
-        print(DUMMY_NOTIFICATIONS)
         return {"msg": "ok"}
 
     @router.post("/notification/approved", tags=["notification"],
@@ -120,7 +119,10 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        DUMMY_NOTIFICATIONS[payload.id - 1]["status"] = "approved"
+        if DUMMY_NOTIFICATIONS[payload.id - 1]["type"] == "notifySold":
+            return DUMMY_NOTIFICATIONS[payload.id - 1]
+        else:
+            DUMMY_NOTIFICATIONS[payload.id - 1]["status"] = "approved"
         return DUMMY_NOTIFICATIONS[payload.id - 1]
 
 
