@@ -30,8 +30,8 @@ class TrackingMedicineRoute:
     @router.get("/tracking-medicines", tags=["medicine"],
                 response_model=List[TrackingMedicine])
     def list_trackings(self):
-        test = list(map(lambda m: m.dict(), self.medicine_service.list()))
-        return JSONResponse(test)
+        meds = self.medicine_service.list()
+        return meds
 
     @router.get("/tracking-medicine/{tracking_id}", tags=["medicine"],
                 response_model=TrackingMedicine)
@@ -68,3 +68,4 @@ class TrackingMedicineRoute:
             return JSONResponse(None, status_code=status.HTTP_200_OK)
         else:
             return JSONResponse(None, status_code=status.HTTP_404_NOT_FOUND)
+
