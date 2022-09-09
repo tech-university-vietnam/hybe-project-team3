@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer, Index
+from app.model.notification import BuyerSellerMap
 
 from app.infrastructure.postgresql.database import Base
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
@@ -19,7 +20,7 @@ class NotificationDTO(Base):
     sourcing_id: Union[int, Column] = Column(Integer)
     # `tracking` for tracking-medicine, `source-order` for source order request
     sourcing_type: Union[str, Column] = Column(String)
-    # Both seller and buyer
+    # Both seller and buyer, medicine_name
     sourcing_name: Union[str, Column] = Column(String)
 
     status: Union[str, Column] = Column(String)  # Approve/Reject button, init when first created
@@ -45,6 +46,18 @@ class NotificationDTO(Base):
             from_hospital_id=self.from_hospital_id,
             to_hospital_id=self.to_hospital_id,
             created_at=self.created_at,
+        )
+    @classmethod
+    def from_sourcing_entity(cls, med_id, med_name, med_from, med_to):
+        print("go here")
+        return cls(
+            sourcing_id=med_id,
+            sourcing_type='sourcing',
+            sourcing_name=med_name,
+            status='Init',
+            description='',
+            from_hospital_id=med_from,
+            to_hospital_id=med_to
         )
 
     @classmethod

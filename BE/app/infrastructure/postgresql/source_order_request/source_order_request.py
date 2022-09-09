@@ -21,6 +21,7 @@ class SourceOrderRequestDTO(Base):
     created_by: Union[int, Column] = Column(Integer, ForeignKey("User.id"))
     created_at: Union[datetime, Column] = Column(DateTime, default=datetime.now(), nullable=True)
     updated_at: Union[datetime, Column] = Column(DateTime, default=datetime.now(), nullable=True)
+    hospital_id : Union[int, Column] = Column(Integer, default=2, nullable=True)
 
     def to_entity(self) -> SourceOrderRequest:
         return SourceOrderRequest(

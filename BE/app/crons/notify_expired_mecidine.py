@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime, timedelta
 from operator import and_
 from typing import List
@@ -6,14 +7,16 @@ import pinject
 from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
 from sqlalchemy import update
+from app.model.notification import BuyerSellerMap, Notification
 
 from app.domains.helpers.database_repository import DatabaseRepository
 
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
 from app.infrastructure.postgresql.notiffication.notification import NotificationDTO
+from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
 
 
-def setup_cron(app: FastAPI, debug=False):
+def setup_cron(app: FastAPI, debug=True):
     obj_graph = pinject.new_object_graph()
     db_repo: DatabaseRepository = obj_graph.provide(DatabaseRepository)
 
@@ -71,45 +74,55 @@ def setup_cron(app: FastAPI, debug=False):
 
         db_repo.db.add_all(noti_list)
         db_repo.db.commit()
-
-    def check_available_meds(meds: [NotificationDTO]):
-        # Get the listed med name
+    def check_unavailable_meds():
+        sources = db_repo.db.query(SourceOrderRequestDTO).filter(SourceOrderRequestDTO.status=="Unavailable").all()
+        map_meds_hospital_buy = defaultdict(list)
+        source_ids_to_update = map(lambda source: source.id, filter(lambda source: source.name not in "Not listed", sources))
+        # update to availlable
+    def check_available_meds():
+        # Get the source-order unavailable (name and hospital_id)
+        # Take the name and query the approved notification
+        # if count >0 then create notification from hos to hos
         # create notis source-order
+        # get listed med where name in source-order where status == unavailable
+        # status == unavaiable and name in listed med
+        # update source-order name where id in []
+        print("go here")
+        meds: [TrackingMedicineDTO] = db_repo.db.query(TrackingMedicineDTO).filter(TrackingMedicineDTO.status=="Listed").all()
+        map_meds_hospital_sell = defaultdict(list)
+        for med in meds:
+            map_meds_hospital_sell[med.name].append((med.hospital_id, med.id))
 
-        near_e: [NotificationDTO] = list(filter(
-            lambda med: med.status == "List", meds))
-        available_med_ids = map(lambda med: med.id, available_meds)
+        sources = db_repo.db.query(SourceOrderRequestDTO).filter(SourceOrderRequestDTO.status=="Unavailable").all()
+        map_meds_hospital_buy = defaultdict(list)
+        source_ids_to_update = set(map(lambda source: source.id, filter(lambda source: source.name in map_meds_hospital_sell.keys(), sources)))
+        print(source_ids_to_update)
+        # update to availlable
+        # for row in sources:
+        #     # check if name in approved notification
+        #     map_meds_hospital_buy[row.name].append(row.hospital_id)
+        # print(map_meds_hospital_buy)
+        # # join 2 list
+        # map_hospital_sell_buy = defaultdict(dict)
+        # for name in map_meds_hospital_sell.keys():
+        #     map_hospital_sell_buy[name]['buyer'] = map_meds_hospital_buy[name]
+        #     map_hospital_sell_buy[name]['seller'] = map_meds_hospital_sell[name]
+        # noti_list = []
+        # for name in map_hospital_sell_buy.keys():
+        #     noti: NotificationDTO = NotificationDTO.from_sourcing_entity(
+        #         map_hospital_sell_buy[name]['seller'][0][1],
+        #         name,
+        #         map_hospital_sell_buy[name]['seller'][0][0],
+        #         map_hospital_sell_buy[name]['buyer'][0]
+        #         )
+        #     noti_list += [noti]
+        #     print(noti_list)
 
-        if debug:
-            available_med_ids = list(available_med_ids)
-            print("%s meds in available_meds" % len(available_med_ids))
-
-        created_notis = db_repo.db.query(NotificationDTO). \
-            where(and_(NotificationDTO.sourcing_type == 'source-order',
-                       NotificationDTO.in_(list(available_med_ids)))).all()
-        created_noti_source_ids = set(map(lambda noti: noti.sourcing_id, created_notis))
-
-        if debug:
-            print("Set created noti: ", created_noti_source_ids)
-
-        # Exclude med existed in noti
-        meds_to_create_noti: [TrackingMedicineDTO] = filter(lambda med: med.id not in created_noti_source_ids,
-                                                            available_meds)
-
-        if debug:
-            meds_to_create_noti = list(meds_to_create_noti)
-            print("%s records in meds_to_create_noti: %s" % (len(meds_to_create_noti), meds_to_create_noti))
-
-        noti_list = []
-        for med in meds_to_create_noti:
-            noti: NotificationDTO = NotificationDTO.from_tracking_medicine(med)
-            noti_list += [noti]
-
-        db_repo.db.add_all(noti_list)
-        db_repo.db.commit()
+        # db_repo.db.add_all(noti_list)
+        # db_repo.db.commit()
 
     @app.on_event("startup")
-    @repeat_every(seconds=60 * 5)  # 5 mins
+    @repeat_every(seconds=30, raise_exceptions=True)  # 5 mins
     def notify_expired_medicine() -> None:
         print("Starting cronjob interval...")
         # Send nearly expired noti to owner
@@ -127,3 +140,5 @@ def setup_cron(app: FastAPI, debug=False):
 
         # Create noti for owner if med reaches near-expired date
         check_nearly_expired_meds(not_listing_meds)
+        check_available_meds()
+

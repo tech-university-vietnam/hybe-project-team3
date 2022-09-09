@@ -26,6 +26,7 @@ def import_models():
     from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
     from app.infrastructure.postgresql.notiffication.notification import NotificationDTO
 
+
     return [UserDTO, TrackingMedicineDTO, HospitalDTO, SourceOrderRequestDTO, NotificationDTO]
 
 
@@ -40,6 +41,7 @@ def drop_tables():
 def seed_medicines():
     from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
     from app.domains.medicine.medicine_repository import MedicineStatus
+    from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
 
     path = os.getcwd() + '/app/resources/medicines.json'
     with open(path, 'r') as file:
@@ -54,9 +56,26 @@ def seed_medicines():
         hospital_id=0,
 
     ), json_meds))
+    if session.query(TrackingMedicineDTO).count() == 0:
+        session.add_all(meds_dto)
+        session.commit()
 
-    session.add_all(meds_dto)
-    session.commit()
+    path = os.getcwd() + '/app/resources/source_order.json'
+    with open(path, 'r') as file:
+        json_meds = json.load(file)
+
+    meds_dto = list(map(lambda med: SourceOrderRequestDTO(
+        name=med['name'],
+        created_by=2,
+
+    ), json_meds))
+    if session.query(SourceOrderRequestDTO).count() == 0:
+        print(session.query(SourceOrderRequestDTO).count())
+        session.add_all(meds_dto)
+        session.commit()
+
+    # session.add_all(meds_dto)
+    # session.commit()
 
 
 def init_database():

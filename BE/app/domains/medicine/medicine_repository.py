@@ -48,6 +48,16 @@ class MedicineRepository(MedicineStatus):
             (TrackingMedicineDTO.name == name)).all()
         return medicine_list
 
+    # def get_listed_medicine_quantity_by_name(self, name: str) -> Optional[List[TrackingMedicine]]:
+    #     listed_medicine_quantity: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
+    #         (TrackingMedicineDTO.name == name)).count()
+    #     return listed_medicine_quantity
+
+    # def get_listed_medicine_by_name(self, name: str) -> Optional[List[TrackingMedicine]]:
+    #     listed_medicine_quantity: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
+    #         (TrackingMedicineDTO.name == name,)).count()
+    #     return listed_medicine_quantity
+
     def create(self, medicine: TrackingMedicinePayload, user: DetailUser) -> Optional[TrackingMedicine]:
         try:
             medicine_dto = TrackingMedicineDTO.from_tracking_medicine_payload(medicine)
