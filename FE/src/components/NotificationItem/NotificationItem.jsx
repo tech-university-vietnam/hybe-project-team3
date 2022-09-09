@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import { Button, Typography, Paper } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
-import axios from "axios";
+import {
+  postApproveNotification,
+  postDeclineNotification,
+} from "Utils/api/notification";
 
 // have to trigger a re-render when user clicks on onApprove or onDecline
-
-const urlDecline = "http://localhost:8000/notification/declined";
-const urlApprove = "http://localhost:8000/notification/approved";
 
 const NotificationItem = ({
   id,
@@ -19,15 +19,7 @@ const NotificationItem = ({
 }) => {
   const onDecline = async ({ id }) => {
     try {
-      await axios.post(
-        urlDecline,
-        { id: id },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      postDeclineNotification({ id });
     } catch (error) {
       console.log("Error declining notification", error);
     }
@@ -35,15 +27,7 @@ const NotificationItem = ({
 
   const onApprove = async ({ id }) => {
     try {
-      await axios.post(
-        urlApprove,
-        { id: id },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      postApproveNotification({ id });
     } catch (error) {
       console.log("Error approving notification", error);
     }

@@ -1,13 +1,12 @@
 import { React, useState, useEffect } from "react";
-import axios from "axios";
 import PropTypes from "prop-types";
 import { AppBar, Button, Menu, MenuItem, Toolbar } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import useAuth from "../../Utils/hooks/auth.js"
 import Notifications from "components/Notifications/Notifications";
+import { getNotSeenNotifications, getAllNotifications } from "Utils/api/notification.js";
 
-const urlLogOut = "http://localhost:8000/logout";
 
 const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const [anchorAccount, setAnchorAccount] = useState(null);
@@ -27,11 +26,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
     setNotificationBadgeCount(0);
     setAnchorNotification(event.currentTarget);
     try {
-      const response = await axios.get(urlGetAllNotifications, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await getAllNotifications()
       setNotifications(response.data);
     } catch (error) {
       console.log("Not able to ");
@@ -44,23 +39,16 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   };
 
   const handleLogout = async () => {
-    let success = true;
     await logout()
       .catch((error) => {
         console.log("logout error is", error);
-        success = false;
       });
   };
-  }, [notificationBadgeCount]);
 
   useEffect(() => {
     let interval = setInterval(async () => {
       try {
-        const response = await axios.get(urlGetNotSeenNotifications, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await getNotSeenNotifications()
         setNotificationBadgeCount(response.data.notseen_noti);
       } catch (error) {
         console.log("Cannot call API at interval", error);
