@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Pagination, Alert } from "@mui/material";
-import axios from "axios";
 import AddItemButton from "components/AddWishlistItemButton/AddWishlistItemButton";
 import MedicineItems from "components/MedicineItems/MedicineItems";
 import usePagination from "../../Utils/hooks/pagination";
@@ -12,9 +11,9 @@ const WishList = () => {
   const [wishListItems, setWishListItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
-    "AVAILABLE",
-    "unavailable",
-    "RESOLVED",
+    "Available",
+    "Unavailable",
+    "Resolved",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -35,13 +34,10 @@ const WishList = () => {
     try {
       await getAllWishListItems();
     } catch (error) {
-      console.log(
-        "Error getting updated wishlist in handleListChange",
-        error
-      );
+      console.log("Error getting updated wishlist in handleListChange", error);
       setErrorMessage(error.detail.msg);
     }
-  }
+  };
 
   const handleFilterChange = (event) => {
     const {
@@ -86,7 +82,10 @@ const WishList = () => {
     <div className="content-container">
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <div className="content-header">
-        <AddItemButton type="tracked list" handleListChange={handleListChange}/>
+        <AddItemButton
+          type="tracked list"
+          handleListChange={handleListChange}
+        />
         <Pagination
           count={count}
           size="large"
@@ -96,7 +95,7 @@ const WishList = () => {
           onChange={handlePageChange}
         />
         <Filter
-          statuses={["AVAILABLE", "unavailable", "RESOLVED"]}
+          statuses={["Available", "Unavailable", "Resolved"]}
           selectedStatuses={selectedStatuses}
           handleChange={handleFilterChange}
         />
