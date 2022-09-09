@@ -2,6 +2,7 @@ from typing import Optional
 import bcrypt
 
 from app.controllers.user.auth_request import RegisterRequest
+from app.domains.user.user_exception import EmailNotFoundError
 from app.domains.user.user_repository import UserRepository
 
 from app.model.auth import Auth

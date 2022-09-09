@@ -7,9 +7,8 @@ import Filter from "components/Filter/Filter";
 import axios from "axios";
 import usePagination from "../../Utils/hooks/pagination";
 import "./TrackedList.css";
+import { deleteTrackingMedicine, getTrackingMedinces } from "Utils/api/medicine";
 
-const getMedicinesUrl = "http://localhost:8000/tracking-medicines";
-const deleteMedicineUrl = "http://localhost:8000/tracking-medicine";
 
 const TrackedList = () => {
   const [listOfTrackedMedicineItems, setListOfTrackedMedicineItems] = useState(
@@ -63,11 +62,7 @@ const TrackedList = () => {
 
   const getAllTrackedMedicineItems = async () => {
     try {
-      const response = await axios.get(getMedicinesUrl, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await getTrackingMedinces();
       setListOfTrackedMedicineItems(response.data);
     } catch (error) {
       console.log(
@@ -79,11 +74,7 @@ const TrackedList = () => {
   };
   const handleDeleteMedicineItem = async (id) => {
     try {
-      await axios.delete(`${deleteMedicineUrl}/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await deleteTrackingMedicine(id);
       await getAllTrackedMedicineItems();
     } catch (error) {
       console.log("Error deleting item", error);

@@ -4,17 +4,17 @@ import PropTypes from "prop-types";
 import { AppBar, Button, Menu, MenuItem, Toolbar } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import useAuth from "../../Utils/hooks/auth.js"
 import Notifications from "components/Notifications/Notifications";
 
-const urlLogOut = "localhost:8000/logout";
-const urlGetAllNotifications = "http://localhost:8000/notifications";
-const urlGetNotSeenNotifications = "http://localhost:8000/notification/notseen";
+const urlLogOut = "http://localhost:8000/logout";
 
 const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const [anchorAccount, setAnchorAccount] = useState(null);
   const [anchorNotification, setAnchorNotification] = useState(null);
   const [notificationBadgeCount, setNotificationBadgeCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
+  const { logout } = useAuth();
 
   const openAccount = Boolean(anchorAccount);
   const openNotification = Boolean(anchorNotification);
@@ -43,13 +43,15 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
     setAnchorNotification(null);
   };
 
-  const handleLogout = () => {
-    const token = localStorage.getItem("token");
-    axios
-      .post(urlLogOut, { headers: { Authorization: token } })
-      .then((response) => console.log(response))
-      .catch((error) => console.log("logout error is", error));
+  const handleLogout = async () => {
+    let success = true;
+    await logout()
+      .catch((error) => {
+        console.log("logout error is", error);
+        success = false;
+      });
   };
+  }, [notificationBadgeCount]);
 
   useEffect(() => {
     let interval = setInterval(async () => {

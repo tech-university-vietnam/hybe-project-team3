@@ -3,15 +3,17 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginSchema } from "Utils/validation/LoginSchema";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import useAuth from "../../Utils/hooks/auth.js";
 
 // TODO: call backend api to login
 // TODO: error handling for incorrect email/password
 
-let loginUrl = "http://localhost:8000/login";
-
 const LoginForm = () => {
   const [loginError, setLoginError] = useState(null);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const {
     register,
@@ -21,16 +23,17 @@ const LoginForm = () => {
     resolver: yupResolver(LoginSchema),
   });
 
-  const onSubmit = (data) => {
-    axios
-      .post(loginUrl, data)
-      .then((response) => {
-        console.log(response);
-        localStorage.setItem("token", response.data.token);
-      })
+  const onSubmit = async (data) => {
+    let success = true;
+    await login(data)
       .catch((error) => {
+        success = false;
         setLoginError(error.data.msg);
       });
+    console.log(success)
+    if (success) {
+      navigate("/");
+    }
   };
 
   return (

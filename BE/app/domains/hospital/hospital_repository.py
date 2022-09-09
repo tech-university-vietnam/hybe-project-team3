@@ -2,7 +2,7 @@ from typing import Dict, List, Optional
 from sqlalchemy import exc
 import logging
 from sqlalchemy.sql import select
-from app.infrastructure.postgresql.hospital.hospital_dto import HospitalDTO
+from app.infrastructure.postgresql.hospital.hospital import HospitalDTO
 from app.domains.helpers.database_repository import DatabaseRepository
 
 HOSPITAL_NAMES = [

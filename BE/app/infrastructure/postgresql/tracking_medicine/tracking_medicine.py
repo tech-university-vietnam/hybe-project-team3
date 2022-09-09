@@ -3,12 +3,14 @@ from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer, Float
 
-from app.controllers.tracking_medicine.tracking_medicine import TrackingMedicinePayload
+from app.controllers.tracking_medicine.model import TrackingMedicinePayload
 from app.infrastructure.postgresql.database import Base
 from app.model.tracking_medicine import TrackingMedicine
+from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
 
 
 class TrackingMedicineDTO(Base):
+
     """userDTO is a data transfer object associated with User entity."""
 
     __tablename__ = "TrackingMedicine"
@@ -21,7 +23,9 @@ class TrackingMedicineDTO(Base):
     buy_price: Union[float, Column] = Column(Float, nullable=True)
     manufacturer: Union[int, Column] = Column(Integer, nullable=True)
     expired_date: Union[datetime, Column] = Column(DateTime, nullable=False)
-    created_at: Union[datetime, Column] = Column(DateTime, default=datetime.now(), nullable=True)
+    created_at: Union[datetime, Column] = Column(DateTime,
+                                                 default=datetime.now(),
+                                                 nullable=True)
     created_by: Union[int, Column] = Column(Integer, nullable=False)
     image: Union[str, Column] = Column(String, nullable=True)
     hospital_id: Union[int, Column] = Column(Integer, nullable=False)

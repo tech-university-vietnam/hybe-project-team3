@@ -12,7 +12,9 @@ import React, { useEffect, useState } from "react";
 import { Container } from "@mui/system";
 import { RegisterSchema } from "../../Utils/validation/RegisterSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { postRegister } from "Utils/api/authentication";
 import axios from "axios";
+import { getHospitals } from "Utils/api/hospitals";
 
 const RegisterForm = () => {
   const [error, setError] = useState(false);
@@ -29,9 +31,7 @@ const RegisterForm = () => {
   });
 
   const getHospitalList = async () => {
-    let url = "http://localhost:8000/hospitals";
-    await axios.get(url)
-      .then(result => result.data)
+    await getHospitals()
       .then(response => {
         setHospitals(response);
         setIsLoading(false);
@@ -44,14 +44,8 @@ const RegisterForm = () => {
   };
 
   const onSubmit = async (data) => {
-    let registerUrl = "http://localhost:8000/register";
-
     try {
-      await axios.post(registerUrl, {
-        email: data.email,
-        password: data.password,
-        work_for: data.hospital,
-      });
+      await postRegister(data);
       setStatusMessage("success");
     } catch {
       setError(true);
