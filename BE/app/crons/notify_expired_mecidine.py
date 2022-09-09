@@ -49,14 +49,14 @@ def setup_cron(app: FastAPI, debug=False):
 
         # Get noti already created
         created_notis = db_repo.db.query(NotificationDTO). \
-            where(and_(NotificationDTO.sourcing_type == 'tracking',
+            where(and_(NotificationDTO.sourcing_type == 'warningExpired',
                        NotificationDTO.sourcing_id.in_(list(near_expired_med_ids)))).all()
         created_noti_source_ids = set(map(lambda noti: noti.sourcing_id, created_notis))
 
         if debug:
             print("Set created noti: ", created_noti_source_ids)
 
-        # Exclude med existed in noti
+        # Exclude med notify which already existed in notification
         meds_to_create_noti: [TrackingMedicineDTO] = filter(lambda med: med.id not in created_noti_source_ids,
                                                             near_expired_meds)
 
@@ -76,7 +76,7 @@ def setup_cron(app: FastAPI, debug=False):
     @repeat_every(seconds=60 * 5)  # 5 mins
     def notify_expired_medicine() -> None:
         print("Starting cronjob interval...")
-        # Send nearly expired noti to owner
+        # Send nearly expired notify to owner
         med_dtos: List[TrackingMedicineDTO] = db_repo.db.query(TrackingMedicineDTO).where(
             TrackingMedicineDTO.status.in_(['Not listed', 'Listing'])).all()
 
@@ -89,5 +89,8 @@ def setup_cron(app: FastAPI, debug=False):
         # Update status to expired
         check_expired_meds(med_dtos)
 
-        # Create noti for owner if med reaches near-expired date
+        # Create notify for owner if med reaches near-expired date
         check_nearly_expired_meds(not_listing_meds)
+
+        # Check available
+

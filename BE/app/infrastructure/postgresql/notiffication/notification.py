@@ -6,7 +6,6 @@ from sqlalchemy import Column, String, DateTime, Integer, Index
 from app.infrastructure.postgresql.database import Base
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
 from app.model.notification import Notification
-from app.model.tracking_medicine import TrackingMedicine
 
 
 class NotificationDTO(Base):
@@ -42,6 +41,7 @@ class NotificationDTO(Base):
             sourcing_type=self.sourcing_type,
             sourcing_name=self.sourcing_name,
             status=self.status,
+            seen_status=self.seen_status,
             description=self.description,
             from_hospital_id=self.from_hospital_id,
             to_hospital_id=self.to_hospital_id,
