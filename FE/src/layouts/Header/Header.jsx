@@ -1,26 +1,20 @@
-import { React, useState } from "react";
-import axios from "axios";
+import { React, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import {
-  AppBar,
-  Button,
-  Badge,
-  IconButton,
-  Menu,
-  MenuItem,
-  Toolbar,
-} from "@mui/material";
+import { AppBar, Button, Menu, MenuItem, Toolbar } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import useAuth from "../../Utils/hooks/auth.js"
-
-const urlLogOut = "http://localhost:8000/logout";
+import useAuth from "../../Utils/hooks/auth.js";
+import Notifications from "components/Notifications/Notifications";
+import {
+  getNotSeenNotifications,
+  getAllNotifications,
+} from "Utils/api/notification.js";
 
 const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const [anchorAccount, setAnchorAccount] = useState(null);
   const [anchorNotification, setAnchorNotification] = useState(null);
-  const [notifications, setNotifications] = useState([1, 2, 3]);
+  const [notificationBadgeCount, setNotificationBadgeCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
   const { logout } = useAuth();
 
   const openAccount = Boolean(anchorAccount);
@@ -30,22 +24,46 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
     setAnchorAccount(event.currentTarget);
   };
 
-  const handleClickNotification = (event) => {
-    setAnchorNotification(event.currentTarget);
+  const getAllNotificationsRefresh = async () => {
+    try {
+      const response = await getAllNotifications();
+      setNotifications(response.data);
+    } catch (error) {
+      console.log("Not able to ");
+    }
   };
+
+  const handleNotificationDropDownClick = async (event) => {
+    setNotificationBadgeCount(0);
+    setAnchorNotification(event.currentTarget);
+    await getAllNotificationsRefresh();
+  };
+
   const handleClose = () => {
     setAnchorAccount(null);
     setAnchorNotification(null);
   };
 
   const handleLogout = async () => {
-    let success = true;
-    await logout()
-      .catch((error) => {
-        console.log("logout error is", error);
-        success = false;
-      });
+    await logout().catch((error) => {
+      console.log("logout error is", error);
+    });
   };
+
+  useEffect(() => {
+    let interval = setInterval(async () => {
+      try {
+        const response = await getNotSeenNotifications();
+        setNotificationBadgeCount(response.data.notseen_noti);
+      } catch (error) {
+        console.log("Cannot call API at interval", error);
+      }
+    }, 500000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [notificationBadgeCount]);
 
   return (
     <AppBar
@@ -53,7 +71,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
       sx={{
         backgroundColor: "white",
         boxShadow: "none",
-        borderBottom: '1px solid #C4C4C4'
+        borderBottom: "1px solid #C4C4C4",
       }}
     >
       <Toolbar sx={{ justifyContent: "flex-end" }}>
@@ -82,30 +100,15 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
           <MenuItem onClick={handleLogout}>Log out</MenuItem>
         </Menu>
 
-        <IconButton
-          id="notification-button"
-          aria-controls={anchorNotification ? "notification-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={anchorNotification ? "true" : undefined}
-          onClick={handleClickNotification}
-        >
-          <Badge badgeContent={5} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <Menu
-          id="notification-menu"
-          anchorEl={anchorNotification}
-          open={openNotification}
-          onClose={handleClose}
-          MenuListProps={{
-            "aria-labelledby": "notification-button",
-          }}
-        >
-          {notifications.map((notification, index) => (
-            <MenuItem key={index}>Notification</MenuItem>
-          ))}
-        </Menu>
+        <Notifications
+          notifications={notifications}
+          notificationBadgeCount={notificationBadgeCount}
+          anchorNotification={anchorNotification}
+          openNotification={openNotification}
+          handleNotificationDropDownClick={handleNotificationDropDownClick}
+          handleClose={handleClose}
+          onApproveDecline={getAllNotificationsRefresh}
+        />
       </Toolbar>
     </AppBar>
   );

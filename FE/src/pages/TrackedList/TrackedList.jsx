@@ -7,8 +7,10 @@ import Filter from "components/Filter/Filter";
 import axios from "axios";
 import usePagination from "../../Utils/hooks/pagination";
 import "./TrackedList.css";
-import { deleteTrackingMedicine, getTrackingMedinces } from "Utils/api/medicine";
-
+import {
+  deleteTrackingMedicine,
+  getTrackingMedinces,
+} from "Utils/api/medicine";
 
 const TrackedList = () => {
   const [listOfTrackedMedicineItems, setListOfTrackedMedicineItems] = useState(
@@ -17,10 +19,10 @@ const TrackedList = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
-    "LISTED",
+    "Listed",
     "Not listed",
-    "FINISHED LISTING",
-    "EXPIRED",
+    "Finished listing",
+    "Expired",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
   // const [filteredMedicines, setFilteredMedicines] = useState([]);
@@ -94,9 +96,7 @@ const TrackedList = () => {
     <div className="content-container">
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <div className="content-header">
-        <AddItemButton
-          handleListChange={handleListChange}
-        />
+        <AddItemButton handleListChange={handleListChange} />
         <Pagination
           count={count}
           size="large"
@@ -106,7 +106,7 @@ const TrackedList = () => {
           onChange={handlePageChange}
         />
         <Filter
-          statuses={["LISTED", "Not listed", "FINISHED LISTING"]}
+          statuses={["Listed", "Not listed", "Finished listing", "Expired"]}
           selectedStatuses={selectedStatuses}
           handleChange={handleFilterChange}
         />
