@@ -6,6 +6,7 @@ import usePagination from "../../Utils/hooks/pagination";
 import Filter from "components/Filter/Filter";
 import "./WishList.css";
 import { deleteSourceOrder, getSourceOrders } from "Utils/api/sourceOrder";
+import AvailablePopup from "components/WishListPopup/AvailablePopup";
 
 const WishList = () => {
   const [wishListItems, setWishListItems] = useState([]);
@@ -114,6 +115,7 @@ const WishList = () => {
         shape="rounded"
         onChange={handlePageChange}
       />
+      <AvailablePopup/>
     </div>
   );
 };
