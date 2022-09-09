@@ -9,17 +9,19 @@ import {
 } from "Utils/api/notification";
 
 // have to trigger a re-render when user clicks on onApprove or onDecline
-
+// clicking onApprove / onDecline calls handleNotificationDropDownClick
 const NotificationItem = ({
   id,
   medicineName,
   hospitalName,
   typeOfNotification,
   status,
+  onApproveDecline
 }) => {
   const onDecline = async ({ id }) => {
     try {
-      postDeclineNotification({ id });
+      await postDeclineNotification({ id });
+      await onApproveDecline()
     } catch (error) {
       console.log("Error declining notification", error);
     }
@@ -27,7 +29,8 @@ const NotificationItem = ({
 
   const onApprove = async ({ id }) => {
     try {
-      postApproveNotification({ id });
+      await postApproveNotification({ id });
+      await onApproveDecline()
     } catch (error) {
       console.log("Error approving notification", error);
     }
@@ -100,6 +103,7 @@ NotificationItem.propTypes = {
   hospitalName: PropTypes.string,
   typeOfNotification: PropTypes.string,
   popUpCallbackFunc: PropTypes.func,
+  onApproveDecline: PropTypes.func,
 };
 
 export default NotificationItem;

@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 import { AppBar, Button, Menu, MenuItem, Toolbar } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import useAuth from "../../Utils/hooks/auth.js"
+import useAuth from "../../Utils/hooks/auth.js";
 import Notifications from "components/Notifications/Notifications";
-import { getNotSeenNotifications, getAllNotifications } from "Utils/api/notification.js";
-
+import {
+  getNotSeenNotifications,
+  getAllNotifications,
+} from "Utils/api/notification.js";
 
 const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const [anchorAccount, setAnchorAccount] = useState(null);
@@ -22,15 +24,19 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
     setAnchorAccount(event.currentTarget);
   };
 
-  const handleNotificationDropDownClick = async (event) => {
-    setNotificationBadgeCount(0);
-    setAnchorNotification(event.currentTarget);
+  const getAllNotificationsRefresh = async () => {
     try {
-      const response = await getAllNotifications()
+      const response = await getAllNotifications();
       setNotifications(response.data);
     } catch (error) {
       console.log("Not able to ");
     }
+  };
+
+  const handleNotificationDropDownClick = async (event) => {
+    setNotificationBadgeCount(0);
+    setAnchorNotification(event.currentTarget);
+    await getAllNotificationsRefresh();
   };
 
   const handleClose = () => {
@@ -39,21 +45,20 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   };
 
   const handleLogout = async () => {
-    await logout()
-      .catch((error) => {
-        console.log("logout error is", error);
-      });
+    await logout().catch((error) => {
+      console.log("logout error is", error);
+    });
   };
 
   useEffect(() => {
     let interval = setInterval(async () => {
       try {
-        const response = await getNotSeenNotifications()
+        const response = await getNotSeenNotifications();
         setNotificationBadgeCount(response.data.notseen_noti);
       } catch (error) {
         console.log("Cannot call API at interval", error);
       }
-    }, 5000);
+    }, 500000);
 
     return () => {
       clearInterval(interval);
@@ -102,6 +107,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
           openNotification={openNotification}
           handleNotificationDropDownClick={handleNotificationDropDownClick}
           handleClose={handleClose}
+          onApproveDecline={getAllNotificationsRefresh}
         />
       </Toolbar>
     </AppBar>

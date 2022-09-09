@@ -26,6 +26,7 @@ const Notifications = ({
   openNotification,
   handleNotificationDropDownClick,
   handleClose,
+  onApproveDecline
 }) => {
   const [next, setNext] = useState(numberOfNotificationToShow);
 
@@ -74,6 +75,7 @@ const Notifications = ({
                 status={status}
                 hospitalName={hospitalName}
                 medicineName={medicineName}
+                onApproveDecline={onApproveDecline}
               />
             </MenuItem>
           ))}
@@ -94,6 +96,7 @@ Notifications.propTypes = {
   openNotification: PropTypes.bool,
   handleNotificationDropDownClick: PropTypes.func,
   handleClose: PropTypes.func,
+  onApproveDecline: PropTypes.func,
 };
 
 export default Notifications;
