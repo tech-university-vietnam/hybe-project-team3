@@ -16,12 +16,13 @@ const NotificationItem = ({
   hospitalName,
   typeOfNotification,
   status,
-  onApproveDecline
+  onApproveDecline,
+  openPopup,
 }) => {
   const onDecline = async ({ id }) => {
     try {
       await postDeclineNotification({ id });
-      await onApproveDecline()
+      await onApproveDecline();
     } catch (error) {
       console.log("Error declining notification", error);
     }
@@ -30,7 +31,7 @@ const NotificationItem = ({
   const onApprove = async ({ id }) => {
     try {
       await postApproveNotification({ id });
-      await onApproveDecline()
+      await onApproveDecline();
     } catch (error) {
       console.log("Error approving notification", error);
     }
@@ -52,7 +53,7 @@ const NotificationItem = ({
         )}
         {status === "declined" && (
           <Typography variant="subtitle2" color="orange">
-            ⚠ You've declined to list this item
+            ❌ You've declined to list this item
           </Typography>
         )}
         {status === "approved" && (
@@ -60,12 +61,23 @@ const NotificationItem = ({
             ✅ You've listed this item
           </Typography>
         )}
+        {status === "invalid" && (
+          <Typography variant="subtitle2" color="gray">
+            ⚠ This item has expired, it can't be listed
+          </Typography>
+        )}
       </div>
     );
   }
   if (typeOfNotification === "notifySold") {
     return (
-      <Paper elevation={0} onClick={() => onApprove({ id })}>
+      <Paper
+        elevation={0}
+        onClick={() => {
+          onApprove({ id });
+          openPopup(true);
+        }}
+      >
         Someone has bought your medicine, click here to view detail
       </Paper>
     );
@@ -85,13 +97,18 @@ const NotificationItem = ({
       )}
       {status === "declined" && (
         <Typography variant="subtitle2" color="orange">
-          ⚠ You've declined to buy from this vendor
+          ❌ You've declined to buy from this vendor
         </Typography>
       )}
       {status === "approved" && (
         <Typography variant="subtitle2" color="green">
           🎉 You've bought this item. Please wait for {hospitalName} to contact
           you
+        </Typography>
+      )}
+      {status === "invalid" && (
+        <Typography variant="subtitle2" color="gray">
+          ⚠ Someone has purchased this item
         </Typography>
       )}
     </div>

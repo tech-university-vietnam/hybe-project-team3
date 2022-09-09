@@ -6,8 +6,11 @@ import usePagination from "../../Utils/hooks/pagination";
 import Filter from "components/Filter/Filter";
 import "./WishList.css";
 import { deleteSourceOrder, getSourceOrders } from "Utils/api/sourceOrder";
+import ResolvedPopup from "components/WishListPopup/ResolvedPopup";
 
 const WishList = () => {
+  const [resolvedPopup, setResolvedPopup] = useState(false);
+  const [availablePopup, setAvailablePopup] = useState(false);
   const [wishListItems, setWishListItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
@@ -16,6 +19,11 @@ const WishList = () => {
     "Resolved",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const openPopup = ({ status }) => {
+    if (status === "Unavailable") return setResolvedPopup(true);
+    if (status === "Available") return setAvailablePopup(true);
+  };
 
   const filteredWishListItems = useMemo(() => {
     return wishListItems.filter((wishListItem) =>
@@ -101,9 +109,13 @@ const WishList = () => {
         />
       </div>
       <div className="data-container">
+        {resolvedPopup && (
+          <ResolvedPopup open={resolvedPopup} onClose={setResolvedPopup} />
+        )}
         <MedicineItems
           medicineItems={filteredWishListToDisplay.currentData()}
           handleDelete={handleDeleteWishListItem}
+          openPopup={openPopup}
         />
       </div>
       <Pagination

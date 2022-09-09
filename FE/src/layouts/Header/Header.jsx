@@ -9,12 +9,14 @@ import {
   getNotSeenNotifications,
   getAllNotifications,
 } from "Utils/api/notification.js";
+import ResolvedPopup from "components/WishListPopup/ResolvedPopup.jsx";
 
 const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const [anchorAccount, setAnchorAccount] = useState(null);
   const [anchorNotification, setAnchorNotification] = useState(null);
   const [notificationBadgeCount, setNotificationBadgeCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
+  const [resolvedPopup, setResolvedPopup] = useState(false);
   const { logout } = useAuth();
 
   const openAccount = Boolean(anchorAccount);
@@ -75,6 +77,9 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
       }}
     >
       <Toolbar sx={{ justifyContent: "flex-end" }}>
+        {resolvedPopup && (
+          <ResolvedPopup open={resolvedPopup} onClose={setResolvedPopup} />
+        )}
         <Button
           id="account-button"
           aria-controls={openAccount ? "account-menu" : undefined}
@@ -108,6 +113,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
           handleNotificationDropDownClick={handleNotificationDropDownClick}
           handleClose={handleClose}
           onApproveDecline={getAllNotificationsRefresh}
+          openPopup={setResolvedPopup}
         />
       </Toolbar>
     </AppBar>
