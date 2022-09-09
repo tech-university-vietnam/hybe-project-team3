@@ -19,7 +19,6 @@ const AddItemForm = ({ handleClose, handleListChange }) => {
         await postSourceOrder(medicineName)
             .then((response) => {
                 if (response.status > 200 && response.status < 300) {
-                    console.log(response.status)
                     setError(false);
                     handleListChange();
                     handleClose();

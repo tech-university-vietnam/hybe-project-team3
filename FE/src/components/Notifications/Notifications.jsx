@@ -62,7 +62,7 @@ const Notifications = ({
       >
         {notifications
           .slice(0, next)
-          .map(({ id, type, hospitalName, medicineName, status }) => (
+          .map(({ id, type, hospital_name: hospitalName, medicine_name: medicineName, status }) => (
             <MenuItem
               key={id}
               disabled={status === "init" ? false : true}
