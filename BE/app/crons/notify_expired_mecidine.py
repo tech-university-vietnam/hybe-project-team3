@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
 from sqlalchemy import update
 from app.model.notification import BuyerSellerMap, Notification
-
+from sqlalchemy import delete
 from app.domains.helpers.database_repository import DatabaseRepository
 
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
@@ -74,10 +74,25 @@ def setup_cron(app: FastAPI, debug=True):
 
         db_repo.db.add_all(noti_list)
         db_repo.db.commit()
-    def check_unavailable_meds():
-        sources = db_repo.db.query(SourceOrderRequestDTO).filter(SourceOrderRequestDTO.status=="Unavailable").all()
-        map_meds_hospital_buy = defaultdict(list)
-        source_ids_to_update = map(lambda source: source.id, filter(lambda source: source.name not in "Not listed", sources))
+    def change_to_available_if_meds_sold_out(map_meds_hospital_sell):
+        sources = db_repo.db.query(SourceOrderRequestDTO).filter(SourceOrderRequestDTO.status=="Available").all()
+        source_ids_to_update = map(lambda source: source.id, filter(lambda source: source.name not in map_meds_hospital_sell.keys(), sources))
+        mappings=[]
+        for i in source_ids_to_update:
+            stmt = (
+                delete(NotificationDTO).
+                where(NotificationDTO.sourcing_id == i)
+            )
+            db_repo.db.execute(stmt)
+            db_repo.db.commit()
+            mappings.append({
+                "id": i,
+                "status": "Unavailable"
+            })
+        # update to availlable
+        db_repo.db.bulk_update_mappings(SourceOrderRequestDTO, mappings)
+        db_repo.db.commit()
+
         # update to availlable
     def check_available_meds():
         # Get the source-order unavailable (name and hospital_id)
@@ -87,7 +102,6 @@ def setup_cron(app: FastAPI, debug=True):
         # get listed med where name in source-order where status == unavailable
         # status == unavaiable and name in listed med
         # update source-order name where id in []
-        print("go here")
         meds: [TrackingMedicineDTO] = db_repo.db.query(TrackingMedicineDTO).filter(TrackingMedicineDTO.status=="Listed").all()
         map_meds_hospital_sell = defaultdict(list)
         for med in meds:
@@ -96,30 +110,45 @@ def setup_cron(app: FastAPI, debug=True):
         sources = db_repo.db.query(SourceOrderRequestDTO).filter(SourceOrderRequestDTO.status=="Unavailable").all()
         map_meds_hospital_buy = defaultdict(list)
         source_ids_to_update = set(map(lambda source: source.id, filter(lambda source: source.name in map_meds_hospital_sell.keys(), sources)))
-        print(source_ids_to_update)
+        change_to_available_if_meds_sold_out(map_meds_hospital_sell)
+        # create update dict
+        mappings = []
+        for i in source_ids_to_update:
+            mappings.append({
+                "id": i,
+                "status": "Available"
+            })
         # update to availlable
-        # for row in sources:
-        #     # check if name in approved notification
-        #     map_meds_hospital_buy[row.name].append(row.hospital_id)
-        # print(map_meds_hospital_buy)
-        # # join 2 list
-        # map_hospital_sell_buy = defaultdict(dict)
-        # for name in map_meds_hospital_sell.keys():
-        #     map_hospital_sell_buy[name]['buyer'] = map_meds_hospital_buy[name]
-        #     map_hospital_sell_buy[name]['seller'] = map_meds_hospital_sell[name]
-        # noti_list = []
-        # for name in map_hospital_sell_buy.keys():
-        #     noti: NotificationDTO = NotificationDTO.from_sourcing_entity(
-        #         map_hospital_sell_buy[name]['seller'][0][1],
-        #         name,
-        #         map_hospital_sell_buy[name]['seller'][0][0],
-        #         map_hospital_sell_buy[name]['buyer'][0]
-        #         )
-        #     noti_list += [noti]
-        #     print(noti_list)
-
-        # db_repo.db.add_all(noti_list)
+        db_repo.db.bulk_update_mappings(SourceOrderRequestDTO, mappings)
         # db_repo.db.commit()
+        for row in sources:
+            # check if name in approved notification
+            map_meds_hospital_buy[row.name].append((row.hospital_id, row.id))
+        # join 2 list
+        map_hospital_sell_buy = defaultdict(dict)
+        for name in map_meds_hospital_sell.keys():
+            map_hospital_sell_buy[name]['buyer'] = map_meds_hospital_buy[name]
+            map_hospital_sell_buy[name]['seller'] = map_meds_hospital_sell[name]
+        noti_list = []
+        for name in map_hospital_sell_buy.keys():
+            if (
+                map_hospital_sell_buy[name]['seller']
+                and
+                map_hospital_sell_buy[name]['buyer']
+            ):
+                # 1 med can have multiple hospital_buyer
+                for hospital_buy in map_hospital_sell_buy[name]['buyer']:
+                    noti: NotificationDTO = NotificationDTO.from_sourcing_entity(
+                        hospital_buy[1],
+                        map_hospital_sell_buy[name]['seller'][0][1],
+                        name,
+                        map_hospital_sell_buy[name]['seller'][0][0],
+                        hospital_buy[0]
+                        )
+                    noti_list += [noti]
+
+        db_repo.db.add_all(noti_list)
+        db_repo.db.commit()
 
     @app.on_event("startup")
     @repeat_every(seconds=30, raise_exceptions=True)  # 5 mins
