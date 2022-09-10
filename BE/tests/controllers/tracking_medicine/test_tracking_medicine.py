@@ -77,4 +77,4 @@ def test_delete_tracking_medicine(client: TestClient) -> None:
         "/tracking-medicines",
     )
     data = r.json()
-    assert data[0]['name'] != "foo"
+    assert data == []

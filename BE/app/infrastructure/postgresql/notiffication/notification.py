@@ -33,6 +33,8 @@ class NotificationDTO(Base):
 
     created_at: Union[datetime, Column] = Column(DateTime, default=datetime.now(), nullable=True)
 
+    tracking_medicine_id: Union[int, Column] = Column(Integer, nullable=True)
+
     Index('idx_notification_sourcing_', sourcing_type, sourcing_id, unique=True)
 
     def to_entity(self) -> Notification:
@@ -48,10 +50,10 @@ class NotificationDTO(Base):
             created_at=self.created_at,
         )
     @classmethod
-    def from_sourcing_entity(cls, med_id, med_name, med_from, med_to):
-        print("go here")
+    def from_sourcing_entity(cls, source_id, med_id, med_name, med_from, med_to):
         return cls(
-            sourcing_id=med_id,
+            sourcing_id=source_id,
+            tracking_medicine_id= med_id,
             sourcing_type='sourcing',
             sourcing_name=med_name,
             status='Init',

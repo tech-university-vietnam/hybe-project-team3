@@ -40,6 +40,7 @@ class SourceOrderRequestRoute:
             raise HTTPException(status_code=401)
         try:
             payload.created_by = user.id
+            payload.hospital_id = user.work_for
             source_order_req = self.source_order_req_service.create(payload)
             return source_order_req
         except DBError:
