@@ -23,9 +23,3 @@ class HospitalRoute:
         hospital_list = self.hospital_service.get_hospitals()
         return JSONResponse(content=hospital_list,
                             status_code=status.HTTP_200_OK)
-
-    @router.get("/hospitals/seed", tags=["hospitals"])
-    def seed_hospitals(self) -> schema.SeedResponse:
-        self.hospital_service.hospital_seed()
-        return JSONResponse(status_code=status.HTTP_201_CREATED,
-                            content={"msg": "success"})

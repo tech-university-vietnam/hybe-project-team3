@@ -17,7 +17,7 @@ class MedicineService:
     def create(self, payload: TrackingMedicinePayload, user: DetailUser):
         return self.medicine_repo.create(payload, user)
 
-    def get_listed_medicine_quantity(self, payload: TrackingMedicinePayload, user: SafeUser):
+    def get_listed_medicine_quantity(self, payload: TrackingMedicinePayload, user: DetailUser):
         return self.medicine_repo.get_listed_medicine_quantity(payload, user)
 
     def update(self, id: int, payload: TrackingMedicinePayload):
@@ -25,3 +25,4 @@ class MedicineService:
 
     def delete(self, id: int):
         return self.medicine_repo.delete(id)
+
