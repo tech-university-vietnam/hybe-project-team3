@@ -1,6 +1,7 @@
 from typing import Iterator
 
 from app.domains.notification.notification_repository import NotificationRepository
+from app.model.notification import Notification
 
 
 class NotificationService:
@@ -10,6 +11,9 @@ class NotificationService:
 
     def list(self):
         return self.notify_repo.list()
+
+    def create(self, payload: Notification):
+        return self.notify_repo.create(payload)
 
     def approved(self, id: int):
         return self.notify_repo.approved(id)
@@ -22,4 +26,3 @@ class NotificationService:
 
     def update_all_seen_status(self, ids: Iterator[int]):
         return self.notify_repo.update_all_seen_status(ids)
-

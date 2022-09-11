@@ -11,8 +11,6 @@ from app.infrastructure.postgresql.source_order_request.source_order_request imp
 
 class TrackingMedicineDTO(Base):
 
-    """userDTO is a data transfer object associated with User entity."""
-
     __tablename__ = "TrackingMedicine"
     id: Union[int, Column] = Column(Integer, primary_key=True,
                                     autoincrement=True)

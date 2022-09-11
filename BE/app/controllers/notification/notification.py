@@ -8,8 +8,9 @@ from fastapi_utils.inferring_router import InferringRouter
 from pydantic import BaseModel
 from starlette import status
 
+from app.controllers.notification.schema import NotificationPayload
 from app.domains.notification.notification_service import NotificationService
-from app.model.notification import Notification
+from app.model.notification import Notification, NotificationWithHospital, SourceType, Status, SeenStatus
 from app.domains.medicine.medicine_service import MedicineService
 from app.domains.user.user_service import UserService
 from app.services.jwt_service import JWTService
@@ -18,59 +19,10 @@ from app.main import oauth2_scheme
 
 router = InferringRouter()
 
-DUMMY_NOTIFICATIONS = [
-    {
-        "id": 1,
-        "type": "warningExpired",
-        "hospitalName": "VinMec",
-        "medicineName": "Advil",
-        "status": "init",
-        "seenStatus": "not seen"
-    },
-    {
-        "id": 2,
-        "type": "notifySold",
-        "hospitalName": "VinMec",
-        "medicineName": "Advil",
-        "status": "init",
-        "seenStatus": "not seen"
-    },
-    {
-        "id": 3,
-        "type": "notifyAvailable",
-        "hospitalName": "VinMec",
-        "medicineName": "Advil",
-        "status": "init",
-        "seenStatus": "not seen"
-    },
-    {
-        "id": 4,
-        "type": "warningExpired",
-        "hospitalName": "VinMec",
-        "medicineName": "Advil",
-        "status": "approved",
-        "seenStatus": "seen"
-    },
-    {
-        "id": 5,
-        "type": "warningExpired",
-        "hospitalName": "VinMec",
-        "medicineName": "Advil",
-        "status": "declined",
-        "seenStatus": "seen"
-    },
-    {
-        "id": 6,
-        "type": "notifyAvailable",
-        "hospitalName": "VinMec",
-        "medicineName": "Advil",
-        "status": "approved",
-        "seenStatus": "seen"
-    },
-]
 
 class TotalNotSeenPayload(BaseModel):
     total: int
+
 
 @cbv(router)
 class NotificationRoute:
@@ -89,7 +41,7 @@ class NotificationRoute:
         self.notify_service: NotificationService = obj_graph.provide(NotificationService)
 
     @router.get("/notifications", tags=["notification"],
-                status_code=status.HTTP_200_OK, response_model=List[Notification])
+                status_code=status.HTTP_200_OK, response_model=List[NotificationWithHospital])
     def get_list(self, background_tasks: BackgroundTasks,
                  bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
 
@@ -106,17 +58,18 @@ class NotificationRoute:
         return notifies
 
     @router.get("/notification/seed", tags=["notification"],
-                status_code=status.HTTP_200_OK)
+                status_code=status.HTTP_201_CREATED)
     def seed(self):
-        DUMMY_NOTIFICATIONS.append({
-            "id": len(DUMMY_NOTIFICATIONS) + 1,
-            "type": "notifyAvailable",
-            "hospitalName": "VinMec",
-            "medicineName": "Advil",
-            "status": "approved",
-            "seenStatus": "not seen"
-        })
-        print(DUMMY_NOTIFICATIONS)
+        noti: NotificationPayload = NotificationPayload(
+            sourcing_type=SourceType.tracking,
+            sourcing_name='Seed',
+            status=Status.init,
+            seen_status=SeenStatus.not_seen,
+            description='Description seed',
+            from_hospital_id=1,
+            to_hospital_id=5,
+        )
+        self.notify_service.create(noti)
         return {"msg": "ok"}
 
     @router.post("/notification/{id}/approved", tags=["notification"],
@@ -169,5 +122,3 @@ class NotificationRoute:
         total = self.notify_service.count_total_not_seen()
 
         return TotalNotSeenPayload(total=total)
-
-

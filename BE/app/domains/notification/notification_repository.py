@@ -1,18 +1,22 @@
 import logging
-from typing import List, Iterator
+from typing import List, Iterator, Union
 
 from sqlalchemy import update, exc, func, and_
+from sqlalchemy.orm import joinedload
 
 from app.domains.helpers.database_repository import DatabaseRepository
 from app.infrastructure.postgresql.notiffication.notification import NotificationDTO
-from app.model.notification import Notification, Status, SeenStatus
+from app.model.notification import Notification, Status, SeenStatus, NotificationWithHospital
 
 
 class NotificationRepository(DatabaseRepository):
 
-    def list(self) -> List[Notification]:
-        notifies: [NotificationDTO] = self.db.query(NotificationDTO).all()
-        return list(map(lambda notify: notify.to_entity(), notifies))
+    def list(self) -> List[NotificationWithHospital]:
+        notifies: [NotificationDTO] = self.db.query(NotificationDTO).options(
+            joinedload(NotificationDTO.from_hospital),
+            joinedload(NotificationDTO.to_hospital)). \
+            all()
+        return list(map(lambda notify: notify.to_full_entity(), notifies))
 
     def approved(self, id: int):
         return self._update_status(id, 'approved')
@@ -56,3 +60,11 @@ class NotificationRepository(DatabaseRepository):
         except exc.SQLAlchemyError as e:
             logging.error(e)
             return False
+
+    def create(self, payload: Union[List[Notification], Notification]):
+        if isinstance(payload, Notification):
+            payload = [payload]
+
+        dto_payloads = list(map(lambda p: NotificationDTO.from_notification_payload(p), payload))
+        self.db.add_all(dto_payloads)
+        self.db.commit()
