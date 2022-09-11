@@ -5,7 +5,7 @@ const MedicineItems = ({ medicineItems, handleDelete }) => {
   return (
     <div>
       {medicineItems.map(
-        ({ id, name: medicineName, hospitalName, expirationDate, status }) => (
+        ({ id, name: medicineName, hospitalName, expired_date: expirationDate, status }) => (
           <MedicineItem
             key={id}
             id={id}

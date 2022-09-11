@@ -9,14 +9,15 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
+import moment from "moment";
 
 const badgeColorMap = {
-  LISTED: "primary",
-  "NOT LISTED": "secondary",
-  "FINISHED LISTING": "success",
-  AVAILABLE: "primary",
-  "unavailable": "secondary",
-  RESOLVED: "success"
+  Listed: "primary",
+  "Not listed": "secondary",
+  "Finished listing": "success",
+  Available: "primary",
+  Unavailable: "secondary",
+  Resolved: "success",
 };
 
 const MedicineItem = ({
@@ -47,10 +48,13 @@ const MedicineItem = ({
             <Typography>{hospitalName}</Typography>
           </Grid>
           <Grid xs={3}>
-            <Typography>{expirationDate}</Typography>
+            <Typography>
+              {moment(expirationDate).format("YYYY-MM-DD")}
+            </Typography>
           </Grid>
           <Grid xs={2}>
             <Chip
+              onClick={() => console.log("clicking status")}
               label={status}
               color={badgeColor}
               sx={{ fontWeight: "bold" }}

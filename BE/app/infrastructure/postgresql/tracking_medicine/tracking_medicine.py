@@ -33,7 +33,9 @@ class TrackingMedicineDTO(Base):
             id=self.id,
             name=self.name,
             number=self.number,
-            status=self.status
+            status=self.status,
+            expired_date=self.expired_date,
+
         )
 
     @classmethod
