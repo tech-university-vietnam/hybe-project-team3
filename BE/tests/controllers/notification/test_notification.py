@@ -19,7 +19,7 @@ def add_bearer(token: str):
 def test_get_token(client: TestClient) -> None:
     r = client.post(
         REGISTER_PATH,
-        json={"email": "test2323", "password": "123", "work_for":1}
+        json={"email": "test2323", "password": "123", "work_for": 1}
     )
     r = client.post(
         LOGIN_PATH,
@@ -29,6 +29,7 @@ def test_get_token(client: TestClient) -> None:
     global auth_header
     auth_header["Authorization"] = add_bearer(data['token'])
     assert r.status_code == 200
+
 
 def test_get_notseen_notification_quantity_first(client: TestClient) -> None:
     r = client.get(
@@ -63,7 +64,7 @@ def test_get_notseen_notification_quantity_after(client: TestClient) -> None:
 
 def test_approve_notification(client: TestClient) -> None:
     r = client.post(
-        f"{NOTI_PREFIX}/approved",
+        f"{NOTI_PREFIX}/{1}/approved",
         headers=auth_header,
         json={"id": 1}
     )
@@ -74,9 +75,8 @@ def test_approve_notification(client: TestClient) -> None:
 
 def test_declined_notification(client: TestClient) -> None:
     r = client.post(
-        f"{NOTI_PREFIX}/declined",
+        f"{NOTI_PREFIX}/{1}/declined",
         headers=auth_header,
-        json={"id": 1}
     )
     data = r.json()
     assert r.status_code == status.HTTP_200_OK
