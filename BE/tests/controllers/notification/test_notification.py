@@ -38,7 +38,7 @@ def test_get_notseen_notification_quantity_first(client: TestClient) -> None:
     )
     data = r.json()
     assert r.status_code == status.HTTP_200_OK
-    assert data['notseen_noti'] == 3
+    assert data['total'] == 3
 
 
 def test_get_notifications(client: TestClient) -> None:
@@ -59,14 +59,13 @@ def test_get_notseen_notification_quantity_after(client: TestClient) -> None:
     )
     data = r.json()
     assert r.status_code == status.HTTP_200_OK
-    assert data['notseen_noti'] == 0
+    assert data['total'] == 0
 
 
 def test_approve_notification(client: TestClient) -> None:
     r = client.post(
         f"{NOTI_PREFIX}/{1}/approved",
         headers=auth_header,
-        json={"id": 1}
     )
     data = r.json()
     assert r.status_code == status.HTTP_200_OK
