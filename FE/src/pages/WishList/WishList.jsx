@@ -6,11 +6,10 @@ import usePagination from "../../Utils/hooks/pagination";
 import Filter from "components/Filter/Filter";
 import "./WishList.css";
 import { deleteSourceOrder, getSourceOrders } from "Utils/api/sourceOrder";
-import ResolvedPopup from "components/WishListPopup/ResolvedPopup";
+import ResolvedPopup from "components/WishListPopup/ResolvedPopup.jsx";
 
 const WishList = () => {
   const [resolvedPopup, setResolvedPopup] = useState(false);
-  const [availablePopup, setAvailablePopup] = useState(false);
   const [wishListItems, setWishListItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
@@ -21,8 +20,7 @@ const WishList = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const openPopup = ({ status }) => {
-    if (status === "Unavailable") return setResolvedPopup(true);
-    if (status === "Available") return setAvailablePopup(true);
+    if (status === "Resolved") return setResolvedPopup(true);
   };
 
   const filteredWishListItems = useMemo(() => {

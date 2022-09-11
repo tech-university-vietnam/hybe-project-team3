@@ -16,7 +16,7 @@ const style = {
   p: 4,
 };
 
-const ResolvedPopup = ({
+const FinishedListingPopup = ({
   id,
   hospitalName,
   hospitalAddress,
@@ -30,9 +30,8 @@ const ResolvedPopup = ({
     <Modal open={open} onClose={() => onClose(false)}>
       <Box sx={style}>
         <Typography sx={{ fontWeight: "bold" }}>
-          🎉 You've bought {medicineName} from {hospitalName}
+          🎉 {hospitalName} bought {medicineName} from you!
         </Typography>
-        <Typography>Expiration date: {expirationDate}</Typography>
         <Typography>Address: {hospitalAddress}</Typography>
         <Typography>Contact number: {hospitalPhone}</Typography>
       </Box>
@@ -40,7 +39,7 @@ const ResolvedPopup = ({
   );
 };
 
-ResolvedPopup.propTypes = {
+FinishedListingPopup.propTypes = {
   id: PropTypes.number,
   hospitalName: PropTypes.string,
   hospitalAddress: PropTypes.string,
@@ -49,4 +48,4 @@ ResolvedPopup.propTypes = {
   expirationDate: PropTypes.string,
 };
 
-export default ResolvedPopup;
+export default FinishedListingPopup;

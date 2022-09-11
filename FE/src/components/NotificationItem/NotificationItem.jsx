@@ -102,8 +102,7 @@ const NotificationItem = ({
       )}
       {status === "approved" && (
         <Typography variant="subtitle2" color="green">
-          🎉 You've bought this item. Please wait for {hospitalName} to contact
-          you
+          🎉 You've bought this item.
         </Typography>
       )}
       {status === "invalid" && (

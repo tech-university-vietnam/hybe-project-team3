@@ -56,7 +56,9 @@ const MedicineItem = ({
           <Grid xs={2}>
             <Chip
               onClick={
-                status === "Resolved" || status === "Available"
+                status === "Resolved" ||
+                status === "Available" ||
+                status === "Finished listing"
                   ? () => openPopup({ status })
                   : () => {}
               }
