@@ -71,7 +71,6 @@ class NotificationItem(BaseModel):
     to_hospital_id: Optional[int]
 
 
-
 class NotificationWithHospital(Notification):
     from_hospital: Optional[Hospital]
     to_hospital: Optional[Hospital]
