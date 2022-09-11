@@ -1,12 +1,15 @@
+from typing import List
+
 import pinject
-from fastapi import Depends
+from fastapi import Depends, Path, BackgroundTasks
 from fastapi.responses import JSONResponse
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
+from pydantic import BaseModel
 from starlette import status
 
 from app.domains.notification.notification_service import NotificationService
-from app.model.notification import NotificationIdPayload
+from app.model.notification import Notification
 from app.domains.medicine.medicine_service import MedicineService
 from app.domains.user.user_service import UserService
 from app.services.jwt_service import JWTService
@@ -66,6 +69,8 @@ DUMMY_NOTIFICATIONS = [
     },
 ]
 
+class TotalNotSeenPayload(BaseModel):
+    total: int
 
 @cbv(router)
 class NotificationRoute:
@@ -81,19 +86,24 @@ class NotificationRoute:
             MedicineService)
         self.jwt_service: JWTService = obj_graph.provide(JWTService)
         self.user_service: UserService = obj_graph.provide(UserService)
-        self.notify_service: NotificationService = obj_graph.provide(UserService)
+        self.notify_service: NotificationService = obj_graph.provide(NotificationService)
 
     @router.get("/notifications", tags=["notification"],
-                status_code=status.HTTP_200_OK)
-    def get_list(self, bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+                status_code=status.HTTP_200_OK, response_model=List[Notification])
+    def get_list(self, background_tasks: BackgroundTasks,
+                 bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
 
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        for item in DUMMY_NOTIFICATIONS:
-            item['seenStatus'] = "seen"
-        return DUMMY_NOTIFICATIONS
+
+        notifies = self.notify_service.list()
+
+        ids_to_update = list(map(lambda noti: noti.id, notifies))
+        background_tasks.add_task(self.notify_service.update_all_seen_status, ids_to_update)
+
+        return notifies
 
     @router.get("/notification/seed", tags=["notification"],
                 status_code=status.HTTP_200_OK)
@@ -109,26 +119,24 @@ class NotificationRoute:
         print(DUMMY_NOTIFICATIONS)
         return {"msg": "ok"}
 
-    @router.post("/notification/approved", tags=["notification"],
+    @router.post("/notification/{id}/approved", tags=["notification"],
                  status_code=status.HTTP_200_OK)
     def approved(
             self,
-            payload: NotificationIdPayload,
+            id: int = Path("Notification ID"),
             bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
 
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        DUMMY_NOTIFICATIONS[payload.id - 1]["status"] = "approved"
-        return DUMMY_NOTIFICATIONS[payload.id - 1]
 
-    @router.post("/notification/declined", tags=["notification"],
+        return self.notify_service.approved(id)
+
+    @router.post("/notification/{id}/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
-    def declined(
-            self,
-            payload: NotificationIdPayload,
-            bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+    def declined(self, id: int = Path("Notification ID"),
+                 bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
         """
         change status to Resolved in tracking medicine if type warningExpired
         dont change status if type notifySold
@@ -140,12 +148,11 @@ class NotificationRoute:
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
-        DUMMY_NOTIFICATIONS[payload.id - 1]["status"] = "declined"
-        return DUMMY_NOTIFICATIONS[payload.id - 1]
+        return self.notify_service.declined(id)
 
-    @router.get("/notification/notseen", tags=["notification"],
-                status_code=status.HTTP_200_OK)
-    def get_notseen_notification(
+    @router.get("/notification/not-seen", tags=["notification"],
+                status_code=status.HTTP_200_OK, response_model=TotalNotSeenPayload)
+    def count_total_not_seen(
             self,
             bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
         """
@@ -158,8 +165,9 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        count = 0
-        for item in DUMMY_NOTIFICATIONS:
-            if item['seenStatus'] == "not seen":
-                count += 1
-        return {"notseen_noti": count}
+
+        total = self.notify_service.count_total_not_seen()
+
+        return TotalNotSeenPayload(total=total)
+
+

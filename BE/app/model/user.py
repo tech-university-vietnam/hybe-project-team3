@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -40,7 +40,7 @@ class SafeUser(BaseModel):
     id: int
     username: Optional[str]
     email: str
-    work_for: int
+    work_for: str
     created_at: datetime
     updated_at: datetime
 

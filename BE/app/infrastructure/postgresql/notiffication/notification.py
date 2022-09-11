@@ -5,7 +5,7 @@ from sqlalchemy import Column, String, DateTime, Integer, Index
 
 from app.infrastructure.postgresql.database import Base
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
-from app.model.notification import Notification
+from app.model.notification import Notification, SeenStatus
 
 
 class NotificationDTO(Base):
@@ -23,7 +23,7 @@ class NotificationDTO(Base):
     sourcing_name: Union[str, Column] = Column(String)
 
     status: Union[str, Column] = Column(String)  # Approve/Reject button, init when first created
-    seen_status: Union[str, Column] = Column(String, default='Not seen')
+    seen_status: Union[str, Column] = Column(String, default=SeenStatus.not_seen)
     description: Union[str, Column] = Column(String)  # Text shown in UI
 
     # For buyer

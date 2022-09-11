@@ -8,9 +8,23 @@ class NotificationIdPayload(BaseModel):
     id: int
 
 
+class SeenStatus:
+    not_seen = 'not seen'
+    seen = 'seen'
+
+
+class Status:
+    approved = 'approved'
+    declined = 'declined'
+
+    @classmethod
+    def all(cls):
+        return [cls.approved, cls.declined]
+
+
 class Notification(BaseModel):
     id: int
-    souring_id: int
+    souring_id: Optional[int]
     sourcing_type: str
     sourcing_name: str
 

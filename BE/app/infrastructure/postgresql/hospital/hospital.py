@@ -21,7 +21,7 @@ class HospitalDTO(Base):
     address: Union[str, Column] = Column(String, nullable=False)
     join_date: Union[datetime, Column] = Column(DateTime(timezone=True),
                                                 nullable=True)
-    user = relationship("UserDTO", backref=__tablename__)
+    users = relationship("UserDTO", backref=__tablename__, uselist=True)
 
     def to_entity(self) -> Hospital:
         return Hospital(

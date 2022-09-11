@@ -42,6 +42,8 @@ class UserDTO(Base):
     source_order_request = relationship("SourceOrderRequestDTO",
                                         backref=__tablename__)
 
+    hospital = relationship("HospitalDTO", back_populates="users", viewonly=True)
+
     def to_entity(self) -> User:
         return User(
             id=self.id,

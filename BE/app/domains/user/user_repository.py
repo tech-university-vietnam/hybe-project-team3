@@ -31,7 +31,7 @@ class UserRepository:
             raise DBError
 
     def get_by_id(self, id: str) -> Optional[SafeUser]:
-        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.user).where(
+        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.users).where(
             UserDTO.id == id)
         try:
             user_dto = self.db.execute(statement).scalar_one()
@@ -41,7 +41,7 @@ class UserRepository:
             return
 
     def get_detail_by_id(self, id: str) -> Optional[DetailUser]:
-        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.user).where(
+        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.users).where(
             UserDTO.id == id)
         try:
             user_dto: UserDTO = self.db.execute(statement).scalar_one()
