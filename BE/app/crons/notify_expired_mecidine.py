@@ -1,3 +1,4 @@
+import sys
 from collections import defaultdict
 from datetime import datetime, timedelta
 from operator import and_
@@ -17,7 +18,7 @@ from app.model.notification import Type
 
 
 def setup_cron(app: FastAPI, debug=True):
-    obj_graph = pinject.new_object_graph()
+    obj_graph = pinject.new_object_graph(modules=[sys.modules[__name__]])
     db_repo: DatabaseRepository = obj_graph.provide(DatabaseRepository)
 
     def check_expired_meds(meds: [TrackingMedicineDTO]):

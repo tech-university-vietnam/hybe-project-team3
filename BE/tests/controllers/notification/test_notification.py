@@ -32,7 +32,7 @@ def test_get_token(client: TestClient) -> None:
 
 def test_get_notseen_notification_quantity_first(client: TestClient) -> None:
     r = client.get(
-        "notification/notseen",
+        "notification/not-seen",
         headers=auth_header,
     )
     data = r.json()
@@ -53,7 +53,7 @@ def test_get_notifications(client: TestClient) -> None:
 
 def test_get_notseen_notification_quantity_after(client: TestClient) -> None:
     r = client.get(
-        "notification/notseen",
+        "notification/not-seen",
         headers=auth_header,
     )
     data = r.json()
