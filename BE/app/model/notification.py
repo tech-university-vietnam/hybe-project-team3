@@ -1,8 +1,6 @@
 from datetime import datetime
-from optparse import Option
 from typing import Optional
 
-import pydantic
 from pydantic import BaseModel
 
 from app.model.hospital import Hospital
@@ -17,25 +15,25 @@ class SeenStatus:
     seen = 'seen'
 
 
+class Type:
+    warning_expired = 'warningExpired'
+    notify_sold = 'notifySold'
+    notify_available = 'notifyAvailable'
+
+
 class Status:
-    approved = 'approved'
-    declined = 'declined'
-    init = 'init'
+    approved = 'Approved'
+    declined = 'Declined'
+    init = 'Init'
 
     @classmethod
     def all(cls):
         return [cls.approved, cls.declined]
 
 
-class SourceType:
-    tracking = 'tracking'
-    source_order = 'source_order'
-
-
 class Notification(BaseModel):
     id: int
     souring_id: Optional[int]
-    sourcing_type: str
     sourcing_name: str
     status: str
     type: str
@@ -52,7 +50,6 @@ class Notification(BaseModel):
 
 class BuyerSellerMap(BaseModel):
     sourcing_id: int
-    sourcing_type: Optional[str]
     sourcing_name: str
 
     from_hospital_id: int

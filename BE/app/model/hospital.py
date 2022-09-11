@@ -11,10 +11,7 @@ class Hospital(BaseModel):
     name: str
     telephone: str
     address: str
-    join_date: datetime
-
-
-
+    join_date: Optional[datetime]
 
 
 class HospitalItem:

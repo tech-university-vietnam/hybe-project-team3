@@ -3,13 +3,12 @@ from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer, Index
 from sqlalchemy.orm import relationship
-from app.model.notification import NotificationItem
-from app.model.notification import BuyerSellerMap
+from app.model.notification import NotificationItem, Type
 
 from app.infrastructure.postgresql.database import Base
 from app.infrastructure.postgresql.hospital.hospital import HospitalDTO
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
-from app.model.notification import Notification, SeenStatus, SourceType, Status, NotificationWithHospital
+from app.model.notification import Notification, SeenStatus, Status, NotificationWithHospital
 
 
 class NotificationDTO(Base):
@@ -20,8 +19,6 @@ class NotificationDTO(Base):
 
     # For joining with TrackingMedicine or SourceOrder
     sourcing_id: Union[int, Column] = Column(Integer)
-    # `tracking` for tracking-medicine, `source-order` for source order request
-    sourcing_type: Union[str, Column] = Column(String)
     # Both seller and buyer, medicine_name
     sourcing_name: Union[str, Column] = Column(String)
 
@@ -46,13 +43,12 @@ class NotificationDTO(Base):
 
     tracking_medicine_id: Union[int, Column] = Column(Integer, nullable=True)
 
-    Index('idx_notification_sourcing_', sourcing_type, sourcing_id, unique=True)
+    Index('idx_notification_sourcing_', type, sourcing_id, unique=True)
 
     def to_entity(self) -> Notification:
         return Notification(
             id=self.id,
             sourcing_id=self.sourcing_id,
-            sourcing_type=self.sourcing_type,
             sourcing_name=self.sourcing_name,
             type=self.type,
             status=self.status,
@@ -68,21 +64,20 @@ class NotificationDTO(Base):
         return cls(
             sourcing_id=source_id,
             tracking_medicine_id= med_id,
-            sourcing_type='sourcing',
             sourcing_name=med_name,
-            status='Init',
+            status=Status.init,
             description='',
             from_hospital_id=med_from,
             to_hospital_id=med_to,
-            type="notifyAvailable"
+            type=Type.notify_available
         )
 
     def to_full_entity(self) -> NotificationWithHospital:
         return NotificationWithHospital(
             id=self.id,
             sourcing_id=self.sourcing_id,
-            sourcing_type=self.sourcing_type,
             sourcing_name=self.sourcing_name,
+            type=self.type,
             status=self.status,
             seen_status=self.seen_status,
             description=self.description,
@@ -97,13 +92,12 @@ class NotificationDTO(Base):
     def from_tracking_medicine(cls, med: TrackingMedicineDTO):
         return cls(
             sourcing_id=med.id,
-            sourcing_type=SourceType.tracking,
             sourcing_name=med.name,
             status=Status.init,
             description='',
             from_hospital_id=med.hospital_id,
             to_hospital_id=None,
-            type="warningExpired"
+            type=Type.warning_expired
         )
 
     def to_list_item(self) -> NotificationItem:
@@ -121,7 +115,6 @@ class NotificationDTO(Base):
     def from_notification_payload(cls, payload: Notification):
         return cls(
             sourcing_id=payload.souring_id,
-            sourcing_type=payload.sourcing_type,
             sourcing_name=payload.sourcing_name,
             status=payload.status,
             description=payload.description,

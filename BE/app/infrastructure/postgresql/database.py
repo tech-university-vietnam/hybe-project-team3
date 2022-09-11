@@ -38,12 +38,12 @@ def drop_tables():
 
 
 def init_database():
+    create_tables()
+
     if os.getenv('ENV', 'local') == "test":
         drop_tables()
-        create_tables()
         seeders.seed_hositals(session)
     else:
-        create_tables()
         seeders.seed_hositals(session)
         seeders.seed_users(session)
         seeders.seed_medicines(session)

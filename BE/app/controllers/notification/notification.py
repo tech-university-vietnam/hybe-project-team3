@@ -3,21 +3,19 @@ from typing import List
 import pinject
 from fastapi import Depends, Path, BackgroundTasks
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPAuthorizationCredentials
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from pydantic import BaseModel
 from starlette import status
 
 from app.controllers.notification.schema import NotificationPayload
-from app.domains.notification.notification_service import NotificationService
-from app.model.notification import Notification, NotificationWithHospital, SourceType, Status, SeenStatus
-from app.domains.notification.notification_service import NotificationService
-from app.model.notification import NotificationIdPayload
 from app.domains.medicine.medicine_service import MedicineService
+from app.domains.notification.notification_service import NotificationService
 from app.domains.user.user_service import UserService
-from app.services.jwt_service import JWTService
-from fastapi.security import HTTPAuthorizationCredentials
 from app.main import oauth2_scheme
+from app.model.notification import NotificationWithHospital, Status, SeenStatus, Type
+from app.services.jwt_service import JWTService
 
 router = InferringRouter()
 
@@ -48,7 +46,7 @@ class NotificationRoute:
                  bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
 
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
-        user = self.user_service.get_user_by_id(user_id)
+        user = self.user_service.get_detail_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
@@ -62,15 +60,31 @@ class NotificationRoute:
     @router.get("/notification/seed", tags=["notification"],
                 status_code=status.HTTP_201_CREATED)
     def seed(self):
-        noti: NotificationPayload = NotificationPayload(
-            sourcing_type=SourceType.tracking,
+        noti = [NotificationPayload(
+            type=Type.notify_available,
             sourcing_name='Seed',
             status=Status.init,
             seen_status=SeenStatus.not_seen,
-            description='Description seed',
+            description='Description available',
             from_hospital_id=1,
             to_hospital_id=5,
-        )
+        ), NotificationPayload(
+            type=Type.warning_expired,
+            sourcing_name='Seed',
+            status=Status.init,
+            seen_status=SeenStatus.not_seen,
+            description='Description expired',
+            from_hospital_id=1,
+            to_hospital_id=5,
+        ), NotificationPayload(
+            type=Type.notify_sold,
+            sourcing_name='Seed',
+            status=Status.init,
+            seen_status=SeenStatus.not_seen,
+            description='Description sold',
+            from_hospital_id=1,
+            to_hospital_id=5,
+        )]
         self.notify_service.create(noti)
         return {"msg": "ok"}
 
@@ -86,7 +100,7 @@ class NotificationRoute:
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
-        return self.notify_service.approved(id)
+        return self.notify_service.update_status(id, Status.approved, user_id)
 
     @router.post("/notification/{id}/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
@@ -102,9 +116,7 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        self.notification_service.update_status(id, "Declined", user.id, user.work_for)
-
-        return self.notify_service.declined(id)
+        return self.notify_service.update_status(id, Status.declined, user_id)
 
     @router.get("/notification/not-seen", tags=["notification"],
                 status_code=status.HTTP_200_OK, response_model=TotalNotSeenPayload)
@@ -118,10 +130,10 @@ class NotificationRoute:
         """
 
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
-        user = self.user_service.get_user_by_id(user_id)
+        user = self.user_service.get_detail_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
-        total = self.notify_service.count_total_not_seen()
+        total = self.notify_service.count_total_not_seen(user.work_for)
 
         return TotalNotSeenPayload(total=total)

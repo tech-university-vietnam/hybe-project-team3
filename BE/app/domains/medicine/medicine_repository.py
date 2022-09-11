@@ -64,8 +64,7 @@ class MedicineRepository(MedicineStatus):
 
     def update(self, id: int, medicine: TrackingMedicinePayload) -> Optional[TrackingMedicine]:
         try:
-            medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(
-                (TrackingMedicineDTO.id == id)).first()
+            medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).get(id)
             if medicine_dto is None:
                 return
             update_values = {**dict(medicine_dto.to_entity()), **dict(medicine)}

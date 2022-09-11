@@ -1,24 +1,27 @@
 import logging
 from typing import List, Iterator, Union
 
-from sqlalchemy import update, exc, func, and_, or_, desc
+from sqlalchemy import update, exc, and_, or_, desc
 from sqlalchemy.orm import joinedload
 
 from app.domains.helpers.database_repository import DatabaseRepository
 from app.infrastructure.postgresql.notiffication.notification import NotificationDTO
-from app.model.notification import Notification, Status, SeenStatus, NotificationWithHospital
+from app.model.notification import Notification, Status, SeenStatus, NotificationWithHospital, Type
 
 
 class NotificationRepository(DatabaseRepository):
 
     def list(self, hospital_id: int) -> List[NotificationWithHospital]:
-        notifies: [NotificationDTO] = self.db.query(NotificationDTO).filter(
+        notifies: [NotificationDTO] = self.db.query(NotificationDTO).options(
+            joinedload(NotificationDTO.from_hospital),
+            joinedload(NotificationDTO.to_hospital)
+        ).filter(
             or_(
-                and_(NotificationDTO.type == "warningExpired",
+                and_(NotificationDTO.type == Type.warning_expired,
                      NotificationDTO.from_hospital_id == hospital_id),
-                and_(NotificationDTO.type == "notifyAvailable",
+                and_(NotificationDTO.type == Type.notify_available,
                      NotificationDTO.to_hospital_id == hospital_id),
-                and_(NotificationDTO.type == "notifySold",
+                and_(NotificationDTO.type == Type.notify_sold,
                      or_(
                          NotificationDTO.to_hospital_id == hospital_id,
                          NotificationDTO.from_hospital_id == hospital_id,
@@ -53,18 +56,16 @@ class NotificationRepository(DatabaseRepository):
     def count_total_not_seen(self, hospital_id: int) -> int:
         count = self.db.query(NotificationDTO).filter(
             or_(
-                and_(NotificationDTO.type == "warningExpired",
+                and_(NotificationDTO.type == Type.warning_expired,
                      NotificationDTO.from_hospital_id == hospital_id),
-                and_(NotificationDTO.type == "notifyAvailable",
+                and_(NotificationDTO.type == Type.notify_available,
                      NotificationDTO.to_hospital_id == hospital_id),
-                and_(NotificationDTO.type == "notifySold",
+                and_(NotificationDTO.type == Type.notify_sold,
                      or_(
                          NotificationDTO.to_hospital_id == hospital_id,
-                         NotificationDTO.from_hospital_id == hospital_id,
-                     )
-                     )
+                         NotificationDTO.from_hospital_id == hospital_id))
             ),
-            NotificationDTO.seen_status == "Not seen"
+            NotificationDTO.seen_status == SeenStatus.not_seen
         ).count()
         return count
 
@@ -97,26 +98,28 @@ class NotificationRepository(DatabaseRepository):
         Update notification status
         if status is Approved -> change type to notifySold
         """
-        try:
-            update_values = {
+
+        def build_updated_values():
+            values = {
                 "status": status,
             }
+            # Update notification type to sold if buyer approved
             if status == "Approved":
-                if self.db.query(NotificationDTO).filter(
-                        NotificationDTO.id == id,
-                        NotificationDTO.type == "notifyAvailable"):
-                    update_values["type"] = "notifySold"
-            # stmt = (
-            #     update(NotificationDTO).
-            #     where(NotificationDTO.id == id).
-            #     values(update_values)
-            # )
-            stmt = NotificationDTO.update().returning(NotificationDTO) \
+                notify: NotificationDTO = self.db.query(NotificationDTO).get(id)
+                if notify.type == Type.notify_available:
+                    values["type"] = Type.notify_sold
+            return values
+
+        try:
+            update_values = build_updated_values()
+
+            stmt = NotificationDTO.__table__.update().returning(NotificationDTO) \
                 .where(NotificationDTO.id == id) \
                 .values(update_values)
-            self.db.execute(stmt)
-            noti = self.db.commit()
-            return noti
+            result = self.db.execute(stmt)
+            notify = result.fetchone()
+            self.db.commit()
+            return notify
         except exc.SQLAlchemyError as e:
             logging.error(e)
             return
