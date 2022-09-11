@@ -1,0 +1,27 @@
+[
+  {
+    "email": "test1@gmail.com",
+    "password": "1",
+    "work_for": 1
+  },
+  {
+    "email": "test2@gmail.com",
+    "password": "1",
+    "work_for": 2
+  },
+  {
+    "email": "test3@gmail.com",
+    "password": "1",
+    "work_for": 3
+  },
+  {
+    "email": "test4@gmail.com",
+    "password": "1",
+    "work_for": 4
+  },
+  {
+    "email": "test5@gmail.com",
+    "password": "1",
+    "work_for": 5
+  }
+]

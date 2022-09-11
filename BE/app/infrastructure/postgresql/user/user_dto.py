@@ -31,9 +31,9 @@ class UserDTO(Base):
     # created_at: Union[datetime, Column] = Column(DateTime(timezone=True),
     #           server_default=func.now())
 
-    created_at: Union[datetime, Column] = Column(DateTime(timezone=True),
+    created_at: Union[datetime, Column] = Column(DateTime(timezone=True),default=datetime.now(),
                                                  nullable=True)
-    updated_at: Union[datetime, Column] = Column(DateTime(timezone=True),
+    updated_at: Union[datetime, Column] = Column(DateTime(timezone=True), default=datetime.now(),
                                                  nullable=True)
     # jwt token
     token: Union[str, Column] = Column(String, nullable=True)
@@ -91,6 +91,7 @@ class UserDTO(Base):
             created_at=self.created_at,
             updated_at=self.updated_at
         )
+
 
     @classmethod
     def from_register_request(cls, regis_req: RegisterRequest) -> "UserDTO":

@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-
+from app.infrastructure.postgresql import seeders
 
 from app.config import get_settings
 
@@ -37,32 +37,14 @@ def drop_tables():
     Base.metadata.drop_all(bind=engine)
 
 
-def seed_medicines():
-    from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
-    from app.domains.medicine.medicine_repository import MedicineStatus
-
-    path = os.getcwd() + '/app/resources/medicines.json'
-    with open(path, 'r') as file:
-        json_meds = json.load(file)
-
-    meds_dto = list(map(lambda med: TrackingMedicineDTO(
-        name=med['name'],
-        status=MedicineStatus.calculate_create_status(datetime.fromisoformat(med['expired_date'])),
-        expired_date=datetime.fromisoformat(med['expired_date']),
-        created_at=datetime.fromisoformat(med['created_at']),
-        created_by=0,
-        hospital_id=0,
-
-    ), json_meds))
-
-    session.add_all(meds_dto)
-    session.commit()
-
-
 def init_database():
     if os.getenv('ENV', 'local') == "test":
         drop_tables()
-    create_tables()
-
-    # Seed data
-    seed_medicines()
+        create_tables()
+        seeders.seed_hositals(session)
+    else:
+        create_tables()
+        seeders.seed_hositals(session)
+        seeders.seed_users(session)
+        seeders.seed_medicines(session)
+        seeders.seed_sources(session)

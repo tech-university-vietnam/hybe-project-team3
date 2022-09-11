@@ -3,6 +3,8 @@ from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer, Index
 from sqlalchemy.orm import relationship
+from app.model.notification import NotificationItem
+from app.model.notification import BuyerSellerMap
 
 from app.infrastructure.postgresql.database import Base
 from app.infrastructure.postgresql.hospital.hospital import HospitalDTO
@@ -11,7 +13,6 @@ from app.model.notification import Notification, SeenStatus, SourceType, Status,
 
 
 class NotificationDTO(Base):
-    """userDTO is a data transfer object associated with User entity."""
 
     __tablename__ = "Notification"
     id: Union[int, Column] = Column(Integer, primary_key=True,
@@ -21,8 +22,11 @@ class NotificationDTO(Base):
     sourcing_id: Union[int, Column] = Column(Integer)
     # `tracking` for tracking-medicine, `source-order` for source order request
     sourcing_type: Union[str, Column] = Column(String)
-    # Both seller and buyer
+    # Both seller and buyer, medicine_name
     sourcing_name: Union[str, Column] = Column(String)
+
+    # warningExpired, notifySold, notifyAvailable
+    type: Union[str, Column] = Column(String, nullable=False)
 
     status: Union[str, Column] = Column(String)  # Approve/Reject button, init when first created
     seen_status: Union[str, Column] = Column(String, default=SeenStatus.not_seen)
@@ -40,6 +44,8 @@ class NotificationDTO(Base):
 
     created_at: Union[datetime, Column] = Column(DateTime, default=datetime.now(), nullable=True)
 
+    tracking_medicine_id: Union[int, Column] = Column(Integer, nullable=True)
+
     Index('idx_notification_sourcing_', sourcing_type, sourcing_id, unique=True)
 
     def to_entity(self) -> Notification:
@@ -48,12 +54,27 @@ class NotificationDTO(Base):
             sourcing_id=self.sourcing_id,
             sourcing_type=self.sourcing_type,
             sourcing_name=self.sourcing_name,
+            type=self.type,
             status=self.status,
             seen_status=self.seen_status,
             description=self.description,
             from_hospital_id=self.from_hospital_id,
             to_hospital_id=self.to_hospital_id,
             created_at=self.created_at,
+        )
+
+    @classmethod
+    def from_sourcing_entity(cls, source_id, med_id, med_name, med_from, med_to):
+        return cls(
+            sourcing_id=source_id,
+            tracking_medicine_id= med_id,
+            sourcing_type='sourcing',
+            sourcing_name=med_name,
+            status='Init',
+            description='',
+            from_hospital_id=med_from,
+            to_hospital_id=med_to,
+            type="notifyAvailable"
         )
 
     def to_full_entity(self) -> NotificationWithHospital:
@@ -81,7 +102,19 @@ class NotificationDTO(Base):
             status=Status.init,
             description='',
             from_hospital_id=med.hospital_id,
-            to_hospital_id=None
+            to_hospital_id=None,
+            type="warningExpired"
+        )
+
+    def to_list_item(self) -> NotificationItem:
+        return NotificationItem(
+            id=self.id,
+            type=self.type,
+            status=self.status,
+            trackingMedicine=self.sourcing_name,
+            seenStatus=self.seen_status,
+            from_hospital_id=self.from_hospital_id,
+            to_hospital_id=self.to_hospital_id
         )
 
     @classmethod

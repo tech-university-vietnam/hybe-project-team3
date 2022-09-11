@@ -11,6 +11,8 @@ from starlette import status
 from app.controllers.notification.schema import NotificationPayload
 from app.domains.notification.notification_service import NotificationService
 from app.model.notification import Notification, NotificationWithHospital, SourceType, Status, SeenStatus
+from app.domains.notification.notification_service import NotificationService
+from app.model.notification import NotificationIdPayload
 from app.domains.medicine.medicine_service import MedicineService
 from app.domains.user.user_service import UserService
 from app.services.jwt_service import JWTService
@@ -50,7 +52,7 @@ class NotificationRoute:
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
-        notifies = self.notify_service.list()
+        notifies = self.notify_service.list(user.work_for)
 
         ids_to_update = list(map(lambda noti: noti.id, notifies))
         background_tasks.add_task(self.notify_service.update_all_seen_status, ids_to_update)
@@ -100,6 +102,7 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
+        self.notification_service.update_status(id, "Declined", user.id, user.work_for)
 
         return self.notify_service.declined(id)
 
