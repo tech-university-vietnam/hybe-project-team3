@@ -9,11 +9,13 @@ class NotificationIdPayload(BaseModel):
     id: int
 
 
-class Notification:
+class Notification(BaseModel):
     id: Optional[int]
     sourcing_id: int
     sourcing_type: str
     sourcing_name: str
+    status: str
+    type: str
 
     from_hospital_id: Optional[int]
     to_hospital_id: Optional[int]
@@ -21,7 +23,7 @@ class Notification:
     created_at: Optional[datetime]
 
 
-class BuyerSellerMap:
+class BuyerSellerMap(BaseModel):
     sourcing_id: int
     sourcing_type: Optional[str]
     sourcing_name: str
@@ -30,3 +32,14 @@ class BuyerSellerMap:
     to_hospital_id: int
 
     created_at: Optional[datetime]
+
+
+class NotificationItem(BaseModel):
+    id: int
+    trackingMedicine: str
+    status: str
+    type: str
+    seenStatus: str
+    from_hospital_id: Optional[int]
+    to_hospital_id: Optional[int]
+

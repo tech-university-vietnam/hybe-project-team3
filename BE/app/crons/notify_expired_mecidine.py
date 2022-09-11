@@ -74,6 +74,7 @@ def setup_cron(app: FastAPI, debug=True):
 
         db_repo.db.add_all(noti_list)
         db_repo.db.commit()
+
     def change_to_available_if_meds_sold_out(map_meds_hospital_sell):
         sources = db_repo.db.query(SourceOrderRequestDTO).filter(SourceOrderRequestDTO.status=="Available").all()
         source_ids_to_update = map(lambda source: source.id, filter(lambda source: source.name not in map_meds_hospital_sell.keys(), sources))
@@ -81,7 +82,9 @@ def setup_cron(app: FastAPI, debug=True):
         for i in source_ids_to_update:
             stmt = (
                 delete(NotificationDTO).
-                where(NotificationDTO.sourcing_id == i)
+                where(NotificationDTO.sourcing_id == i,
+                      NotificationDTO.sourcing_type == "source-order",
+                      NotificationDTO.type == "notifyAvailable")
             )
             db_repo.db.execute(stmt)
             db_repo.db.commit()

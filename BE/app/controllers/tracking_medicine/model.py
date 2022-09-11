@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class TrackingMedicinePayload(BaseModel):
-    name: str
+    name: Optional[str]
     number: Optional[int]
     status: Optional[str]
     buy_price: Optional[float]

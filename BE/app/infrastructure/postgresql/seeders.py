@@ -2,26 +2,33 @@ import json
 import os
 import datetime
 from datetime import datetime
+import random
 import bcrypt
+
 
 def seed_medicines(session):
     from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
     from app.domains.medicine.medicine_repository import MedicineStatus
+    from app.infrastructure.postgresql.user.user_dto import UserDTO
     if session.query(TrackingMedicineDTO).count() == 0:
         path = os.getcwd() + '/app/resources/medicines.json'
         with open(path, 'r') as file:
             json_meds = json.load(file)
 
-        meds_dto = list(map(lambda med: TrackingMedicineDTO(
-            name=med['name'],
-            status=MedicineStatus.calculate_create_status(datetime.fromisoformat(med['expired_date'])),
-            expired_date=datetime.fromisoformat(med['expired_date']),
-            created_at=datetime.fromisoformat(med['created_at']),
-            created_by=0,
-            hospital_id=0,
-
-        ), json_meds))
-
+        users = session.query(UserDTO).all()
+        max_user = session.query(UserDTO).count()
+        meds_dto = []
+        for med in json_meds:
+            user = users[random.randint(0, max_user-1)]
+            meds_dto.append(
+                TrackingMedicineDTO(
+                name=med['name'],
+                status=MedicineStatus.calculate_create_status(datetime.fromisoformat(med['expired_date'])),
+                expired_date=datetime.fromisoformat(med['expired_date']),
+                created_at=datetime.fromisoformat(med['created_at']),
+                created_by=user.id,
+                hospital_id=user.work_for,
+            ))
         session.add_all(meds_dto)
         session.commit()
 
@@ -74,6 +81,22 @@ def seed_hositals(session):
 
         hospital_dtos = list(map(lambda source: HospitalDTO(
             name=source['name'],
+            telephone=source['telephone'],
+            address=source['address'],
+
+        ), json_sources))
+        session.add_all(hospital_dtos)
+        session.commit()
+
+def seed_notifications(session):
+    from app.infrastructure.postgresql.notiffication.notification import NotificationDTO
+    if session.query(NotificationDTO).count() == 0:
+        path = os.getcwd() + '/app/resources/notifications.json'
+        with open(path, 'r') as file:
+            json_sources = json.load(file)
+
+        hospital_dtos = list(map(lambda source: NotificationDTO(
+            ['name'],
             telephone=source['telephone'],
             address=source['address'],
 

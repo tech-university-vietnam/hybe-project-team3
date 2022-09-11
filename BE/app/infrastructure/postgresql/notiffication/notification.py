@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer, Index
+from app.model.notification import NotificationItem
 from app.model.notification import BuyerSellerMap
 
 from app.infrastructure.postgresql.database import Base
@@ -23,6 +24,9 @@ class NotificationDTO(Base):
     # Both seller and buyer, medicine_name
     sourcing_name: Union[str, Column] = Column(String)
 
+    # warningExpired, notifySold, notifyAvailable
+    type: Union[str, Column] = Column(String, nullable=False)
+
     status: Union[str, Column] = Column(String)  # Approve/Reject button, init when first created
     seen_status: Union[str, Column] = Column(String, default='Not seen')
     description: Union[str, Column] = Column(String)  # Text shown in UI
@@ -43,12 +47,14 @@ class NotificationDTO(Base):
             sourcing_id=self.sourcing_id,
             sourcing_type=self.sourcing_type,
             sourcing_name=self.sourcing_name,
+            type=self.type,
             status=self.status,
             description=self.description,
             from_hospital_id=self.from_hospital_id,
             to_hospital_id=self.to_hospital_id,
             created_at=self.created_at,
         )
+
     @classmethod
     def from_sourcing_entity(cls, source_id, med_id, med_name, med_from, med_to):
         return cls(
@@ -59,7 +65,8 @@ class NotificationDTO(Base):
             status='Init',
             description='',
             from_hospital_id=med_from,
-            to_hospital_id=med_to
+            to_hospital_id=med_to,
+            type="notifyAvailable"
         )
 
     @classmethod
@@ -71,7 +78,19 @@ class NotificationDTO(Base):
             status='Init',
             description='',
             from_hospital_id=med.hospital_id,
-            to_hospital_id=None
+            to_hospital_id=None,
+            type="warningExpired"
+        )
+
+    def to_list_item(self) -> NotificationItem:
+        return NotificationItem(
+            id=self.id,
+            type=self.type,
+            status=self.status,
+            trackingMedicine=self.sourcing_name,
+            seenStatus=self.seen_status,
+            from_hospital_id=self.from_hospital_id,
+            to_hospital_id=self.to_hospital_id
         )
 
     # @classmethod

@@ -30,7 +30,8 @@ class NotificationRoute:
             MedicineService)
         self.jwt_service: JWTService = obj_graph.provide(JWTService)
         self.user_service: UserService = obj_graph.provide(UserService)
-        self.notification_service: NotificationService = obj_graph.provide(NotificationService)
+        self.notification_service: NotificationService = obj_graph.provide(
+            NotificationService)
 
     @router.get("/notifications", tags=["notification"],
                  status_code=status.HTTP_200_OK)
@@ -55,7 +56,7 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        self.notification_service.update_status(payload.id, "Declined")
+        self.notification_service.update_status(payload.id, "Approved", user.id, user.work_for)
         return {"msg": "success"}
 
     @router.post("/notification/declined", tags=["notification"],
@@ -74,7 +75,7 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        self.notification_service.update_status(payload.id, "Declined")
+        self.notification_service.update_status(payload.id, "Declined", user.id, user.work_for)
 
         return {"msg": "success"}
 
