@@ -7,9 +7,10 @@ import Filter from "components/Filter/Filter";
 import axios from "axios";
 import usePagination from "../../Utils/hooks/pagination";
 import "./TrackedList.css";
-
-const getMedicinesUrl = "http://localhost:8000/tracking-medicines";
-const deleteMedicineUrl = "http://localhost:8000/tracking-medicine";
+import {
+  deleteTrackingMedicine,
+  getTrackingMedinces,
+} from "Utils/api/medicine";
 
 const TrackedList = () => {
   const [listOfTrackedMedicineItems, setListOfTrackedMedicineItems] = useState(
@@ -18,10 +19,10 @@ const TrackedList = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
-    "LISTED",
+    "Listed",
     "Not listed",
-    "FINISHED LISTING",
-    "EXPIRED",
+    "Finished listing",
+    "Expired",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
   // const [filteredMedicines, setFilteredMedicines] = useState([]);
@@ -63,11 +64,7 @@ const TrackedList = () => {
 
   const getAllTrackedMedicineItems = async () => {
     try {
-      const response = await axios.get(getMedicinesUrl, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await getTrackingMedinces();
       setListOfTrackedMedicineItems(response.data);
     } catch (error) {
       console.log(
@@ -79,11 +76,7 @@ const TrackedList = () => {
   };
   const handleDeleteMedicineItem = async (id) => {
     try {
-      await axios.delete(`${deleteMedicineUrl}/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await deleteTrackingMedicine(id);
       await getAllTrackedMedicineItems();
     } catch (error) {
       console.log("Error deleting item", error);
@@ -103,9 +96,7 @@ const TrackedList = () => {
     <div className="content-container">
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <div className="content-header">
-        <AddItemButton
-          handleListChange={handleListChange}
-        />
+        <AddItemButton handleListChange={handleListChange} />
         <Pagination
           count={count}
           size="large"
@@ -115,7 +106,7 @@ const TrackedList = () => {
           onChange={handlePageChange}
         />
         <Filter
-          statuses={["LISTED", "Not listed", "FINISHED LISTING"]}
+          statuses={["Listed", "Not listed", "Finished listing", "Expired"]}
           selectedStatuses={selectedStatuses}
           handleChange={handleFilterChange}
         />

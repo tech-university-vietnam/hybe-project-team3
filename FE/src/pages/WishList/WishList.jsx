@@ -1,22 +1,19 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Pagination, Alert } from "@mui/material";
-import axios from "axios";
 import AddItemButton from "components/AddWishlistItemButton/AddWishlistItemButton";
 import MedicineItems from "components/MedicineItems/MedicineItems";
 import usePagination from "../../Utils/hooks/pagination";
 import Filter from "components/Filter/Filter";
 import "./WishList.css";
-
-const getWishListUrl = "http://localhost:8000/source-orders";
-const deleteWishListUrl = "http://localhost:8000/source-order";
+import { deleteSourceOrder, getSourceOrders } from "Utils/api/sourceOrder";
 
 const WishList = () => {
   const [wishListItems, setWishListItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
-    "AVAILABLE",
-    "unavailable",
-    "RESOLVED",
+    "Available",
+    "Unavailable",
+    "Resolved",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -37,13 +34,10 @@ const WishList = () => {
     try {
       await getAllWishListItems();
     } catch (error) {
-      console.log(
-        "Error getting updated wishlist in handleListChange",
-        error
-      );
+      console.log("Error getting updated wishlist in handleListChange", error);
       setErrorMessage(error.detail.msg);
     }
-  }
+  };
 
   const handleFilterChange = (event) => {
     const {
@@ -59,11 +53,7 @@ const WishList = () => {
 
   const handleDeleteWishListItem = async (id) => {
     try {
-      await axios.delete(`${deleteWishListUrl}/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await deleteSourceOrder(id);
       await getAllWishListItems();
     } catch (error) {
       console.log("Error deleting item", error);
@@ -73,11 +63,7 @@ const WishList = () => {
 
   const getAllWishListItems = async () => {
     try {
-      const response = await axios.get(getWishListUrl, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await getSourceOrders();
       setWishListItems(response.data);
     } catch (error) {
       console.log(
@@ -96,7 +82,10 @@ const WishList = () => {
     <div className="content-container">
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       <div className="content-header">
-        <AddItemButton type="tracked list" handleListChange={handleListChange}/>
+        <AddItemButton
+          type="tracked list"
+          handleListChange={handleListChange}
+        />
         <Pagination
           count={count}
           size="large"
@@ -106,7 +95,7 @@ const WishList = () => {
           onChange={handlePageChange}
         />
         <Filter
-          statuses={["AVAILABLE", "unavailable", "RESOLVED"]}
+          statuses={["Available", "Unavailable", "Resolved"]}
           selectedStatuses={selectedStatuses}
           handleChange={handleFilterChange}
         />

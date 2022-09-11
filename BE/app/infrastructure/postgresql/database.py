@@ -26,7 +26,6 @@ def import_models():
     from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
     from app.infrastructure.postgresql.notiffication.notification import NotificationDTO
 
-
     return [UserDTO, TrackingMedicineDTO, HospitalDTO, SourceOrderRequestDTO, NotificationDTO]
 
 
