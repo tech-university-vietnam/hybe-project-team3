@@ -49,4 +49,4 @@ class NotificationService:
             self.medicine_repo.update(noti.sourcing_id, TrackingMedicinePayload(status="Listed"))
         if noti.type == "notifySold" and noti.status == 'Approved':
             self.medicine_repo.update(noti.tracking_medicine_id, TrackingMedicinePayload(status="Sold"))
-            # self.source_repo.update({"status": "Resolved"}, noti.sourcing_id, user_id)
+            self.source_repo.update({"status": "Resolved"}, noti.sourcing_id, user_id)

@@ -83,7 +83,21 @@ class NotificationRepository:
             raise DBError
 
     def get_notseen_number(self, hospital_id):
-        count :int= self.db.query(NotificationDTO).filter(or_(NotificationDTO.from_hospital_id == hospital_id, NotificationDTO.to_hospital_id == hospital_id), NotificationDTO.seen_status=="Not seen").count()
+        count = self.db.query(NotificationDTO).filter(
+                or_(
+                    and_(NotificationDTO.type == "warningExpired",
+                         NotificationDTO.from_hospital_id == hospital_id),
+                    and_(NotificationDTO.type == "notifyAvailable",
+                         NotificationDTO.to_hospital_id == hospital_id),
+                    and_(NotificationDTO.type == "notifySold",
+                         or_(
+                            NotificationDTO.to_hospital_id == hospital_id,
+                            NotificationDTO.from_hospital_id == hospital_id,
+                         )
+                    )
+                ),
+                NotificationDTO.seen_status == "Not seen"
+                ).count()
         return count
 
     def update_status(self, id: int, status: str):
