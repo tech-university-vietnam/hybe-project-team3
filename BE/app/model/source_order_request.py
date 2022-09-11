@@ -16,6 +16,7 @@ class SourceOrderRequestPayload(BaseModel):
     name: str
     created_by: Optional[int]
     status: Optional[str]
+    hospital_id: Optional[int]
 
 
 class SourceOrderRequestUpdatePayload(BaseModel):

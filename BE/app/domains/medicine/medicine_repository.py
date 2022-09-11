@@ -8,7 +8,7 @@ from app.controllers.tracking_medicine.tracking_medicine import TrackingMedicine
 from app.domains.helpers.database_repository import DatabaseRepository
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
 from app.model.tracking_medicine import TrackingMedicine
-from app.model.user import SafeUser
+from app.model.user import DetailUser
 
 
 class MedicineStatus:
@@ -44,11 +44,21 @@ class MedicineRepository(MedicineStatus):
         return medicine_dto and medicine_dto.to_entity()
 
     def get_by_name(self, name: str) -> Optional[List[TrackingMedicine]]:
-        medicine_list: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
+        medicine_list: [TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(
             (TrackingMedicineDTO.name == name)).all()
         return medicine_list
 
-    def create(self, medicine: TrackingMedicinePayload, user: SafeUser) -> Optional[TrackingMedicine]:
+    # def get_listed_medicine_quantity_by_name(self, name: str) -> Optional[List[TrackingMedicine]]:
+    #     listed_medicine_quantity: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
+    #         (TrackingMedicineDTO.name == name)).count()
+    #     return listed_medicine_quantity
+
+    # def get_listed_medicine_by_name(self, name: str) -> Optional[List[TrackingMedicine]]:
+    #     listed_medicine_quantity: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
+    #         (TrackingMedicineDTO.name == name,)).count()
+    #     return listed_medicine_quantity
+
+    def create(self, medicine: TrackingMedicinePayload, user: DetailUser) -> Optional[TrackingMedicine]:
         try:
             medicine_dto = TrackingMedicineDTO.from_tracking_medicine_payload(medicine)
             medicine_dto.status = MedicineStatus.calculate_create_status(medicine_dto.expired_date)

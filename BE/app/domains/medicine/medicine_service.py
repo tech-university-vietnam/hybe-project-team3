@@ -1,6 +1,6 @@
 from app.controllers.tracking_medicine.model import TrackingMedicinePayload
 from app.domains.medicine.medicine_repository import MedicineRepository
-from app.model.user import SafeUser
+from app.model.user import DetailUser
 
 
 class MedicineService:
@@ -14,11 +14,15 @@ class MedicineService:
     def list(self):
         return self.medicine_repo.list()
 
-    def create(self, payload: TrackingMedicinePayload, user: SafeUser):
+    def create(self, payload: TrackingMedicinePayload, user: DetailUser):
         return self.medicine_repo.create(payload, user)
+
+    def get_listed_medicine_quantity(self, payload: TrackingMedicinePayload, user: DetailUser):
+        return self.medicine_repo.get_listed_medicine_quantity(payload, user)
 
     def update(self, id: int, payload: TrackingMedicinePayload):
         return self.medicine_repo.update(id, payload)
 
     def delete(self, id: int):
         return self.medicine_repo.delete(id)
+

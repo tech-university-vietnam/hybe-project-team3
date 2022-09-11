@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from starlette import status
+from app.domains.notification.notification_service import NotificationService
 from app.model.notification import NotificationIdPayload
 from app.domains.medicine.medicine_service import MedicineService
 from app.domains.user.user_service import UserService
@@ -13,57 +14,6 @@ from app.services.jwt_service import JWTService
 from fastapi.security import HTTPAuthorizationCredentials
 from app.main import oauth2_scheme
 router = InferringRouter()
-
-DUMMY_NOTIFICATIONS = [
-    {
-      "id": 1,
-      "type": "warningExpired",
-      "hospitalName": "VinMec",
-      "medicineName": "Advil",
-      "status": "init",
-      "seenStatus": "not seen"
-    },
-    {
-      "id": 2,
-      "type": "notifySold",
-      "hospitalName": "VinMec",
-      "medicineName": "Advil",
-      "status": "init",
-      "seenStatus": "not seen"
-    },
-    {
-      "id": 3,
-      "type": "notifyAvailable",
-      "hospitalName": "VinMec",
-      "medicineName": "Advil",
-      "status": "init",
-      "seenStatus": "not seen"
-    },
-    {
-      "id": 4,
-      "type": "warningExpired",
-      "hospitalName": "VinMec",
-      "medicineName": "Advil",
-      "status": "approved",
-      "seenStatus": "seen"
-    },
-    {
-      "id": 5,
-      "type": "warningExpired",
-      "hospitalName": "VinMec",
-      "medicineName": "Advil",
-      "status": "declined",
-      "seenStatus": "seen"
-    },
-    {
-      "id": 6,
-      "type": "notifyAvailable",
-      "hospitalName": "VinMec",
-      "medicineName": "Advil",
-      "status": "approved",
-      "seenStatus": "seen"
-    },
-  ]
 
 
 @cbv(router)
@@ -80,6 +30,8 @@ class NotificationRoute:
             MedicineService)
         self.jwt_service: JWTService = obj_graph.provide(JWTService)
         self.user_service: UserService = obj_graph.provide(UserService)
+        self.notification_service: NotificationService = obj_graph.provide(
+            NotificationService)
 
     @router.get("/notifications", tags=["notification"],
                  status_code=status.HTTP_200_OK)
@@ -91,47 +43,28 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        for item in  DUMMY_NOTIFICATIONS:
-            item['seenStatus'] = "seen"
-        return DUMMY_NOTIFICATIONS
-
-    @router.get("/notification/seed", tags=["notification"],
-                 status_code=status.HTTP_200_OK)
-    def seed(self):
-        DUMMY_NOTIFICATIONS.append({
-            "id": len(DUMMY_NOTIFICATIONS)+1,
-            "type": "notifyAvailable",
-            "hospitalName": "VinMec",
-            "medicineName": "Advil",
-            "status": "approved",
-            "seenStatus": "not seen"
-        })
-        return {"msg": "ok"}
+        return self.notification_service.list(user.work_for)
 
     @router.post("/notification/approved", tags=["notification"],
                  status_code=status.HTTP_200_OK)
     def approved(
         self,
         payload: NotificationIdPayload,
-        bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+        bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)) -> CommonResponse:
 
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        if DUMMY_NOTIFICATIONS[payload.id - 1]["type"] == "notifySold":
-            return DUMMY_NOTIFICATIONS[payload.id - 1]
-        else:
-            DUMMY_NOTIFICATIONS[payload.id - 1]["status"] = "approved"
-        return DUMMY_NOTIFICATIONS[payload.id - 1]
-
+        self.notification_service.update_status(payload.id, "Approved", user.id, user.work_for)
+        return {"msg": "success"}
 
     @router.post("/notification/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
     def declined(
         self,
         payload: NotificationIdPayload,
-        bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+        bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)) -> CommonResponse:
         """
         change status to Resolved in tracking medicine if type warningExpired
         dont change status if type nofitySold
@@ -142,9 +75,9 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
+        self.notification_service.update_status(payload.id, "Declined", user.id, user.work_for)
 
-        DUMMY_NOTIFICATIONS[payload.id - 1]["status"] = "declined"
-        return DUMMY_NOTIFICATIONS[payload.id - 1]
+        return {"msg": "success"}
 
     @router.get("/notification/notseen", tags=["notification"],
                  status_code=status.HTTP_200_OK)
@@ -161,8 +94,5 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        count = 0
-        for item in DUMMY_NOTIFICATIONS:
-            if item['seenStatus'] == "not seen":
-                count += 1
-        return {"notseen_noti": count}
+        notseen_number = self.notification_service.get_notseen_number(user.work_for)
+        return {"notseen_noti": notseen_number}

@@ -47,7 +47,7 @@ class TrackingMedicineRoute:
         bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
 
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
-        user = self.user_service.get_user_by_id(user_id)
+        user = self.user_service.get_detail_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 

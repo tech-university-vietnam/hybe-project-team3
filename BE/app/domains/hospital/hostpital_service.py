@@ -8,6 +8,3 @@ class HospitalService:
 
     def get_hospitals(self):
         return self.hospital_repo.get_hospitals()
-
-    def hospital_seed(self):
-        return self.hospital_repo.seed_hospitals()
