@@ -4,14 +4,17 @@ from dependency_injector import containers, providers
 
 from app.domains.helpers.database_repository import DatabaseRepository
 from app.domains.hospital.hospital_repository import HospitalRepository
+from app.domains.hospital.hostpital_service import HospitalService
 from app.domains.medicine.medicine_repository import MedicineRepository
 from app.domains.medicine.medicine_service import MedicineService
 from app.domains.notification.notification_repository import NotificationRepository
 from app.domains.notification.notification_service import NotificationService
 from app.domains.source_order_request.source_order_request_repository import SourceOrderRequestRepository
+from app.domains.source_order_request.source_order_request_service import SourceOrderRequestService
 from app.domains.user.user_repository import UserRepository
 from app.domains.user.user_service import UserService
 from app.infrastructure.postgresql.database import SessionLocal
+from app.services.auth_service import AuthService
 from app.services.jwt_service import JWTService
 
 T = TypeVar('T')
@@ -43,6 +46,10 @@ class Container(containers.DeclarativeContainer):
                                                           database_repository=database_repo)
 
     # services
+    auth_service_factory = providers.Factory(
+        AuthService,
+        user_repository=user_repo_factory
+    )
     jwt_service_factory = providers.Factory(
         JWTService,
         user_repository=user_repo_factory
@@ -54,6 +61,15 @@ class Container(containers.DeclarativeContainer):
     medicine_service_factory = providers.Factory(
         MedicineService,
         medicine_repository=medicine_repo_factory
+    )
+    hospital_service_factory = providers.Factory(
+        HospitalService,
+        hospital_repository=hospital_repo_factory
+    )
+
+    source_order_request_service_factory = providers.Factory(
+        SourceOrderRequestService,
+        source_order_req_repo=source_order_request_repo_factory
     )
     notification_service_factory = providers.Factory(
         NotificationService,
