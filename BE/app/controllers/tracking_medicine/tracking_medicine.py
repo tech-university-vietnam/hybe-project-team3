@@ -10,7 +10,7 @@ from starlette import status
 from app.controllers.tracking_medicine.model import TrackingMedicinePayload
 from app.domains.medicine.medicine_service import MedicineService
 from app.domains.user.user_service import UserService
-from app.model.tracking_medicine import TrackingMedicine
+from app.model.tracking_medicine import TrackingMedicine, TrackingMedicineWithHospital
 from app.services.jwt_service import JWTService
 from fastapi.security import HTTPAuthorizationCredentials
 from app.main import oauth2_scheme
@@ -34,10 +34,10 @@ class TrackingMedicineRoute:
         return meds
 
     @router.get("/tracking-medicine/{tracking_id}", tags=["medicine"],
-                response_model=TrackingMedicine)
+                response_model=TrackingMedicineWithHospital)
     def get_tracking(self, tracking_id: int):
         medicine = self.medicine_service.get(tracking_id)
-        return JSONResponse(medicine.dict())
+        return medicine
 
     @router.post("/tracking-medicine", tags=["medicine"],
                  response_model=TrackingMedicine)
