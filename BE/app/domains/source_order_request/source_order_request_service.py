@@ -10,8 +10,8 @@ class SourceOrderRequestService:
     def create(self, data):
         return self.source_order_req_repo.create(data)
 
-    def list(self):
-        return self.source_order_req_repo.list()
+    def list(self, hospital_id: int):
+        return self.source_order_req_repo.list(hospital_id)
 
     def get(self, id: int):
         return self.source_order_req_repo.get(id)

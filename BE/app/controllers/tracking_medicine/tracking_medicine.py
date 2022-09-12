@@ -29,8 +29,10 @@ class TrackingMedicineRoute:
 
     @router.get("/tracking-medicines", tags=["medicine"],
                 response_model=List[TrackingMedicine])
-    def list_trackings(self):
-        meds = self.medicine_service.list()
+    def list_trackings(self, bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+        user_id = self.jwt_service.validate_token(bearer_auth.credentials)
+        user = self.user_service.get_detail_user_by_id(user_id)
+        meds = self.medicine_service.list(user.work_for)
         return meds
 
     @router.get("/tracking-medicine/{tracking_id}", tags=["medicine"],
