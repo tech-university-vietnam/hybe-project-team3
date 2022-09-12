@@ -1,4 +1,3 @@
-
 import pinject
 from fastapi import Depends
 from fastapi.responses import JSONResponse
@@ -13,6 +12,7 @@ from app.controllers.common.schema import CommonResponse
 from app.services.jwt_service import JWTService
 from fastapi.security import HTTPAuthorizationCredentials
 from app.main import oauth2_scheme
+
 router = InferringRouter()
 
 
@@ -34,10 +34,10 @@ class NotificationRoute:
             NotificationService)
 
     @router.get("/notifications", tags=["notification"],
-                 status_code=status.HTTP_200_OK)
+                status_code=status.HTTP_200_OK)
     def get_list(
-        self,
-        bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+            self,
+            bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
 
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
         user = self.user_service.get_user_by_id(user_id)
@@ -48,9 +48,9 @@ class NotificationRoute:
     @router.post("/notification/approved", tags=["notification"],
                  status_code=status.HTTP_200_OK)
     def approved(
-        self,
-        payload: NotificationIdPayload,
-        bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)) -> CommonResponse:
+            self,
+            payload: NotificationIdPayload,
+            bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)) -> CommonResponse:
 
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
         user = self.user_service.get_user_by_id(user_id)
@@ -62,9 +62,9 @@ class NotificationRoute:
     @router.post("/notification/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
     def declined(
-        self,
-        payload: NotificationIdPayload,
-        bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)) -> CommonResponse:
+            self,
+            payload: NotificationIdPayload,
+            bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)) -> CommonResponse:
         """
         change status to Resolved in tracking medicine if type warningExpired
         dont change status if type nofitySold
@@ -80,10 +80,10 @@ class NotificationRoute:
         return {"msg": "success"}
 
     @router.get("/notification/notseen", tags=["notification"],
-                 status_code=status.HTTP_200_OK)
+                status_code=status.HTTP_200_OK)
     def get_notseen_notification(
-        self,
-        bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+            self,
+            bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
         """
         change status to Resolved in tracking medicine if type warningExpired
         dont change status if type nofitySold
