@@ -41,7 +41,7 @@ class NotificationDTO(Base):
 
     created_at: Union[datetime, Column] = Column(DateTime, default=datetime.now(), nullable=True)
 
-    # tracking_medicine_id: Union[int, Column] = Column(Integer, nullable=True)
+    tracking_medicine_id: Union[int, Column] = Column(Integer, nullable=True)
 
     # Index('idx_notification_sourcing_', type, sourcing_id, unique=False)
 
