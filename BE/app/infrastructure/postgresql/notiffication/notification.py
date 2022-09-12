@@ -43,8 +43,6 @@ class NotificationDTO(Base):
 
     tracking_medicine_id: Union[int, Column] = Column(Integer, nullable=True)
 
-    Index('idx_notification_sourcing_', type, sourcing_id, unique=True)
-
     def to_entity(self) -> Notification:
         return Notification(
             id=self.id,
