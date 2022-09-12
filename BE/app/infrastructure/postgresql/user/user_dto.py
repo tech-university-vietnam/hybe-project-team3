@@ -42,6 +42,8 @@ class UserDTO(Base):
     source_order_request = relationship("SourceOrderRequestDTO",
                                         backref=__tablename__)
 
+    hospital = relationship("HospitalDTO", back_populates="users", viewonly=True)
+
     def to_entity(self) -> User:
         return User(
             id=self.id,
@@ -75,7 +77,7 @@ class UserDTO(Base):
             id=self.id,
             username=self.username,
             email=self.email,
-            work_for=self.work_for,
+            work_for=self.hospital.name,
             created_at=self.created_at,
             updated_at=self.updated_at
         )
@@ -89,6 +91,7 @@ class UserDTO(Base):
             created_at=self.created_at,
             updated_at=self.updated_at
         )
+
 
     @classmethod
     def from_register_request(cls, regis_req: RegisterRequest) -> "UserDTO":
