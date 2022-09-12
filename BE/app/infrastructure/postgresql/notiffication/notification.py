@@ -71,6 +71,19 @@ class NotificationDTO(Base):
             type=Type.notify_available
         )
 
+    @classmethod
+    def from_approved_request(cls, noti: "NotificationDTO"):
+        return cls(
+            sourcing_id=noti.sourcing_id,
+            tracking_medicine_id=noti.tracking_medicine_id,
+            sourcing_name=noti.sourcing_name,
+            status=Status.init,
+            description='',
+            from_hospital_id=noti.from_hospital_id,
+            to_hospital_id=noti.to_hospital_id,
+            type=Type.notify_sold
+        )
+
     def to_full_entity(self) -> NotificationWithHospital:
         return NotificationWithHospital(
             id=self.id,
@@ -98,6 +111,7 @@ class NotificationDTO(Base):
             to_hospital_id=None,
             type=Type.warning_expired
         )
+
 
     def to_list_item(self) -> NotificationItem:
         return NotificationItem(

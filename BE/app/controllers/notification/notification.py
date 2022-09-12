@@ -17,7 +17,6 @@ from app.main import oauth2_scheme
 from app.model.notification import NotificationWithHospital, Status, SeenStatus, Type
 from app.services.jwt_service import JWTService
 from fastapi.security import HTTPAuthorizationCredentials
-from app.main import oauth2_scheme
 
 
 router = InferringRouter()
@@ -95,6 +94,7 @@ class NotificationRoute:
                  status_code=status.HTTP_200_OK)
     def approved(
             self,
+            background_tasks: BackgroundTasks,
             id: int = Path("Notification ID"),
             bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
 
@@ -103,13 +103,16 @@ class NotificationRoute:
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
-        notify = self.notify_service.update_status(id, Status.approved, user_id)
+        notify = self.notify_service.update_status(
+                id, Status.approved, user_id, background_tasks)
 
         return notify if notify else JSONResponse(None, status.HTTP_404_NOT_FOUND)
 
     @router.post("/notification/{id}/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
-    def declined(self, id: int = Path("Notification ID"),
+    def declined(self,
+    background_tasks: BackgroundTasks,
+     id: int = Path("Notification ID"),
                  bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
         """
         change status to Resolved in tracking medicine if type warningExpired
@@ -122,7 +125,7 @@ class NotificationRoute:
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
-        notify = self.notify_service.update_status(id, Status.declined, user_id)
+        notify = self.notify_service.update_status(id, Status.declined, user_id, background_tasks)
         return notify if notify else JSONResponse(None, status.HTTP_404_NOT_FOUND)
 
     @router.get("/notification/not-seen", tags=["notification"],

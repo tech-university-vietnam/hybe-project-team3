@@ -25,6 +25,7 @@ class Status:
     approved = 'Approved'
     declined = 'Declined'
     init = 'Init'
+    invalid = "Invalid"
 
     @classmethod
     def all(cls):
