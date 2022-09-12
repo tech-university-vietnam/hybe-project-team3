@@ -21,7 +21,7 @@ class HospitalDTO(Base):
     address: Union[str, Column] = Column(String, nullable=False)
     join_date: Union[datetime, Column] = Column(DateTime(timezone=True),
                                                 nullable=True)
-    user = relationship("UserDTO", backref=__tablename__)
+    users = relationship("UserDTO", backref=__tablename__, uselist=True)
 
     def to_entity(self) -> Hospital:
         return Hospital(
@@ -32,11 +32,8 @@ class HospitalDTO(Base):
             join_date=self.join_date,
         )
 
-    def to_entity_item(self) -> Hospital:
-        return HospitalItem(
-            id=self.id,
-            name=self.name,
-        )
+    def to_entity_item(self) -> HospitalItem:
+        return HospitalItem(id=self.id, name=self.name)
 
     @staticmethod
     def from_entity(hospital: Hospital) -> "HospitalDTO":

@@ -30,8 +30,8 @@ class UserRepository:
         except exc.SQLAlchemyError:
             raise DBError
 
-    def get_by_id(self, id: str) -> Optional[SafeUser]:
-        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.user).where(
+    def get_by_id(self, id: int) -> Optional[SafeUser]:
+        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.users).where(
             UserDTO.id == id)
         try:
             user_dto = self.db.execute(statement).scalar_one()
@@ -40,8 +40,8 @@ class UserRepository:
             logging.error(e)
             return
 
-    def get_detail_by_id(self, id: str) -> Optional[DetailUser]:
-        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.user).where(
+    def get_detail_by_id(self, id: int) -> Optional[DetailUser]:
+        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.users).where(
             UserDTO.id == id)
         try:
             user_dto: UserDTO = self.db.execute(statement).scalar_one()
@@ -53,7 +53,7 @@ class UserRepository:
     def update(self, user: User) -> Optional[User]:
         pass
 
-    def delete_by_id(self, id: str):
+    def delete_by_id(self, id: int):
         pass
 
     def add_new_token(self, id: int, token) -> bool:
@@ -80,7 +80,7 @@ class UserRepository:
             logging.error(e)
             return False
 
-    def check_token(self, user_id: str, token: str) -> bool:
+    def check_token(self, user_id: int, token: str) -> bool:
         statement = select(UserDTO.token).where(UserDTO.id == user_id)
         try:
             user = self.db.execute(statement).first()

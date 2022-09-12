@@ -50,16 +50,6 @@ class MedicineRepository(MedicineStatus):
             (TrackingMedicineDTO.name == name)).all()
         return medicine_list
 
-    # def get_listed_medicine_quantity_by_name(self, name: str) -> Optional[List[TrackingMedicine]]:
-    #     listed_medicine_quantity: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
-    #         (TrackingMedicineDTO.name == name)).count()
-    #     return listed_medicine_quantity
-
-    # def get_listed_medicine_by_name(self, name: str) -> Optional[List[TrackingMedicine]]:
-    #     listed_medicine_quantity: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
-    #         (TrackingMedicineDTO.name == name,)).count()
-    #     return listed_medicine_quantity
-
     def create(self, medicine: TrackingMedicinePayload, user: DetailUser) -> Optional[TrackingMedicine]:
         try:
             medicine_dto = TrackingMedicineDTO.from_tracking_medicine_payload(medicine)
@@ -74,17 +64,24 @@ class MedicineRepository(MedicineStatus):
             logging.error(e)
             return
 
-    def update(self, id: int, medicine: TrackingMedicinePayload) -> Optional[TrackingMedicine]:
+    def update(self, id: int, payload: TrackingMedicinePayload) -> Optional[TrackingMedicine]:
         try:
-            medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(
-                (TrackingMedicineDTO.id == id)).first()
+            medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).get(id)
             if medicine_dto is None:
                 return
-            update_values = {**dict(medicine_dto.to_entity()), **dict(medicine)}
+
+            current_values = set(dict(medicine_dto.to_entity()).items())
+            new_values = set(payload.dict(exclude_none=True).items())
+            diff_values = new_values - current_values
+
+            if not diff_values:
+                # No new values to update
+                return medicine_dto.to_entity()
+
             stmt = (
                 update(TrackingMedicineDTO).
                 where(TrackingMedicineDTO.id == id).
-                values(update_values)
+                values(dict(diff_values))
             )
 
             self.db.execute(stmt)

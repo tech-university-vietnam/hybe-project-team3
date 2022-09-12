@@ -38,6 +38,7 @@ def drop_tables():
 
 
 def init_database():
+
     if os.getenv('ENV', 'local') == "test":
         drop_tables()
         create_tables()

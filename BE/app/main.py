@@ -26,7 +26,7 @@ def setup(setup_app: FastAPI):
     setup_app.include_router(source_order_request_router)
     setup_app.include_router(notification_router)
 
-    setup_cron(app, debug=True)
+    setup_cron(app, debug=False)
 
 
 setup(app)
