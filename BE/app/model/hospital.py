@@ -1,27 +1,17 @@
 from typing import Optional
 from datetime import datetime
 
+from pydantic import BaseModel
 
-class Hospital:
+
+class Hospital(BaseModel):
     """Hospital represents your collection of books as an entity."""
 
-    def __init__(self,
-                 id: int,
-                 name: str,
-                 telephone: str,
-                 address: str,
-                 join_date: Optional[datetime] = datetime.now(),
-                 ):
-        self.id: int = id
-        self.name: str = name
-        self.telephone: str = telephone
-        self.address: str = address
-        self.join_date: datetime = join_date
-
-    def __eq__(self, o: object) -> bool:
-        if isinstance(o, Hospital):
-            return self.id == o.id
-        return False
+    id: int
+    name: str
+    telephone: str
+    address: str
+    join_date: Optional[datetime]
 
 
 class HospitalItem:

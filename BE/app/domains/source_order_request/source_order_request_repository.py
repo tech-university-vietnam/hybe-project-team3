@@ -1,9 +1,13 @@
 from sqlalchemy import exc, delete, update, desc
 import logging
+
+from sqlalchemy.orm import joinedload
+
 from app.common.exceptions import DBError
 from app.domains.source_order_request.source_order_request_exceptions import RequestNotExistError
 from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
 from app.domains.helpers.database_repository import DatabaseRepository
+from app.model.source_order_request import SourceOrderRequest, SourceOrderHospitalRequest
 
 
 class SourceOrderRequestRepository:
@@ -24,8 +28,8 @@ class SourceOrderRequestRepository:
     def list(self):
         try:
             result = list(map(lambda m: m.to_entity(),
-            self.db.query(SourceOrderRequestDTO).order_by(
-                desc(SourceOrderRequestDTO.created_at)).all()))
+                              self.db.query(SourceOrderRequestDTO).order_by(
+                                  desc(SourceOrderRequestDTO.created_at)).all()))
             return result
         except exc.SQLAlchemyError as e:
             logging.error(e)
@@ -48,13 +52,17 @@ class SourceOrderRequestRepository:
         except exc.SQLAlchemyError as e:
             logging.error(e)
             raise DBError
-    # def check_user_id(self):
-    #     item = self.db.query(SourceOrderRequestDTO).filter(SourceOrderRequestDTO.id == id, SourceOrderRequestDTO.created_by == id)
-    #     return bool(item.id)
+
+    def get(self, id: int) -> SourceOrderHospitalRequest:
+        source_order_dto: SourceOrderRequestDTO = self.db.query(SourceOrderRequestDTO).options(
+            joinedload(SourceOrderRequestDTO.hospital)).get(id)
+
+        return source_order_dto.to_full_entity()
 
     # TODO: check the hospital id if user id is not matched
     def delete(self, id, user_id):
-        statement = delete(SourceOrderRequestDTO).where(SourceOrderRequestDTO.id == id, SourceOrderRequestDTO.created_by == user_id)
+        statement = delete(SourceOrderRequestDTO).where(SourceOrderRequestDTO.id == id,
+                                                        SourceOrderRequestDTO.created_by == user_id)
         try:
             self.db.execute(statement)
             self.db.commit()
