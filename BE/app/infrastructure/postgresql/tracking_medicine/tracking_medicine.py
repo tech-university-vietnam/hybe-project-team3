@@ -2,16 +2,16 @@ from datetime import datetime
 from typing import Union
 
 from sqlalchemy import Column, String, DateTime, Integer, Float
+from sqlalchemy.orm import relationship
 
 from app.controllers.tracking_medicine.model import TrackingMedicinePayload
 from app.infrastructure.postgresql.database import Base
-from app.model.tracking_medicine import TrackingMedicine
+from app.infrastructure.postgresql.hospital.hospital import HospitalDTO
+from app.model.tracking_medicine import TrackingMedicine, TrackingMedicineWithHospital
 from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
 
 
 class TrackingMedicineDTO(Base):
-
-    """userDTO is a data transfer object associated with User entity."""
 
     __tablename__ = "TrackingMedicine"
     id: Union[int, Column] = Column(Integer, primary_key=True,
@@ -30,6 +30,9 @@ class TrackingMedicineDTO(Base):
     image: Union[str, Column] = Column(String, nullable=True)
     hospital_id: Union[int, Column] = Column(Integer, nullable=False)
 
+    hospital: HospitalDTO = relationship("HospitalDTO", viewonly=True, uselist=False,
+                                         primaryjoin='TrackingMedicineDTO.hospital_id == foreign(HospitalDTO.id)')
+
     def to_entity(self) -> TrackingMedicine:
         return TrackingMedicine(
             id=self.id,
@@ -38,6 +41,16 @@ class TrackingMedicineDTO(Base):
             status=self.status,
             expired_date=self.expired_date,
 
+        )
+
+    def to_full_entity(self) -> TrackingMedicineWithHospital:
+        return TrackingMedicineWithHospital(
+            id=self.id,
+            name=self.name,
+            number=self.number,
+            status=self.status,
+            expired_date=self.expired_date,
+            hospital=self.hospital and self.hospital.to_entity()
         )
 
     @classmethod

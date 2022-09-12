@@ -19,7 +19,7 @@ def add_bearer(token: str):
 def test_get_token(client: TestClient) -> None:
     r = client.post(
         REGISTER_PATH,
-        json={"email": "test2323", "password": "123", "work_for":1}
+        json={"email": "test2323", "password": "123", "work_for": 1}
     )
     r = client.post(
         LOGIN_PATH,
@@ -30,14 +30,15 @@ def test_get_token(client: TestClient) -> None:
     auth_header["Authorization"] = add_bearer(data['token'])
     assert r.status_code == 200
 
+
 def test_get_notseen_notification_quantity_first(client: TestClient) -> None:
     r = client.get(
-        "notification/notseen",
+        "notification/not-seen",
         headers=auth_header,
     )
     data = r.json()
     assert r.status_code == status.HTTP_200_OK
-    assert data['notseen_noti'] == 3
+    assert data['total'] == 0
 
 
 def test_get_notifications(client: TestClient) -> None:
@@ -51,33 +52,31 @@ def test_get_notifications(client: TestClient) -> None:
         assert item['seenStatus'] == "seen"
 
 
-def test_get_notseen_notification_quantity_after(client: TestClient) -> None:
-    r = client.get(
-        "notification/notseen",
-        headers=auth_header,
-    )
-    data = r.json()
-    assert r.status_code == status.HTTP_200_OK
-    assert data['notseen_noti'] == 0
+# def test_get_notseen_notification_quantity_after(client: TestClient) -> None:
+#     r = client.get(
+#         "notification/not-seen",
+#         headers=auth_header,
+#     )
+#     data = r.json()
+#     assert r.status_code == status.HTTP_200_OK
+#     assert data['total'] == 0
 
 
 def test_approve_notification(client: TestClient) -> None:
     r = client.post(
-        f"{NOTI_PREFIX}/approved",
+        f"{NOTI_PREFIX}/{1}/approved",
         headers=auth_header,
-        json={"id": 1}
     )
     data = r.json()
-    assert r.status_code == status.HTTP_200_OK
-    assert data['status'] == "approved"
+    assert r.status_code == status.HTTP_404_NOT_FOUND
+    # assert data['status'] == "approved"
 
 
 def test_declined_notification(client: TestClient) -> None:
     r = client.post(
-        f"{NOTI_PREFIX}/declined",
+        f"{NOTI_PREFIX}/{1}/declined",
         headers=auth_header,
-        json={"id": 1}
     )
     data = r.json()
-    assert r.status_code == status.HTTP_200_OK
-    assert data['status'] == "declined"
+    assert r.status_code == status.HTTP_404_NOT_FOUND
+    # assert data['status'] == "declined"

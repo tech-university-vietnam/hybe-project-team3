@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from typing import Optional
 import jwt
 
 from app.domains.user.user_repository import UserRepository
@@ -21,7 +20,7 @@ class JWTService:
                           self.config.SECRET,
                           algorithm="HS256")
 
-    def validate_token(self, auth: str) -> Optional[str]:
+    def validate_token(self, auth: str) -> int:
         """
         Decode JWT token to get use_id => return user_id
         """
@@ -30,10 +29,8 @@ class JWTService:
             payload = jwt.decode(
                 token,
                 self.config.SECRET, algorithms=["HS256"])
-            user_id = payload.get('sub')
-            if (self.user_repo.check_token(
-                    user_id,
-                    token=token)):
+            user_id: int = payload['sub']
+            if self.user_repo.check_token(user_id, token=token):
                 return user_id
             else:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
