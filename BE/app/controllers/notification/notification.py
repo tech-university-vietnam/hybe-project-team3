@@ -111,6 +111,7 @@ class NotificationRoute:
     @router.post("/notification/{id}/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
     def declined(self, id: int = Path("Notification ID"),
+                 background_tasks: BackgroundTasks,
                  bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
         """
         change status to Resolved in tracking medicine if type warningExpired
@@ -123,7 +124,7 @@ class NotificationRoute:
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
-        notify = self.notify_service.update_status(id, Status.declined, user_id)
+        notify = self.notify_service.update_status(id, Status.declined, user_id, background_tasks)
         return notify if notify else JSONResponse(None, status.HTTP_404_NOT_FOUND)
 
     @router.get("/notification/not-seen", tags=["notification"],
