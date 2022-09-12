@@ -34,7 +34,8 @@ class Status:
 
 class Notification(BaseModel):
     id: int
-    souring_id: Optional[int]
+    sourcing_id: Optional[int]
+    tracking_medicine_id: Optional[int]
     sourcing_name: str
     status: str
     type: str
