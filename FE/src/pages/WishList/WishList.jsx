@@ -32,8 +32,7 @@ const WishList = () => {
       } catch (error) {
         console.log("error getting selling hospital", error);
       }
-    }
-    else if (status === "Available") {
+    } else if (status === "Available") {
       setAvailablePopup(true);
       setPopupData(medicineName);
     }
@@ -132,7 +131,12 @@ const WishList = () => {
           />
         )}
         {availablePopup && (
-          <AvailablePopup open={availablePopup} onClose={setAvailablePopup} name={popupData} resolve={handleListChange} />
+          <AvailablePopup
+            open={availablePopup}
+            onClose={setAvailablePopup}
+            name={popupData}
+            resolve={handleListChange}
+          />
         )}
         <MedicineItems
           medicineItems={filteredWishListToDisplay.currentData()}
@@ -149,7 +153,6 @@ const WishList = () => {
         shape="rounded"
         onChange={handlePageChange}
       />
-      {/* <AvailablePopup name="Omepraole" /> */}
     </div>
   );
 };
