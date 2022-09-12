@@ -18,6 +18,7 @@ export const postTrackingMedicine = async (name, date) => {
 };
 
 export const getBuyingHospital = async (id) => {
+    console.log('getBuyingHospital', id)
     const response = await axios.get(`http://localhost:8000/tracking-medicine/${id}`)
     return response
 };

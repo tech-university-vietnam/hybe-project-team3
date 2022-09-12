@@ -57,6 +57,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
 
   const getBuyingHospitalData = async (id) => {
     try {
+      console.log("getBuyingHospitalData", id);
       const response = await getBuyingHospital(id);
       setPopupData(response.data);
     } catch (error) {

@@ -120,7 +120,11 @@ const WishList = () => {
       </div>
       <div className="data-container">
         {resolvedPopup && (
-          <ResolvedPopup open={resolvedPopup} onClose={setResolvedPopup} popupData={popupData} />
+          <ResolvedPopup
+            open={resolvedPopup}
+            onClose={setResolvedPopup}
+            popupData={popupData}
+          />
         )}
         <MedicineItems
           medicineItems={filteredWishListToDisplay.currentData()}
@@ -136,7 +140,7 @@ const WishList = () => {
         shape="rounded"
         onChange={handlePageChange}
       />
-      <AvailablePopup name="Omepraole"/>
+      {/* <AvailablePopup name="Omepraole" /> */}
     </div>
   );
 };

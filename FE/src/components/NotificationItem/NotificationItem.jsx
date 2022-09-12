@@ -10,13 +10,16 @@ import {
 
 const NotificationItem = ({
   id,
+  sourcingId,
+  trackingMedicineId,
+  fromHospital,
+  toHospital,
   medicineName,
-  hospitalName,
   typeOfNotification,
   status,
   onApproveDecline,
   openPopup,
-  getBuyingHospitalData
+  getBuyingHospitalData,
 }) => {
   const onDecline = async ({ id }) => {
     try {
@@ -24,6 +27,28 @@ const NotificationItem = ({
       await onApproveDecline();
     } catch (error) {
       console.log("Error declining notification", error);
+    }
+  };
+
+  const getHospitalName = () => {
+    switch (typeOfNotification) {
+      case "warningExpired":
+        return fromHospital.name;
+      case "notifyAvailable":
+        return toHospital.name;
+      default:
+        return "";
+    }
+  };
+
+  const getPopupId = () => {
+    switch (typeOfNotification) {
+      case "warningExpired":
+        return trackingMedicineId;
+      case "notifyAvailable":
+        return sourcingId;
+      default:
+        return trackingMedicineId;
     }
   };
 
@@ -73,7 +98,7 @@ const NotificationItem = ({
       <Paper
         elevation={0}
         onClick={() => {
-          getBuyingHospitalData(id)
+          getBuyingHospitalData(getPopupId());
           openPopup(true);
         }}
       >
@@ -83,7 +108,8 @@ const NotificationItem = ({
   }
   return (
     <div>
-      {medicineName} in your Wish List has just been listed by {hospitalName}
+      {medicineName} in your Wish List has just been listed by{" "}
+      <b>{getHospitalName()}</b>
       {status === "Init" && (
         <div>
           <Button onClick={() => onDecline({ id })} startIcon={<CloseIcon />}>

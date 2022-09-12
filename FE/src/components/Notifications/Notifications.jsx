@@ -28,8 +28,9 @@ const Notifications = ({
   handleClose,
   onApproveDecline,
   openPopup,
-  getBuyingHospitalData
+  getBuyingHospitalData,
 }) => {
+  console.log("notifications", notifications);
   const [next, setNext] = useState(numberOfNotificationToShow);
   const handleMoreNotifications = () => {
     setNext(next + numberOfNotificationToShow);
@@ -66,17 +67,23 @@ const Notifications = ({
           .map(
             ({
               id,
+              tracking_medicine_id: trackingMedicineId,
+              sourcing_id: sourcingId,
               type,
-              hospital_name: hospitalName,
+              from_hospital: fromHospital,
+              to_hospital: toHospital,
               sourcing_name: medicineName,
               status,
             }) => (
               <MenuItem key={id} divider sx={{ height: "70px" }}>
                 <NotificationItem
                   id={id}
+                  sourcingId={sourcingId}
+                  trackingMedicineId={trackingMedicineId}
                   typeOfNotification={type}
                   status={status}
-                  hospitalName={hospitalName}
+                  fromHospital={fromHospital}
+                  toHospital={toHospital}
                   medicineName={medicineName}
                   onApproveDecline={onApproveDecline}
                   openPopup={openPopup}
