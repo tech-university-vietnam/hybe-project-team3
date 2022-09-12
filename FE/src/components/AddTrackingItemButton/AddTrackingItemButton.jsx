@@ -35,18 +35,18 @@ const AddItemButton = ({ handleListChange }) => {
         Add item to tracked list
       </Button>
       <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-        >
-            <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Add an item to tracked list
-                </Typography>
-                <AddItemForm handleClose={handleClose} handleListChange={handleListChange}/>
-            </Box>
-        </Modal>
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Add an item to tracked list
+          </Typography>
+          <AddItemForm handleClose={handleClose} handleListChange={handleListChange} />
+        </Box>
+      </Modal>
     </>
   )
 }

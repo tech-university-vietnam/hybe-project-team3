@@ -3,12 +3,13 @@ from datetime import datetime
 from typing import Optional, List
 
 from sqlalchemy import exc, delete, update, desc
+from sqlalchemy.orm import joinedload
 
 from app.controllers.tracking_medicine.tracking_medicine import TrackingMedicinePayload
 from app.domains.helpers.database_repository import DatabaseRepository
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
-from app.model.tracking_medicine import TrackingMedicine
-from app.model.user import SafeUser
+from app.model.tracking_medicine import TrackingMedicine, TrackingMedicineWithHospital
+from app.model.user import DetailUser
 
 
 class MedicineStatus:
@@ -34,21 +35,22 @@ class MedicineRepository(MedicineStatus):
 
     def list(self) -> List[TrackingMedicine]:
         return list(map(lambda m: m.to_entity(),
-                    self.db.query(TrackingMedicineDTO).order_by(
-                    desc(TrackingMedicineDTO.created_at)).all()))
+                        self.db.query(TrackingMedicineDTO).order_by(
+                            desc(TrackingMedicineDTO.created_at)).all()))
 
-    def get(self, id: int) -> Optional[TrackingMedicine]:
-        medicine_dto: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
+    def get(self, id: int) -> Optional[TrackingMedicineWithHospital]:
+        medicine_dto: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).options(
+            joinedload(TrackingMedicineDTO.hospital)).filter(
             (TrackingMedicineDTO.id == id)).first()
 
-        return medicine_dto and medicine_dto.to_entity()
+        return medicine_dto and medicine_dto.to_full_entity()
 
     def get_by_name(self, name: str) -> Optional[List[TrackingMedicine]]:
-        medicine_list: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
+        medicine_list: [TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(
             (TrackingMedicineDTO.name == name)).all()
         return medicine_list
 
-    def create(self, medicine: TrackingMedicinePayload, user: SafeUser) -> Optional[TrackingMedicine]:
+    def create(self, medicine: TrackingMedicinePayload, user: DetailUser) -> Optional[TrackingMedicine]:
         try:
             medicine_dto = TrackingMedicineDTO.from_tracking_medicine_payload(medicine)
             medicine_dto.status = MedicineStatus.calculate_create_status(medicine_dto.expired_date)
@@ -62,17 +64,24 @@ class MedicineRepository(MedicineStatus):
             logging.error(e)
             return
 
-    def update(self, id: int, medicine: TrackingMedicinePayload) -> Optional[TrackingMedicine]:
+    def update(self, id: int, payload: TrackingMedicinePayload) -> Optional[TrackingMedicine]:
         try:
-            medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(
-                (TrackingMedicineDTO.id == id)).first()
+            medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).get(id)
             if medicine_dto is None:
                 return
-            update_values = {**dict(medicine_dto.to_entity()), **dict(medicine)}
+
+            current_values = set(dict(medicine_dto.to_entity()).items())
+            new_values = set(payload.dict(exclude_none=True).items())
+            diff_values = new_values - current_values
+
+            if not diff_values:
+                # No new values to update
+                return medicine_dto.to_entity()
+
             stmt = (
                 update(TrackingMedicineDTO).
                 where(TrackingMedicineDTO.id == id).
-                values(update_values)
+                values(dict(diff_values))
             )
 
             self.db.execute(stmt)

@@ -7,7 +7,7 @@ from app.domains.user.user_exception import EmailAlreadyRegisteredError, EmailNo
 
 from app.infrastructure.postgresql.user.user_dto import UserDTO
 from app.infrastructure.postgresql.hospital.hospital import HospitalDTO
-from app.model.user import User, SafeUser
+from app.model.user import User, SafeUser, DetailUser
 from app.common.exceptions import DBError
 from sqlalchemy import update, exc, and_, select
 
@@ -30,8 +30,8 @@ class UserRepository:
         except exc.SQLAlchemyError:
             raise DBError
 
-    def get_by_id(self, id: str) -> Optional[SafeUser]:
-        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.user).where(
+    def get_by_id(self, id: int) -> Optional[SafeUser]:
+        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.users).where(
             UserDTO.id == id)
         try:
             user_dto = self.db.execute(statement).scalar_one()
@@ -40,10 +40,20 @@ class UserRepository:
             logging.error(e)
             return
 
+    def get_detail_by_id(self, id: int) -> Optional[DetailUser]:
+        statement = select(UserDTO, HospitalDTO).join(HospitalDTO.users).where(
+            UserDTO.id == id)
+        try:
+            user_dto: UserDTO = self.db.execute(statement).scalar_one()
+            return user_dto.to_detail_entity()
+        except exc.SQLAlchemyError as e:
+            logging.error(e)
+            return
+
     def update(self, user: User) -> Optional[User]:
         pass
 
-    def delete_by_id(self, id: str):
+    def delete_by_id(self, id: int):
         pass
 
     def add_new_token(self, id: int, token) -> bool:
@@ -70,7 +80,7 @@ class UserRepository:
             logging.error(e)
             return False
 
-    def check_token(self, user_id: str, token: str) -> bool:
+    def check_token(self, user_id: int, token: str) -> bool:
         statement = select(UserDTO.token).where(UserDTO.id == user_id)
         try:
             user = self.db.execute(statement).first()

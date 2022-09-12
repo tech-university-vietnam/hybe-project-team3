@@ -6,6 +6,7 @@ import usePagination from "../../Utils/hooks/pagination";
 import Filter from "components/Filter/Filter";
 import "./WishList.css";
 import { deleteSourceOrder, getSourceOrders } from "Utils/api/sourceOrder";
+import AvailablePopup from "components/WishListPopup/AvailablePopup";
 import ResolvedPopup from "components/WishListPopup/ResolvedPopup.jsx";
 import { getSellingHospital } from "Utils/api/sourceOrder";
 
@@ -135,6 +136,7 @@ const WishList = () => {
         shape="rounded"
         onChange={handlePageChange}
       />
+      <AvailablePopup name="Omepraole"/>
     </div>
   );
 };

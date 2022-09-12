@@ -1,0 +1,56 @@
+[
+  {
+    "type": "warningExpired",
+    "hospitalName": "VinMec",
+    "medicineName": "Advil",
+    "status": "init",
+    "seenStatus": "not seen",
+    "from_hospital_id": 1,
+    "to_hospital_id": 2
+  },
+  {
+    "type": "notifySold",
+    "hospitalName": "VinMec",
+    "medicineName": "Advil",
+    "status": "init",
+    "seenStatus": "not seen",
+    "from_hospital_id": 1,
+    "to_hospital_id": 2
+  },
+  {
+    "type": "notifyAvailable",
+    "hospitalName": "VinMec",
+    "medicineName": "Advil",
+    "status": "init",
+    "seenStatus": "not seen",
+    "from_hospital_id": 1,
+    "to_hospital_id": 2
+  },
+  {
+    "type": "warningExpired",
+    "hospitalName": "VinMec",
+    "medicineName": "Advil",
+    "status": "approved",
+    "seenStatus": "seen",
+    "from_hospital_id": 1,
+    "to_hospital_id": 2
+  },
+  {
+    "type": "warningExpired",
+    "hospitalName": "VinMec",
+    "medicineName": "Advil",
+    "status": "declined",
+    "seenStatus": "seen",
+    "from_hospital_id": 1,
+    "to_hospital_id": 2
+  },
+  {
+    "type": "notifyAvailable",
+    "hospitalName": "VinMec",
+    "medicineName": "Advil",
+    "status": "approved",
+    "seenStatus": "seen",
+    "from_hospital_id": 1,
+    "to_hospital_id": 2
+  }
+]
