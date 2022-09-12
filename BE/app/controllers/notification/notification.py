@@ -110,9 +110,10 @@ class NotificationRoute:
 
     @router.post("/notification/{id}/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
-    def declined(self, id: int = Path("Notification ID"),
-                 background_tasks: BackgroundTasks,
-                 bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+    def declined(self,
+    background_tasks: BackgroundTasks,
+        id: int = Path("Notification ID"),
+        bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
         """
         change status to Resolved in tracking medicine if type warningExpired
         dont change status if type notifySold
