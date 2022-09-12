@@ -37,7 +37,6 @@ class TrackingMedicineRoute:
                 response_model=TrackingMedicineWithHospital)
     def get_tracking(self, tracking_id: int):
         medicine = self.medicine_service.get(tracking_id)
-        print(medicine)
         return medicine
 
     @router.post("/tracking-medicine", tags=["medicine"],
