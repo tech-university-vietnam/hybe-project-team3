@@ -14,7 +14,7 @@ from app.domains.helpers.database_repository import DatabaseRepository
 from app.infrastructure.postgresql.notiffication.notification import NotificationDTO
 from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
-from app.model.notification import Type
+from app.model.notification import Type, Status
 
 
 def setup_cron(app: FastAPI, debug=True):
@@ -85,7 +85,8 @@ def setup_cron(app: FastAPI, debug=True):
             stmt = (
                 delete(NotificationDTO).
                 where(NotificationDTO.sourcing_id == i,
-                      NotificationDTO.type == Type.notify_available)
+                      NotificationDTO.type == Type.notify_available,
+                      NotificationDTO.status == Status.init)
             )
             db_repo.db.execute(stmt)
             db_repo.db.commit()

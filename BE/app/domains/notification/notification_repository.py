@@ -22,10 +22,8 @@ class NotificationRepository(DatabaseRepository):
                 and_(NotificationDTO.type == Type.notify_available,
                      NotificationDTO.to_hospital_id == hospital_id),
                 and_(NotificationDTO.type == Type.notify_sold,
-                     or_(
-                         NotificationDTO.to_hospital_id == hospital_id,
                          NotificationDTO.from_hospital_id == hospital_id,
-                     )))
+                     ))
         ).order_by(
             desc(NotificationDTO.created_at)).all()
         return list(map(lambda notify: notify.to_full_entity(), notifies))
@@ -116,11 +114,33 @@ class NotificationRepository(DatabaseRepository):
 
             notify.status = status
             if status == Status.approved and notify.type == Type.notify_available:
-                notify.type = Type.notify_sold
+                print("run")
+                self.db.add(
+                    NotificationDTO.from_approved_request(notify)
+                )
+                self.db.commit()
 
             self.db.flush([notify])
             self.db.commit()
             return notify
+        except exc.SQLAlchemyError as e:
+            logging.error(e)
+            return
+
+    def update_status_to_invalid(self, id: int):
+        try:
+            invalid_notis = self.db.query(NotificationDTO).filter(
+                NotificationDTO.sourcing_id == id,
+                NotificationDTO.type == Type.notify_available,
+                NotificationDTO.status == Status.init
+            ).all()
+            mappings = []
+            for noti in invalid_notis:
+                mappings.append({
+                    "id": noti.id,
+                    "status": Status.invalid
+                })
+            self.db.bulk_update_mappings(NotificationDTO, mappings)
         except exc.SQLAlchemyError as e:
             logging.error(e)
             return
