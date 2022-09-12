@@ -22,8 +22,11 @@ class MedicineService:
         # return self.medicine_repo.get_listed_medicine_quantity(payload, user)
         pass
 
-    def update(self, id: int, payload: TrackingMedicinePayload, hospital_id: int):
+    def update(self, id: int, payload, hospital_id: int):
         return self.medicine_repo.update(id, payload, hospital_id)
+
+    def update_status(self, id: int, status, hospital_id: int):
+        return self.medicine_repo.update(id, status, hospital_id)
 
     def delete(self, id: int, hospital_id: int):
         return self.medicine_repo.delete(id, hospital_id)

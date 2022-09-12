@@ -100,7 +100,7 @@ class NotificationRoute:
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
-        return self.notify_service.update_status(id, Status.approved, user_id)
+        return self.notify_service.update_status(id, Status.approved, user_id, user.work_for)
 
     @router.post("/notification/{id}/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
@@ -116,7 +116,7 @@ class NotificationRoute:
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
-        return self.notify_service.update_status(id, Status.declined, user_id)
+        return self.notify_service.update_status(id, Status.declined, user_id, user.work_for)
 
     @router.get("/notification/not-seen", tags=["notification"],
                 status_code=status.HTTP_200_OK, response_model=TotalNotSeenPayload)

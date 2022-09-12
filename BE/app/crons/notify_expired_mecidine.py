@@ -136,6 +136,7 @@ def setup_cron(app: FastAPI, debug=True):
         for name in map_meds_hospital_sell.keys():
             map_hospital_sell_buy[name]['buyer'] = map_meds_hospital_buy[name]
             map_hospital_sell_buy[name]['seller'] = map_meds_hospital_sell[name]
+        print(map_hospital_sell_buy)
         noti_list = []
         for name in map_hospital_sell_buy.keys():
             if (
@@ -153,12 +154,12 @@ def setup_cron(app: FastAPI, debug=True):
                         hospital_buy[0]
                     )
                     noti_list += [noti]
-
+        print(noti_list)
         db_repo.db.add_all(noti_list)
         db_repo.db.commit()
 
     @app.on_event("startup")
-    @repeat_every(seconds=120, raise_exceptions=True)  # 5 mins
+    @repeat_every(seconds=20, raise_exceptions=True)  # 5 mins
     def notify_expired_medicine() -> None:
         print("Starting cronjob interval...")
         # Send nearly expired notify to owner

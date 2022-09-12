@@ -63,7 +63,7 @@ class NotificationDTO(Base):
     def from_sourcing_entity(cls, source_id, med_id, med_name, med_from, med_to):
         return cls(
             sourcing_id=source_id,
-            tracking_medicine_id= med_id,
+            tracking_medicine_id=med_id,
             sourcing_name=med_name,
             status=Status.init,
             description='',

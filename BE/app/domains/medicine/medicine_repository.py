@@ -64,12 +64,14 @@ class MedicineRepository(MedicineStatus):
             logging.error(e)
             return
 
-    def update(self, id: int, medicine, hospital_id: int) -> Optional[TrackingMedicine]:
+    def update(self, id: int, medicine: TrackingMedicinePayload, hospital_id: int) -> Optional[TrackingMedicine]:
         try:
             medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(TrackingMedicineDTO.id == id).first()
+
+            print(type(medicine))
             if medicine_dto is None:
                 return
-            update_values = {**dict(medicine)}
+            update_values = {medicine.dict(exclude_unset=True)}
             stmt = (
                 update(TrackingMedicineDTO).
                 where(TrackingMedicineDTO.id == id,
@@ -94,3 +96,21 @@ class MedicineRepository(MedicineStatus):
         except exc.SQLAlchemyError as e:
             logging.error(e)
             return False
+
+    def update_status(self, id: int, status: str, hospital_id: int):
+        try:
+            stmt = (
+                update(TrackingMedicineDTO).
+                where(TrackingMedicineDTO.id == id,
+                TrackingMedicineDTO.hospital_id == hospital_id).
+                values({"status": status})
+            )
+
+            self.db.execute(stmt)
+            self.db.commit()
+
+            return
+        except exc.SQLAlchemyError as e:
+            logging.error(e)
+            return
+

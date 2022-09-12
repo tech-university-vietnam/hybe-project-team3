@@ -36,16 +36,16 @@ class NotificationService:
     def count_total_not_seen(self, hospital_id: int):
         return self.noti_repo.count_total_not_seen(hospital_id)
 
-    def update_status(self, noti_id: int, status: str, user_id: int):
+    def update_status(self, noti_id: int, status: str, user_id: int, hospital_id: int):
         # update med status to listed
         # update notification status
         noti = self.noti_repo.update_status(noti_id, status)
         if noti and noti.type == Type.warning_expired and noti.status == Status.approved:
-            self.medicine_repo.update(noti.sourcing_id, TrackingMedicinePayload(status="Listed"))
+            self.medicine_repo.update_status(noti.sourcing_id,"Listed", hospital_id)
 
         if noti and noti.type == Type.notify_sold and noti.status == Status.approved:
-            self.medicine_repo.update(noti.tracking_medicine_id, TrackingMedicinePayload(status="Sold"))
-            self.source_repo.update({"status": "Resolved"}, noti.sourcing_idß, user_id)
+            self.medicine_repo.update_status(noti.tracking_medicine_id, TrackingMedicinePayload(status="Sold"))
+            self.source_repo.update({"status": "Resolved"}, noti.sourcing_id, hospital_id)
         return noti
 
     def update_all_seen_status(self, ids: List[int]):
