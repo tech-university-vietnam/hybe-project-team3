@@ -158,7 +158,7 @@ def setup_cron(app: FastAPI, debug=True):
         db_repo.db.commit()
 
     @app.on_event("startup")
-    @repeat_every(seconds=120, raise_exceptions=True)  # 5 mins
+    @repeat_every(seconds=20, raise_exceptions=True)  # 5 mins
     def notify_expired_medicine() -> None:
         print("Starting cronjob interval...")
         # Send nearly expired notify to owner

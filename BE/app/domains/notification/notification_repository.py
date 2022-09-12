@@ -118,7 +118,7 @@ class NotificationRepository(DatabaseRepository):
             if status == Status.approved and notify.type == Type.notify_available:
                 notify.type = Type.notify_sold
 
-            self.db.flush(notify)
+            self.db.flush([notify])
             self.db.commit()
             return notify
         except exc.SQLAlchemyError as e:
