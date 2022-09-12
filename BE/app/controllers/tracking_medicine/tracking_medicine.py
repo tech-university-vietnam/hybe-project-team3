@@ -37,10 +37,11 @@ class TrackingMedicineRoute:
                 response_model=TrackingMedicine)
     def get_tracking(self, tracking_id: int):
         medicine = self.medicine_service.get(tracking_id)
-        return JSONResponse(medicine.dict())
+        return medicine.dict()
 
     @router.post("/tracking-medicine", tags=["medicine"],
-                 response_model=TrackingMedicine)
+                 response_model=TrackingMedicine,
+                 status_code=status.HTTP_201_CREATED)
     async def create_tracking_medicine(
         self,
         payload: TrackingMedicinePayload,
@@ -52,7 +53,7 @@ class TrackingMedicineRoute:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
         medicine = self.medicine_service.create(payload, user)
-        return JSONResponse(medicine.dict(), status.HTTP_201_CREATED)
+        return medicine.dict()
 
     @router.put("/tracking-medicine/{tracking_id}", tags=["medicine"],
                 response_model=TrackingMedicine)

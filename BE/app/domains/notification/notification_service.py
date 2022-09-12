@@ -40,12 +40,12 @@ class NotificationService:
         # update med status to listed
         # update notification status
         noti = self.noti_repo.update_status(noti_id, status)
-        if noti.type == Type.warning_expired and noti.status == Status.approved:
+        if noti and noti.type == Type.warning_expired and noti.status == Status.approved:
             self.medicine_repo.update(noti.sourcing_id, TrackingMedicinePayload(status="Listed"))
 
-        if noti.type == Type.notify_sold and noti.status == Status.approved:
+        if noti and noti.type == Type.notify_sold and noti.status == Status.approved:
             self.medicine_repo.update(noti.tracking_medicine_id, TrackingMedicinePayload(status="Sold"))
-            self.source_repo.update({"status": "Resolved"}, noti.sourcing_id, user_id)
+            self.source_repo.update({"status": "Resolved"}, noti.sourcing_idß, user_id)
         return noti
 
     def update_all_seen_status(self, ids: List[int]):
