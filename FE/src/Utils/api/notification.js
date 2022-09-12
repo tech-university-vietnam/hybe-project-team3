@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getNotSeenNotifications = async () => {
   const response = await axios.get(
-    "http://localhost:8000/notification/notseen"
+    "http://localhost:8000/notification/not-seen"
   );
   return response;
 };
@@ -13,9 +13,9 @@ export const getAllNotifications = async () => {
 };
 
 export const postApproveNotification = async ({ id }) => {
-  await axios.post("http://localhost:8000/notification/approved", { id: id });
+  await axios.post(`http://localhost:8000/notification/${id}/approved`);
 };
 
 export const postDeclineNotification = async ({ id }) => {
-  await axios.post("http://localhost:8000/notification/declined", { id: id });
+  await axios.post(`http://localhost:8000/notification/${id}/declined`);
 };

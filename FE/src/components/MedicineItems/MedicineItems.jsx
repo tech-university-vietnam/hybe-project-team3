@@ -1,11 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import MedicineItem from "components/MedicineItem/MedicineItem";
-const MedicineItems = ({ medicineItems, handleDelete }) => {
+const MedicineItems = ({ medicineItems, handleDelete, openPopup }) => {
   return (
     <div>
       {medicineItems.map(
-        ({ id, name: medicineName, hospitalName, expired_date: expirationDate, status }) => (
+        ({
+          id,
+          name: medicineName,
+          hospitalName,
+          expired_date: expirationDate,
+          status,
+        }) => (
           <MedicineItem
             key={id}
             id={id}
@@ -14,6 +20,7 @@ const MedicineItems = ({ medicineItems, handleDelete }) => {
             expirationDate={expirationDate}
             status={status}
             handleDelete={handleDelete}
+            openPopup={openPopup}
           />
         )
       )}
@@ -31,6 +38,8 @@ MedicineItems.propTypes = {
       handleDelete: PropTypes.func,
     })
   ),
+  openPopup: PropTypes.func,
+  handleDelete: PropTypes.func,
 };
 
 export default MedicineItems;
