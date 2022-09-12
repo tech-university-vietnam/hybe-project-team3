@@ -58,7 +58,6 @@ class SourceOrderRequestRoute:
             raise HTTPException(status_code=401)
 
         source_order = self.source_order_req_service.get(source_id)
-        print(source_order)
         return source_order
 
     @router.patch("/source-order/{source_id}", tags=["source-order"])
