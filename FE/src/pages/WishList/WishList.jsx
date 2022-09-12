@@ -115,7 +115,7 @@ const WishList = () => {
         shape="rounded"
         onChange={handlePageChange}
       />
-      <AvailablePopup name="Johnson Johnson"/>
+      <AvailablePopup name="Omepraole"/>
     </div>
   );
 };
