@@ -7,25 +7,31 @@ import './AvailablePopup.css'
 import { getAllNotifications } from "Utils/api/notification";
 
 
-const AvailablePopup = ({ name }) => {
+const AvailablePopup = ({ open, onClose, name, resolve }) => {
   const [availableHospitals, setAvailableHospitals] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAPI = async () => {
-      const notifications = await getAllNotifications().then(response => response.data);
-      const data = notifications.filter((item) => item.type === "notifyAvailable" && item.sourcing_name === name);
-      console.log(data);
-      setAvailableHospitals(data);
-      setIsLoading(false);
-    }
-
-    fetchAPI();
+    getHospitals();
   }, []);
 
+  const getHospitals = async () => {
+    setIsLoading(true);
+    const notifications = await getAllNotifications().then(response => response.data);
+    const data = notifications.filter((item) =>
+      item.type === "notifyAvailable" && item.sourcing_name === name && item.status === 'Init');
+    setAvailableHospitals(data);
+    setIsLoading(false);
+  }
+
+  const handleResolve = async () => {
+    await resolve();
+    onClose(false);
+  }
+
   return <Dialog
-    open={true}
-    // onClose={handleClose}
+    open={open}
+    onClose={() => onClose(false)}
     fullWidth
     maxWidth="md"
     aria-labelledby="scroll-dialog-title"
@@ -33,13 +39,17 @@ const AvailablePopup = ({ name }) => {
   >
     <DialogTitle id="scroll-dialog-title">{name} is now available</DialogTitle>
     <DialogContent dividers={true}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {isLoading ? <></> : availableHospitals.map((item) =>
           <AvailableHospital
             key={item.id}
             hospital={item.from_hospital.name}
             contact={item.from_hospital.telephone}
             address={item.from_hospital.address}
+            id={item.id}
+            status={item.status}
+            refreshList={getHospitals}
+            handleResolve={handleResolve}
           />
         )}
       </Box>
@@ -48,6 +58,11 @@ const AvailablePopup = ({ name }) => {
 
 };
 
-AvailablePopup.propTypes = {};
+AvailablePopup.propTypes = {
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
+  name: PropTypes.string,
+  resolve: PropTypes.func
+};
 
 export default AvailablePopup;
