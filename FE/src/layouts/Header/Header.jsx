@@ -58,7 +58,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
       } catch (error) {
         console.log("Cannot call API at interval", error);
       }
-    }, 500000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
