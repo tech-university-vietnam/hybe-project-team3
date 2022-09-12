@@ -66,7 +66,7 @@ class TrackingMedicineRoute:
         bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
         user = self.user_service.get_detail_user_by_id(user_id)
-        return self.medicine_service.update(tracking_id, payload, user.work_for)
+        return self.medicine_service.update(tracking_id, payload)
 
     @router.delete("/tracking-medicine/{tracking_id}", tags=["medicine"],
                    response_model=TrackingMedicine)

@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 .vscode
+.env.local
+.env.test
 
 # C extensions
 *.so

@@ -66,7 +66,6 @@ class MedicineRepository(MedicineStatus):
         try:
             medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(TrackingMedicineDTO.id == id).first()
 
-            print(type(medicine))
             if medicine_dto is None:
                 return
 
