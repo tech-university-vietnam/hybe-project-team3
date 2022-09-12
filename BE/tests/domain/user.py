@@ -2,7 +2,7 @@
 from app.model.user import User
 from datetime import datetime
 
-now = datetime.now()
+now = datetime.utcnow()
 
 
 class TestUserModel:

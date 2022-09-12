@@ -15,8 +15,8 @@ class User:
                  telephone: str,
                  avatar: str,
                  work_for: int,
-                 created_at: Optional[datetime] = datetime.now(),
-                 updated_at: Optional[datetime] = datetime.now(),
+                 created_at: Optional[datetime] = datetime.utcnow(),
+                 updated_at: Optional[datetime] = datetime.utcnow(),
                  ):
         self.id: int = id
         self.username: str = username

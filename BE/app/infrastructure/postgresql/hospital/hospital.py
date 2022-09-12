@@ -37,7 +37,7 @@ class HospitalDTO(Base):
 
     @staticmethod
     def from_entity(hospital: Hospital) -> "HospitalDTO":
-        now = datetime.now()
+        now = datetime.utcnow()
         return HospitalDTO(
             id=hospital.id,
             name=hospital.name,
@@ -49,7 +49,7 @@ class HospitalDTO(Base):
     @staticmethod
     def from_mock_data(
             name: str, telephone: str, address: str) -> "HospitalDTO":
-        now = datetime.now()
+        now = datetime.utcnow()
         return HospitalDTO(
             name=name,
             telephone=telephone,

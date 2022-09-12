@@ -38,7 +38,7 @@ class NotificationDTO(Base):
     to_hospital: HospitalDTO = relationship("HospitalDTO", viewonly=True, uselist=False,
                                             primaryjoin='NotificationDTO.to_hospital_id == foreign(HospitalDTO.id)')
 
-    created_at: Union[datetime, Column] = Column(DateTime, default=datetime.now(), nullable=True)
+    created_at: Union[datetime, Column] = Column(DateTime, default=datetime.utcnow, nullable=True)
 
     tracking_medicine_id: Union[int, Column] = Column(Integer, nullable=True)
 
@@ -89,6 +89,7 @@ class NotificationDTO(Base):
             id=self.id,
             sourcing_id=self.sourcing_id,
             sourcing_name=self.sourcing_name,
+            tracking_medicine_id=self.tracking_medicine_id,
             type=self.type,
             status=self.status,
             seen_status=self.seen_status,
@@ -112,7 +113,6 @@ class NotificationDTO(Base):
             type=Type.warning_expired
         )
 
-
     def to_list_item(self) -> NotificationItem:
         return NotificationItem(
             id=self.id,
@@ -127,7 +127,7 @@ class NotificationDTO(Base):
     @classmethod
     def from_notification_payload(cls, payload: Notification):
         return cls(
-            sourcing_id=payload.souring_id,
+            sourcing_id=payload.sourcing_id,
             sourcing_name=payload.sourcing_name,
             status=payload.status,
             description=payload.description,

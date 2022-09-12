@@ -31,9 +31,9 @@ class UserDTO(Base):
     # created_at: Union[datetime, Column] = Column(DateTime(timezone=True),
     #           server_default=func.now())
 
-    created_at: Union[datetime, Column] = Column(DateTime(timezone=True),default=datetime.now(),
+    created_at: Union[datetime, Column] = Column(DateTime(timezone=True),default=datetime.utcnow,
                                                  nullable=True)
-    updated_at: Union[datetime, Column] = Column(DateTime(timezone=True), default=datetime.now(),
+    updated_at: Union[datetime, Column] = Column(DateTime(timezone=True), default=datetime.utcnow,
                                                  nullable=True)
     # jwt token
     token: Union[str, Column] = Column(String, nullable=True)
@@ -60,7 +60,7 @@ class UserDTO(Base):
 
     @classmethod
     def from_entity(cls, user: User) -> "UserDTO":
-        now = datetime.now()
+        now = datetime.utcnow()
         return cls(
             id=user.id,
             username=user.username,
@@ -98,7 +98,7 @@ class UserDTO(Base):
         salt = bcrypt.gensalt()
         password = regis_req.password.encode('utf8')
         pwhash = bcrypt.hashpw(password, salt).decode('utf8')
-        now = datetime.now()
+        now = datetime.utcnow()
         return cls(
             hash_pw=pwhash,
             email=regis_req.email,
