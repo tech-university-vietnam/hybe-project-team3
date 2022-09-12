@@ -11,8 +11,8 @@ class MedicineService:
     def get(self, id: int):
         return self.medicine_repo.get(id)
 
-    def list(self):
-        return self.medicine_repo.list()
+    def list(self, hospital_id: int):
+        return self.medicine_repo.list(hospital_id)
 
     def create(self, payload: TrackingMedicinePayload, user: DetailUser):
         return self.medicine_repo.create(payload, user)
@@ -22,9 +22,9 @@ class MedicineService:
         # return self.medicine_repo.get_listed_medicine_quantity(payload, user)
         pass
 
-    def update(self, id: int, payload: TrackingMedicinePayload):
-        return self.medicine_repo.update(id, payload)
+    def update(self, id: int, payload: TrackingMedicinePayload, hospital_id: int):
+        return self.medicine_repo.update(id, payload, hospital_id)
 
-    def delete(self, id: int):
-        return self.medicine_repo.delete(id)
+    def delete(self, id: int, hospital_id: int):
+        return self.medicine_repo.delete(id, hospital_id)
 

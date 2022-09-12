@@ -32,9 +32,11 @@ class MedicineRepository(MedicineStatus):
         self.db_repo = database_repository
         self.db = self.db_repo.db
 
-    def list(self) -> List[TrackingMedicine]:
+    def list(self, hospital_id) -> List[TrackingMedicine]:
         return list(map(lambda m: m.to_entity(),
-                    self.db.query(TrackingMedicineDTO).order_by(
+                    self.db.query(TrackingMedicineDTO).filter(
+                        TrackingMedicineDTO.hospital_id == hospital_id
+                    ).order_by(
                     desc(TrackingMedicineDTO.created_at)).all()))
 
     def get(self, id: int) -> Optional[TrackingMedicine]:
@@ -62,15 +64,16 @@ class MedicineRepository(MedicineStatus):
             logging.error(e)
             return
 
-    def update(self, id: int, medicine: TrackingMedicinePayload) -> Optional[TrackingMedicine]:
+    def update(self, id: int, medicine, hospital_id: int) -> Optional[TrackingMedicine]:
         try:
-            medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).get(id)
+            medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(TrackingMedicineDTO.id == id).first()
             if medicine_dto is None:
                 return
-            update_values = {**dict(medicine_dto.to_entity()), **dict(medicine)}
+            update_values = {**dict(medicine)}
             stmt = (
                 update(TrackingMedicineDTO).
-                where(TrackingMedicineDTO.id == id).
+                where(TrackingMedicineDTO.id == id,
+                TrackingMedicineDTO.hospital_id == hospital_id).
                 values(update_values)
             )
 
@@ -82,8 +85,8 @@ class MedicineRepository(MedicineStatus):
             logging.error(e)
             return
 
-    def delete(self, id: int) -> bool:
-        statement = delete(TrackingMedicineDTO).where(TrackingMedicineDTO.id == id)
+    def delete(self, id: int, hospital_id: int) -> bool:
+        statement = delete(TrackingMedicineDTO).where(TrackingMedicineDTO.id == id, TrackingMedicineDTO.hospital_id == hospital_id)
         try:
             self.db.execute(statement)
             self.db.commit()

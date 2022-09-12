@@ -29,8 +29,12 @@ class TrackingMedicineRoute:
 
     @router.get("/tracking-medicines", tags=["medicine"],
                 response_model=List[TrackingMedicine])
-    def list_trackings(self):
-        meds = self.medicine_service.list()
+    def list_trackings(self,
+                       bearer_auth:
+                       HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+        user_id = self.jwt_service.validate_token(bearer_auth.credentials)
+        user = self.user_service.get_detail_user_by_id(user_id)
+        meds = self.medicine_service.list(user.work_for)
         return meds
 
     @router.get("/tracking-medicine/{tracking_id}", tags=["medicine"],
@@ -55,16 +59,21 @@ class TrackingMedicineRoute:
         medicine = self.medicine_service.create(payload, user)
         return medicine.dict()
 
-    @router.put("/tracking-medicine/{tracking_id}", tags=["medicine"],
+    @router.patch("/tracking-medicine/{tracking_id}", tags=["medicine"],
                 response_model=TrackingMedicine)
     def update_tracking_medicine(self, tracking_id: int, payload:
-                                 TrackingMedicinePayload):
-        return self.medicine_service.update(tracking_id, payload)
+                                 TrackingMedicinePayload,
+        bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+        user_id = self.jwt_service.validate_token(bearer_auth.credentials)
+        user = self.user_service.get_detail_user_by_id(user_id)
+        return self.medicine_service.update(tracking_id, payload, user.work_for)
 
     @router.delete("/tracking-medicine/{tracking_id}", tags=["medicine"],
                    response_model=TrackingMedicine)
-    def delete_tracking_medicine(self, tracking_id: int):
-        success = self.medicine_service.delete(tracking_id)
+    def delete_tracking_medicine(self, tracking_id: int, bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+        user_id = self.jwt_service.validate_token(bearer_auth.credentials)
+        user = self.user_service.get_detail_user_by_id(user_id)
+        success = self.medicine_service.delete(tracking_id, user.work_for)
         if success:
             return JSONResponse(None, status_code=status.HTTP_200_OK)
         else:

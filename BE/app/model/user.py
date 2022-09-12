@@ -40,7 +40,7 @@ class SafeUser(BaseModel):
     id: int
     username: Optional[str]
     email: str
-    work_for: str
+    work_for: int
     created_at: datetime
     updated_at: datetime
 

@@ -19,7 +19,7 @@ def add_bearer(token: str):
 def test_get_token(client: TestClient) -> None:
     r = client.post(
         REGISTER_PATH,
-        json={"email": "test23", "password": "123", "work_for":1}
+        json={"email": "test23", "password": "123", "work_for": 1}
     )
     r = client.post(
         LOGIN_PATH,
@@ -63,6 +63,7 @@ def test_update_source_order(client: TestClient) -> None:
     assert r.status_code == status.HTTP_200_OK
     r = client.get(
         "/source-orders",
+        headers=auth_header
     )
     data = r.json()
     assert data[0]['status'] == "foo2"
@@ -76,6 +77,7 @@ def test_delete_source_order(client: TestClient) -> None:
     assert r.status_code == status.HTTP_200_OK
     r = client.get(
         "/source-orders",
+        headers=auth_header
     )
     data = r.json()
     assert data == []

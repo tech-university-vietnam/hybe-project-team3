@@ -53,17 +53,19 @@ def test_get_tracking_medicine_list(client: TestClient) -> None:
 
 
 def test_update_tracking_medicine(client: TestClient) -> None:
-    r = client.put(
+    r = client.patch(
         f'{TRACKING_MEDICINE_PREFIX}/{medicine_id}',
         headers=auth_header,
-        json={"name": "foo2", "expired_date": "2022-09-07T13:00:50.280Z",
-              "status": "bar", "created_by": 1, "hospital_id": 1}
+        json={"name": "foo2",
+              "status": "bar"}
     )
     assert r.status_code == status.HTTP_200_OK
     r = client.get(
         "/tracking-medicines",
+        headers=auth_header
     )
     data = r.json()
+    print(data)
     assert data[0]['name'] == "foo2"
 
 
@@ -75,6 +77,7 @@ def test_delete_tracking_medicine(client: TestClient) -> None:
     assert r.status_code == status.HTTP_200_OK
     r = client.get(
         "/tracking-medicines",
+        headers=auth_header
     )
     data = r.json()
     assert data == []

@@ -23,9 +23,14 @@ class SourceOrderRequestRoute:
         self.user_service: UserService = obj_graph.provide(UserService)
 
     @router.get("/source-orders", tags=["source-order"])
-    def get_source_orders(self):
+    def get_source_orders(self,
+                          bearer_auth: HTTPAuthorizationCredentials =
+                          Depends(oauth2_scheme)):
         try:
-            return self.source_order_req_service.list()
+            user_id = self.jwt_service.validate_token(bearer_auth.credentials)
+            user = self.user_service.get_user_by_id(user_id)
+            print(user.work_for)
+            return self.source_order_req_service.list(user.work_for)
         except DBError:
             raise HTTPException(500)
 
@@ -56,7 +61,7 @@ class SourceOrderRequestRoute:
         if not user:
             raise HTTPException(status_code=401)
         try:
-            self.source_order_req_service.update(payload, source_id, user_id)
+            self.source_order_req_service.update(payload, source_id, user.work_for)
             return {"msg": "updated"}
         except DBError:
             raise HTTPException(500)
@@ -72,7 +77,7 @@ class SourceOrderRequestRoute:
         if not user:
             raise HTTPException(status_code=401)
         try:
-            self.source_order_req_service.delete(source_id, user_id)
+            self.source_order_req_service.delete(source_id, user.work_for)
             return {"msg": "ok"}
         except DBError:
             raise HTTPException(500)
