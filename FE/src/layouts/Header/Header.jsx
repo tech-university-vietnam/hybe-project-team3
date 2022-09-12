@@ -12,6 +12,7 @@ import {
 import FinishedListingPopup from "components/TrackedListPopup/FinishedListingPopup";
 
 const Header = ({ email = "tony_stark@starkindustries.com" }) => {
+  const { authed, isLoading } = useAuth();
   const [anchorAccount, setAnchorAccount] = useState(null);
   const [anchorNotification, setAnchorNotification] = useState(null);
   const [notificationBadgeCount, setNotificationBadgeCount] = useState(0);
@@ -56,11 +57,11 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
     let interval = setInterval(async () => {
       try {
         const response = await getNotSeenNotifications();
-        setNotificationBadgeCount(response.data.notseen_noti);
+        setNotificationBadgeCount(response.data.total);
       } catch (error) {
         console.log("Cannot call API at interval", error);
       }
-    }, 500000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
@@ -94,7 +95,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
           endIcon={<KeyboardArrowDownIcon />}
           sx={{ color: "black" }}
         >
-          {email}
+          {authed}
         </Button>
         <Menu
           id="account-menu"

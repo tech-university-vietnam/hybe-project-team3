@@ -12,8 +12,7 @@ export const deleteTrackingMedicine = async (id) => {
 export const postTrackingMedicine = async (name, date) => {
   const response = await axios.post("http://localhost:8000/tracking-medicine", {
     name: name,
-    expired_date: date,
-    number: 0,
+    expired_date: date
   });
   return response;
 };

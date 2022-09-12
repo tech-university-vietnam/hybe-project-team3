@@ -7,8 +7,10 @@ import Filter from "components/Filter/Filter";
 import "./WishList.css";
 import { deleteSourceOrder, getSourceOrders } from "Utils/api/sourceOrder";
 import ResolvedPopup from "components/WishListPopup/ResolvedPopup.jsx";
+import { getSellingHospital } from "Utils/api/sourceOrder";
 
 const WishList = () => {
+  const [popupData, setPopupData] = useState({});
   const [resolvedPopup, setResolvedPopup] = useState(false);
   const [wishListItems, setWishListItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,8 +21,16 @@ const WishList = () => {
   ]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const openPopup = ({ status }) => {
-    if (status === "Resolved") return setResolvedPopup(true);
+  const openPopup = async ({ id, status }) => {
+    if (status === "Resolved") {
+      try {
+        const response = await getSellingHospital(id);
+        setPopupData(response.data);
+        setResolvedPopup(true);
+      } catch (error) {
+        console.log("error getting selling hospital", error);
+      }
+    }
   };
 
   const filteredWishListItems = useMemo(() => {
@@ -58,6 +68,7 @@ const WishList = () => {
   };
 
   const handleDeleteWishListItem = async (id) => {
+    console.log("id is", id);
     try {
       await deleteSourceOrder(id);
       await getAllWishListItems();
@@ -108,7 +119,7 @@ const WishList = () => {
       </div>
       <div className="data-container">
         {resolvedPopup && (
-          <ResolvedPopup open={resolvedPopup} onClose={setResolvedPopup} />
+          <ResolvedPopup open={resolvedPopup} onClose={setResolvedPopup} popupData={popupData} />
         )}
         <MedicineItems
           medicineItems={filteredWishListToDisplay.currentData()}

@@ -27,10 +27,9 @@ const Notifications = ({
   handleNotificationDropDownClick,
   handleClose,
   onApproveDecline,
-  openPopup
+  openPopup,
 }) => {
   const [next, setNext] = useState(numberOfNotificationToShow);
-
   const handleMoreNotifications = () => {
     setNext(next + numberOfNotificationToShow);
   };
@@ -63,28 +62,31 @@ const Notifications = ({
       >
         {notifications
           .slice(0, next)
-          .map(({ id, type, hospital_name: hospitalName, medicine_name: medicineName, status }) => (
-            <MenuItem
-              key={id}
-              disabled={status === "init" ? false : true}
-              divider
-              sx={{ height: "70px" }}
-            >
-              <NotificationItem
-                id={id}
-                typeOfNotification={type}
-                status={status}
-                hospitalName={hospitalName}
-                medicineName={medicineName}
-                onApproveDecline={onApproveDecline}
-                openPopup={openPopup}
-              />
-            </MenuItem>
-          ))}
+          .map(
+            ({
+              id,
+              type,
+              hospital_name: hospitalName,
+              sourcing_name: medicineName,
+              status,
+            }) => (
+              <MenuItem key={id} divider sx={{ height: "70px" }}>
+                <NotificationItem
+                  id={id}
+                  typeOfNotification={type}
+                  status={status}
+                  hospitalName={hospitalName}
+                  medicineName={medicineName}
+                  onApproveDecline={onApproveDecline}
+                  openPopup={openPopup}
+                />
+              </MenuItem>
+            )
+          )}
         <Button
           className="mt-4"
           onClick={handleMoreNotifications}
-          disabled={notifications.length === next ? true : false}
+          disabled={next >= notifications.length ? true : false}
         >
           Load more
         </Button>
@@ -99,7 +101,7 @@ Notifications.propTypes = {
   handleNotificationDropDownClick: PropTypes.func,
   handleClose: PropTypes.func,
   onApproveDecline: PropTypes.func,
-  openPopup: PropTypes.func
+  openPopup: PropTypes.func,
 };
 
 export default Notifications;

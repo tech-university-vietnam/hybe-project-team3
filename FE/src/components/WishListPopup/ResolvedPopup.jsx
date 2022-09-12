@@ -18,11 +18,15 @@ const style = {
 
 const ResolvedPopup = ({
   id,
-  hospitalName,
-  hospitalAddress,
-  hospitalPhone,
-  medicineName,
-  expirationDate,
+  popupData: {
+    name: medicineName,
+    expired_date: expirationDate,
+    hospital: {
+      name: hospitalName,
+      telephone: hospitalPhone,
+      address: hospitalAddress,
+    },
+  },
   open,
   onClose,
 }) => {

@@ -41,7 +41,7 @@ const NotificationItem = ({
     return (
       <div>
         {medicineName} in your Tracked List is about to expire!
-        {status === "init" && (
+        {status === "Init" && (
           <div>
             <Button onClick={() => onDecline({ id })} startIcon={<CloseIcon />}>
               Cancel
@@ -51,17 +51,17 @@ const NotificationItem = ({
             </Button>
           </div>
         )}
-        {status === "declined" && (
+        {status === "Declined" && (
           <Typography variant="subtitle2" color="orange">
             ❌ You've declined to list this item
           </Typography>
         )}
-        {status === "approved" && (
+        {status === "Approved" && (
           <Typography variant="subtitle2" color="green">
             ✅ You've listed this item
           </Typography>
         )}
-        {status === "invalid" && (
+        {status === "Invalid" && (
           <Typography variant="subtitle2" color="gray">
             ⚠ This item has expired, it can't be listed
           </Typography>
@@ -85,7 +85,7 @@ const NotificationItem = ({
   return (
     <div>
       {medicineName} in your Wish List has just been listed by {hospitalName}
-      {status === "init" && (
+      {status === "Init" && (
         <div>
           <Button onClick={() => onDecline({ id })} startIcon={<CloseIcon />}>
             Decline
@@ -95,17 +95,17 @@ const NotificationItem = ({
           </Button>
         </div>
       )}
-      {status === "declined" && (
+      {status === "Declined" && (
         <Typography variant="subtitle2" color="orange">
           ❌ You've declined to buy from this vendor
         </Typography>
       )}
-      {status === "approved" && (
+      {status === "Approved" && (
         <Typography variant="subtitle2" color="green">
           🎉 You've bought this item.
         </Typography>
       )}
-      {status === "invalid" && (
+      {status === "Invalid" && (
         <Typography variant="subtitle2" color="gray">
           ⚠ Someone has purchased this item
         </Typography>

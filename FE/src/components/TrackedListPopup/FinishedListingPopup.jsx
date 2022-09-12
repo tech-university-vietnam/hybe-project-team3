@@ -16,25 +16,10 @@ const style = {
   p: 4,
 };
 
-const FinishedListingPopup = ({
-  id,
-  hospitalName,
-  hospitalAddress,
-  hospitalPhone,
-  medicineName,
-  expirationDate,
-  open,
-  onClose,
-}) => {
+const FinishedListingPopup = ({ id, popupData, open, onClose }) => {
   return (
     <Modal open={open} onClose={() => onClose(false)}>
-      <Box sx={style}>
-        <Typography sx={{ fontWeight: "bold" }}>
-          🎉 {hospitalName} bought {medicineName} from you!
-        </Typography>
-        <Typography>Address: {hospitalAddress}</Typography>
-        <Typography>Contact number: {hospitalPhone}</Typography>
-      </Box>
+      <p>hello finishedlistingpopup</p>
     </Modal>
   );
 };

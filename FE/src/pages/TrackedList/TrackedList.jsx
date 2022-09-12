@@ -8,11 +8,13 @@ import usePagination from "../../Utils/hooks/pagination";
 import "./TrackedList.css";
 import {
   deleteTrackingMedicine,
+  getBuyingHospital,
   getTrackingMedicines,
 } from "Utils/api/medicine";
 import FinishedListingPopup from "components/TrackedListPopup/FinishedListingPopup";
 
 const TrackedList = () => {
+  const [popupData, setPopupData] = useState({});
   const [finishedListingPopup, setFinishedListingPopup] = useState(false);
   const [listOfTrackedMedicineItems, setListOfTrackedMedicineItems] = useState(
     []
@@ -27,7 +29,17 @@ const TrackedList = () => {
   ]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const openPopup = () => setFinishedListingPopup(true);
+
+  const openPopup = async ({ id, status }) => {
+    try {
+      const response = await getBuyingHospital(id);
+      console.log("response.data ", response.data);
+      setPopupData(response.data);
+      setFinishedListingPopup(true);
+    } catch (error) {
+      console.log("Error getting buying hospital");
+    }
+  };
 
   const filteredMedicines = useMemo(() => {
     return listOfTrackedMedicineItems.filter((medicineItem) =>
@@ -118,6 +130,7 @@ const TrackedList = () => {
           <FinishedListingPopup
             open={finishedListingPopup}
             onClose={setFinishedListingPopup}
+            popupData={popupData}
           />
         )}
         <MedicineItems
