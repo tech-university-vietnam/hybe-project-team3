@@ -32,7 +32,7 @@ class NotificationDTO(Base):
 
     created_at: Union[datetime, Column] = Column(DateTime, default=datetime.now(), nullable=True)
 
-    Index('idx_notification_sourcing_', sourcing_type, sourcing_id, unique=True)
+    # Index('idx_notification_sourcing_', sourcing_type, sourcing_id, unique=True)
 
     def to_entity(self) -> Notification:
         return Notification(

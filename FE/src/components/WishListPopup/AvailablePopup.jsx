@@ -4,9 +4,10 @@ import { Box, DialogContent, DialogTitle } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import AvailableHospital from "components/AvailableHospital/AvailableHospital";
 import './AvailablePopup.css'
+import { getAllNotifications } from "Utils/api/notification";
 
 
-const AvailablePopup = (props) => {
+const AvailablePopup = ({name}) => {
   const [availableHospitals, setAvailableHospitals] = useState([
     {
       id: 1,
@@ -52,7 +53,17 @@ const AvailablePopup = (props) => {
     }
   ]);
 
-  useEffect(() => { }, []);
+  useEffect(() => {
+    const fetchAPI = async () => {
+      const notifications = await getAllNotifications().then(response => response.data);
+      const data = notifications.filter((item) => item.sourcing_name === name)
+      console.log(notifications)
+      console.log(name)
+      setAvailableHospitals(notifications);
+    }
+
+    fetchAPI();
+  }, []);
 
   return <Dialog
     open={true}
