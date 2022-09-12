@@ -34,10 +34,8 @@ class MedicineRepository(MedicineStatus):
 
     def list(self, hospital_id) -> List[TrackingMedicine]:
         return list(map(lambda m: m.to_entity(),
-                    self.db.query(TrackingMedicineDTO).filter(
-                        TrackingMedicineDTO.hospital_id == hospital_id
-                    ).order_by(
-                    desc(TrackingMedicineDTO.created_at)).all()))
+                        self.db.query(TrackingMedicineDTO).order_by(
+                            desc(TrackingMedicineDTO.created_at)).all()))
 
     def get(self, id: int) -> Optional[TrackingMedicine]:
         medicine_dto: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
@@ -64,19 +62,26 @@ class MedicineRepository(MedicineStatus):
             logging.error(e)
             return
 
-    def update(self, id: int, medicine: TrackingMedicinePayload, hospital_id: int) -> Optional[TrackingMedicine]:
+    def update(self, id: int, payload: TrackingMedicinePayload) -> Optional[TrackingMedicine]:
         try:
             medicine_dto: Optional[TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(TrackingMedicineDTO.id == id).first()
 
             print(type(medicine))
             if medicine_dto is None:
                 return
-            update_values = {medicine.dict(exclude_unset=True)}
+
+            current_values = set(dict(medicine_dto.to_entity()).items())
+            new_values = set(payload.dict(exclude_none=True).items())
+            diff_values = new_values - current_values
+
+            if not diff_values:
+                # No new values to update
+                return medicine_dto.to_entity()
+
             stmt = (
                 update(TrackingMedicineDTO).
-                where(TrackingMedicineDTO.id == id,
-                TrackingMedicineDTO.hospital_id == hospital_id).
-                values(update_values)
+                where(TrackingMedicineDTO.id == id).
+                values(dict(diff_values))
             )
 
             self.db.execute(stmt)

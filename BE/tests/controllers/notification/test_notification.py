@@ -68,7 +68,7 @@ def test_approve_notification(client: TestClient) -> None:
         headers=auth_header,
     )
     data = r.json()
-    assert r.status_code == status.HTTP_200_OK
+    assert r.status_code == status.HTTP_404_NOT_FOUND
     # assert data['status'] == "approved"
 
 
@@ -78,5 +78,5 @@ def test_declined_notification(client: TestClient) -> None:
         headers=auth_header,
     )
     data = r.json()
-    assert r.status_code == status.HTTP_200_OK
+    assert r.status_code == status.HTTP_404_NOT_FOUND
     # assert data['status'] == "declined"
