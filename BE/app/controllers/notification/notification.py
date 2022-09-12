@@ -16,6 +16,9 @@ from app.domains.user.user_service import UserService
 from app.main import oauth2_scheme
 from app.model.notification import NotificationWithHospital, Status, SeenStatus, Type
 from app.services.jwt_service import JWTService
+from fastapi.security import HTTPAuthorizationCredentials
+from app.main import oauth2_scheme
+
 
 router = InferringRouter()
 

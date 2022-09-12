@@ -13,6 +13,9 @@ class SourceOrderRequestService:
     def list(self):
         return self.source_order_req_repo.list()
 
+    def get(self, id: int):
+        return self.source_order_req_repo.get(id)
+
     def update(self, data, source_id, user_id):
         return self.source_order_req_repo.update(data, source_id, user_id)
 

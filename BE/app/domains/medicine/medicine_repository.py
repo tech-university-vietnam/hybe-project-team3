@@ -3,11 +3,12 @@ from datetime import datetime
 from typing import Optional, List
 
 from sqlalchemy import exc, delete, update, desc
+from sqlalchemy.orm import joinedload
 
 from app.controllers.tracking_medicine.tracking_medicine import TrackingMedicinePayload
 from app.domains.helpers.database_repository import DatabaseRepository
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
-from app.model.tracking_medicine import TrackingMedicine
+from app.model.tracking_medicine import TrackingMedicine, TrackingMedicineWithHospital
 from app.model.user import DetailUser
 
 
@@ -37,11 +38,12 @@ class MedicineRepository(MedicineStatus):
                         self.db.query(TrackingMedicineDTO).order_by(
                             desc(TrackingMedicineDTO.created_at)).all()))
 
-    def get(self, id: int) -> Optional[TrackingMedicine]:
-        medicine_dto: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).filter(
+    def get(self, id: int) -> Optional[TrackingMedicineWithHospital]:
+        medicine_dto: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).options(
+            joinedload(TrackingMedicineDTO.hospital)).filter(
             (TrackingMedicineDTO.id == id)).first()
 
-        return medicine_dto and medicine_dto.to_entity()
+        return medicine_dto and medicine_dto.to_full_entity()
 
     def get_by_name(self, name: str) -> Optional[List[TrackingMedicine]]:
         medicine_list: [TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(
