@@ -28,7 +28,7 @@ class Status:
 
     @classmethod
     def all(cls):
-        return [cls.approved, cls.declined]
+        return [cls.approved, cls.declined, cls.init]
 
 
 class Notification(BaseModel):

@@ -105,19 +105,20 @@ class NotificationRepository(DatabaseRepository):
             }
             # Update notification type to sold if buyer approved
             if status == "Approved":
-                notify: NotificationDTO = self.db.query(NotificationDTO).get(id)
                 if notify.type == Type.notify_available:
                     values["type"] = Type.notify_sold
             return values
 
         try:
-            update_values = build_updated_values()
+            notify: NotificationDTO = self.db.query(NotificationDTO).get(id)
+            if not notify or status not in Status.all():
+                return
 
-            stmt = NotificationDTO.__table__.update().returning(NotificationDTO) \
-                .where(NotificationDTO.id == id) \
-                .values(update_values)
-            result = self.db.execute(stmt)
-            notify = result.fetchone()
+            notify.status = status
+            if status == Status.approved and notify.type == Type.notify_available:
+                notify.type = Type.notify_sold
+
+            self.db.flush(notify)
             self.db.commit()
             return notify
         except exc.SQLAlchemyError as e:
