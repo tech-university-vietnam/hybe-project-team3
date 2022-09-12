@@ -59,7 +59,7 @@ const MedicineItem = ({
                 status === "Resolved" ||
                 status === "Available" ||
                 status === "Finished listing"
-                  ? () => openPopup({ id, status })
+                  ? () => openPopup({ id, status, medicineName })
                   : () => {}
               }
               label={status}
