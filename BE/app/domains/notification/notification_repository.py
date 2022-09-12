@@ -59,9 +59,7 @@ class NotificationRepository(DatabaseRepository):
                 and_(NotificationDTO.type == Type.notify_available,
                      NotificationDTO.to_hospital_id == hospital_id),
                 and_(NotificationDTO.type == Type.notify_sold,
-                     or_(
-                         NotificationDTO.to_hospital_id == hospital_id,
-                         NotificationDTO.from_hospital_id == hospital_id))
+                     NotificationDTO.from_hospital_id == hospital_id)
             ),
             NotificationDTO.seen_status == SeenStatus.not_seen
         ).count()
