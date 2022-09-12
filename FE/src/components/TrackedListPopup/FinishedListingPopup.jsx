@@ -16,13 +16,12 @@ const style = {
   p: 4,
 };
 
-const ResolvedPopup = ({ id, popupData, open, onClose }) => {
+const FinishedListingPopup = ({ id, popupData, open, onClose }) => {
   if (popupData === undefined) {
     return <div>Loading...</div>;
   }
   const {
     name: medicineName,
-    expired_date: expirationDate,
     hospital: {
       name: hospitalName,
       address: hospitalAddress,
@@ -33,9 +32,8 @@ const ResolvedPopup = ({ id, popupData, open, onClose }) => {
     <Modal open={open} onClose={() => onClose(false)}>
       <Box sx={style}>
         <Typography sx={{ fontWeight: "bold" }}>
-          🎉 You've bought {medicineName} from {hospitalName}
+          🎉 {hospitalName} bought {medicineName} from you!
         </Typography>
-        <Typography>Expiration date: {expirationDate}</Typography>
         <Typography>Address: {hospitalAddress}</Typography>
         <Typography>Contact number: {hospitalPhone}</Typography>
       </Box>
@@ -43,7 +41,7 @@ const ResolvedPopup = ({ id, popupData, open, onClose }) => {
   );
 };
 
-ResolvedPopup.propTypes = {
+FinishedListingPopup.propTypes = {
   id: PropTypes.number,
   hospitalName: PropTypes.string,
   hospitalAddress: PropTypes.string,
@@ -52,4 +50,4 @@ ResolvedPopup.propTypes = {
   expirationDate: PropTypes.string,
 };
 
-export default ResolvedPopup;
+export default FinishedListingPopup;

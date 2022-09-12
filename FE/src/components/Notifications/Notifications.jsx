@@ -26,10 +26,12 @@ const Notifications = ({
   openNotification,
   handleNotificationDropDownClick,
   handleClose,
-  onApproveDecline
+  onApproveDecline,
+  openPopup,
+  getBuyingHospitalData,
 }) => {
+  console.log("notifications", notifications);
   const [next, setNext] = useState(numberOfNotificationToShow);
-
   const handleMoreNotifications = () => {
     setNext(next + numberOfNotificationToShow);
   };
@@ -62,27 +64,38 @@ const Notifications = ({
       >
         {notifications
           .slice(0, next)
-          .map(({ id, type, hospital_name: hospitalName, medicine_name: medicineName, status }) => (
-            <MenuItem
-              key={id}
-              disabled={status === "init" ? false : true}
-              divider
-              sx={{ height: "70px" }}
-            >
-              <NotificationItem
-                id={id}
-                typeOfNotification={type}
-                status={status}
-                hospitalName={hospitalName}
-                medicineName={medicineName}
-                onApproveDecline={onApproveDecline}
-              />
-            </MenuItem>
-          ))}
+          .map(
+            ({
+              id,
+              tracking_medicine_id: trackingMedicineId,
+              sourcing_id: sourcingId,
+              type,
+              from_hospital: fromHospital,
+              to_hospital: toHospital,
+              sourcing_name: medicineName,
+              status,
+            }) => (
+              <MenuItem key={id} divider sx={{ height: "70px" }}>
+                <NotificationItem
+                  id={id}
+                  sourcingId={sourcingId}
+                  trackingMedicineId={trackingMedicineId}
+                  typeOfNotification={type}
+                  status={status}
+                  fromHospital={fromHospital}
+                  toHospital={toHospital}
+                  medicineName={medicineName}
+                  onApproveDecline={onApproveDecline}
+                  openPopup={openPopup}
+                  getBuyingHospitalData={getBuyingHospitalData}
+                />
+              </MenuItem>
+            )
+          )}
         <Button
           className="mt-4"
           onClick={handleMoreNotifications}
-          disabled={notifications.length === next ? true : false}
+          disabled={next >= notifications.length ? true : false}
         >
           Load more
         </Button>
@@ -97,6 +110,7 @@ Notifications.propTypes = {
   handleNotificationDropDownClick: PropTypes.func,
   handleClose: PropTypes.func,
   onApproveDecline: PropTypes.func,
+  openPopup: PropTypes.func,
 };
 
 export default Notifications;

@@ -4,15 +4,18 @@ import "./TrackedList.css";
 import { Pagination, Alert } from "@mui/material";
 import MedicineItems from "components/MedicineItems/MedicineItems";
 import Filter from "components/Filter/Filter";
-import axios from "axios";
 import usePagination from "../../Utils/hooks/pagination";
 import "./TrackedList.css";
 import {
   deleteTrackingMedicine,
-  getTrackingMedinces,
+  getBuyingHospital,
+  getTrackingMedicines,
 } from "Utils/api/medicine";
+import FinishedListingPopup from "components/TrackedListPopup/FinishedListingPopup";
 
 const TrackedList = () => {
+  const [popupData, setPopupData] = useState({});
+  const [finishedListingPopup, setFinishedListingPopup] = useState(false);
   const [listOfTrackedMedicineItems, setListOfTrackedMedicineItems] = useState(
     []
   );
@@ -25,7 +28,18 @@ const TrackedList = () => {
     "Expired",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
-  // const [filteredMedicines, setFilteredMedicines] = useState([]);
+
+
+  const openPopup = async ({ id, status }) => {
+    try {
+      const response = await getBuyingHospital(id);
+      console.log("response.data ", response.data);
+      setPopupData(response.data);
+      setFinishedListingPopup(true);
+    } catch (error) {
+      console.log("Error getting buying hospital");
+    }
+  };
 
   const filteredMedicines = useMemo(() => {
     return listOfTrackedMedicineItems.filter((medicineItem) =>
@@ -64,7 +78,7 @@ const TrackedList = () => {
 
   const getAllTrackedMedicineItems = async () => {
     try {
-      const response = await getTrackingMedinces();
+      const response = await getTrackingMedicines();
       setListOfTrackedMedicineItems(response.data);
     } catch (error) {
       console.log(
@@ -112,9 +126,17 @@ const TrackedList = () => {
         />
       </div>
       <div className="data-container">
+        {finishedListingPopup && (
+          <FinishedListingPopup
+            open={finishedListingPopup}
+            onClose={setFinishedListingPopup}
+            popupData={popupData}
+          />
+        )}
         <MedicineItems
           medicineItems={filteredMedicineItems.currentData()}
           handleDelete={handleDeleteMedicineItem}
+          openPopup={openPopup}
         />
       </div>
       <Pagination

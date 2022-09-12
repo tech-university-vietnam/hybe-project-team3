@@ -7,8 +7,13 @@ import Filter from "components/Filter/Filter";
 import "./WishList.css";
 import { deleteSourceOrder, getSourceOrders } from "Utils/api/sourceOrder";
 import AvailablePopup from "components/WishListPopup/AvailablePopup";
+import ResolvedPopup from "components/WishListPopup/ResolvedPopup.jsx";
+import { getSellingHospital } from "Utils/api/sourceOrder";
 
 const WishList = () => {
+  const [popupData, setPopupData] = useState();
+  const [resolvedPopup, setResolvedPopup] = useState(false);
+  const [availablePopup, setAvailablePopup] = useState(false);
   const [wishListItems, setWishListItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
@@ -17,6 +22,21 @@ const WishList = () => {
     "Resolved",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const openPopup = async ({ id, status, medicineName }) => {
+    if (status === "Resolved") {
+      try {
+        const response = await getSellingHospital(id);
+        setPopupData(response.data);
+        setResolvedPopup(true);
+      } catch (error) {
+        console.log("error getting selling hospital", error);
+      }
+    } else if (status === "Available") {
+      setAvailablePopup(true);
+      setPopupData(medicineName);
+    }
+  };
 
   const filteredWishListItems = useMemo(() => {
     return wishListItems.filter((wishListItem) =>
@@ -53,6 +73,7 @@ const WishList = () => {
   };
 
   const handleDeleteWishListItem = async (id) => {
+    console.log("id is", id);
     try {
       await deleteSourceOrder(id);
       await getAllWishListItems();
@@ -102,9 +123,26 @@ const WishList = () => {
         />
       </div>
       <div className="data-container">
+        {resolvedPopup && (
+          <ResolvedPopup
+            open={resolvedPopup}
+            onClose={setResolvedPopup}
+            popupData={popupData}
+          />
+        )}
+        {availablePopup && (
+          <AvailablePopup
+            open={availablePopup}
+            onClose={setAvailablePopup}
+            name={popupData}
+            resolve={handleListChange}
+          />
+        )}
         <MedicineItems
           medicineItems={filteredWishListToDisplay.currentData()}
           handleDelete={handleDeleteWishListItem}
+          openPopup={openPopup}
+          refreshList={handleListChange}
         />
       </div>
       <Pagination
@@ -115,7 +153,6 @@ const WishList = () => {
         shape="rounded"
         onChange={handlePageChange}
       />
-      <AvailablePopup name="Omepraole"/>
     </div>
   );
 };

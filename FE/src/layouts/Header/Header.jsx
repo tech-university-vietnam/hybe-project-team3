@@ -9,12 +9,17 @@ import {
   getNotSeenNotifications,
   getAllNotifications,
 } from "Utils/api/notification.js";
+import FinishedListingPopup from "components/TrackedListPopup/FinishedListingPopup";
+import { getBuyingHospital } from "../../Utils/api/medicine";
 
 const Header = ({ email = "tony_stark@starkindustries.com" }) => {
+  const { authed, isLoading } = useAuth();
+  const [popupData, setPopupData] = useState();
   const [anchorAccount, setAnchorAccount] = useState(null);
   const [anchorNotification, setAnchorNotification] = useState(null);
   const [notificationBadgeCount, setNotificationBadgeCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
+  const [finishedListingPopup, setFinishedListingPopup] = useState(false);
   const { logout } = useAuth();
 
   const openAccount = Boolean(anchorAccount);
@@ -50,11 +55,21 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
     });
   };
 
+  const getBuyingHospitalData = async (id) => {
+    try {
+      console.log("getBuyingHospitalData", id);
+      const response = await getBuyingHospital(id);
+      setPopupData(response.data);
+    } catch (error) {
+      console.log("error getting buying hospital", error);
+    }
+  };
+
   useEffect(() => {
     let interval = setInterval(async () => {
       try {
         const response = await getNotSeenNotifications();
-        setNotificationBadgeCount(response.data.notseen_noti);
+        setNotificationBadgeCount(response.data.total);
       } catch (error) {
         console.log("Cannot call API at interval", error);
       }
@@ -75,6 +90,13 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
       }}
     >
       <Toolbar sx={{ justifyContent: "flex-end" }}>
+        {finishedListingPopup && (
+          <FinishedListingPopup
+            open={finishedListingPopup}
+            onClose={setFinishedListingPopup}
+            popupData={popupData}
+          />
+        )}
         <Button
           id="account-button"
           aria-controls={openAccount ? "account-menu" : undefined}
@@ -86,7 +108,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
           endIcon={<KeyboardArrowDownIcon />}
           sx={{ color: "black" }}
         >
-          {email}
+          {authed}
         </Button>
         <Menu
           id="account-menu"
@@ -108,6 +130,8 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
           handleNotificationDropDownClick={handleNotificationDropDownClick}
           handleClose={handleClose}
           onApproveDecline={getAllNotificationsRefresh}
+          openPopup={setFinishedListingPopup}
+          getBuyingHospitalData={getBuyingHospitalData}
         />
       </Toolbar>
     </AppBar>

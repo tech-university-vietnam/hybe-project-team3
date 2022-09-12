@@ -27,6 +27,7 @@ const MedicineItem = ({
   expirationDate,
   status,
   handleDelete,
+  openPopup,
 }) => {
   const [badgeColor, setBadgeColor] = useState(() => badgeColorMap[status]);
 
@@ -54,7 +55,13 @@ const MedicineItem = ({
           </Grid>
           <Grid xs={2}>
             <Chip
-              onClick={() => console.log("clicking status")}
+              onClick={
+                status === "Resolved" ||
+                status === "Available" ||
+                status === "Finished listing"
+                  ? () => openPopup({ id, status, medicineName })
+                  : () => {}
+              }
               label={status}
               color={badgeColor}
               sx={{ fontWeight: "bold" }}
@@ -81,6 +88,7 @@ MedicineItem.propTypes = {
   expirationDate: PropTypes.string,
   status: PropTypes.string,
   handleDelete: PropTypes.func,
+  openPopup: PropTypes.func,
 };
 
 export default MedicineItem;
