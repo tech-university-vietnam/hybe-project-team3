@@ -10,9 +10,11 @@ import {
   getAllNotifications,
 } from "Utils/api/notification.js";
 import FinishedListingPopup from "components/TrackedListPopup/FinishedListingPopup";
+import { getBuyingHospital } from "../../Utils/api/medicine";
 
 const Header = ({ email = "tony_stark@starkindustries.com" }) => {
   const { authed, isLoading } = useAuth();
+  const [popupData, setPopupData] = useState();
   const [anchorAccount, setAnchorAccount] = useState(null);
   const [anchorNotification, setAnchorNotification] = useState(null);
   const [notificationBadgeCount, setNotificationBadgeCount] = useState(0);
@@ -53,6 +55,15 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
     });
   };
 
+  const getBuyingHospitalData = async (id) => {
+    try {
+      const response = await getBuyingHospital(id);
+      setPopupData(response.data);
+    } catch (error) {
+      console.log("error getting buying hospital", error);
+    }
+  };
+
   useEffect(() => {
     let interval = setInterval(async () => {
       try {
@@ -82,6 +93,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
           <FinishedListingPopup
             open={finishedListingPopup}
             onClose={setFinishedListingPopup}
+            popupData={popupData}
           />
         )}
         <Button
@@ -118,6 +130,7 @@ const Header = ({ email = "tony_stark@starkindustries.com" }) => {
           handleClose={handleClose}
           onApproveDecline={getAllNotificationsRefresh}
           openPopup={setFinishedListingPopup}
+          getBuyingHospitalData={getBuyingHospitalData}
         />
       </Toolbar>
     </AppBar>

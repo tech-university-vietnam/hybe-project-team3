@@ -16,20 +16,19 @@ const style = {
   p: 4,
 };
 
-const ResolvedPopup = ({
-  id,
-  popupData: {
+const ResolvedPopup = ({ id, popupData, open, onClose }) => {
+  if (popupData === undefined) {
+    return <div>Loading...</div>;
+  }
+  const {
     name: medicineName,
     expired_date: expirationDate,
     hospital: {
       name: hospitalName,
-      telephone: hospitalPhone,
       address: hospitalAddress,
+      telephone: hospitalPhone,
     },
-  },
-  open,
-  onClose,
-}) => {
+  } = popupData;
   return (
     <Modal open={open} onClose={() => onClose(false)}>
       <Box sx={style}>

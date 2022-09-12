@@ -28,6 +28,7 @@ const Notifications = ({
   handleClose,
   onApproveDecline,
   openPopup,
+  getBuyingHospitalData
 }) => {
   const [next, setNext] = useState(numberOfNotificationToShow);
   const handleMoreNotifications = () => {
@@ -79,6 +80,7 @@ const Notifications = ({
                   medicineName={medicineName}
                   onApproveDecline={onApproveDecline}
                   openPopup={openPopup}
+                  getBuyingHospitalData={getBuyingHospitalData}
                 />
               </MenuItem>
             )

@@ -8,8 +8,6 @@ import {
   postDeclineNotification,
 } from "Utils/api/notification";
 
-// have to trigger a re-render when user clicks on onApprove or onDecline
-// clicking onApprove / onDecline calls handleNotificationDropDownClick
 const NotificationItem = ({
   id,
   medicineName,
@@ -18,6 +16,7 @@ const NotificationItem = ({
   status,
   onApproveDecline,
   openPopup,
+  getBuyingHospitalData
 }) => {
   const onDecline = async ({ id }) => {
     try {
@@ -74,7 +73,7 @@ const NotificationItem = ({
       <Paper
         elevation={0}
         onClick={() => {
-          onApprove({ id });
+          getBuyingHospitalData(id)
           openPopup(true);
         }}
       >
