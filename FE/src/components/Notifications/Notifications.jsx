@@ -75,7 +75,12 @@ const Notifications = ({
               sourcing_name: medicineName,
               status,
             }) => (
-              <MenuItem key={id} divider sx={{ height: "70px" }}>
+              <MenuItem
+                key={id}
+                divider
+                sx={{ height: "70px" }}
+                disabled={status === "Init" ? false : true}
+              >
                 <NotificationItem
                   id={id}
                   sourcingId={sourcingId}
