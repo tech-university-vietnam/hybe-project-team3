@@ -25,11 +25,12 @@ class SourceOrderRequestRoute:
         self.user_service: UserService = obj_graph.provide(UserService)
 
     @router.get("/source-orders", tags=["source-order"])
-    def get_source_orders(self):
-        try:
-            return self.source_order_req_service.list()
-        except DBError:
-            raise HTTPException(500)
+    def get_source_orders(self, bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+
+        user_id = self.jwt_service.validate_token(bearer_auth.credentials)
+        user = self.user_service.get_detail_user_by_id(user_id)
+        return self.source_order_req_service.list(user.work_for)
+
 
     @router.post("/source-order", tags=["source-order"],
                  status_code=status.HTTP_201_CREATED)

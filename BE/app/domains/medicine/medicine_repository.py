@@ -33,10 +33,11 @@ class MedicineRepository(MedicineStatus):
         self.db_repo = database_repository
         self.db = self.db_repo.db
 
-    def list(self) -> List[TrackingMedicine]:
-        return list(map(lambda m: m.to_entity(),
-                        self.db.query(TrackingMedicineDTO).order_by(
-                            desc(TrackingMedicineDTO.created_at)).all()))
+    def list(self, hospital_id: int) -> List[TrackingMedicine]:
+        meds: [TrackingMedicineDTO] = self.db.query(TrackingMedicineDTO).filter(
+            TrackingMedicineDTO.hospital_id == hospital_id).order_by(
+            desc(TrackingMedicineDTO.created_at)).all()
+        return [med.to_entity() for med in meds]
 
     def get(self, id: int) -> Optional[TrackingMedicineWithHospital]:
         medicine_dto: TrackingMedicineDTO = self.db.query(TrackingMedicineDTO).options(

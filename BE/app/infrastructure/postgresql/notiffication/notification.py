@@ -12,7 +12,6 @@ from app.model.notification import Notification, SeenStatus, Status, Notificatio
 
 
 class NotificationDTO(Base):
-
     __tablename__ = "Notification"
     id: Union[int, Column] = Column(Integer, primary_key=True,
                                     autoincrement=True)
@@ -45,7 +44,6 @@ class NotificationDTO(Base):
 
     # Index('idx_notification_sourcing_', type, sourcing_id, unique=False)
 
-
     def to_entity(self) -> Notification:
         return Notification(
             id=self.id,
@@ -64,7 +62,7 @@ class NotificationDTO(Base):
     def from_sourcing_entity(cls, source_id, med_id, med_name, med_from, med_to):
         return cls(
             sourcing_id=source_id,
-            tracking_medicine_id= med_id,
+            tracking_medicine_id=med_id,
             sourcing_name=med_name,
             status=Status.init,
             description='',

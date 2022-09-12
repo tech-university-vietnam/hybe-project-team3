@@ -25,12 +25,12 @@ class SourceOrderRequestRepository:
             logging.error(e)
             raise DBError
 
-    def list(self):
+    def list(self, hospital_id: int):
         try:
-            result = list(map(lambda m: m.to_entity(),
-                              self.db.query(SourceOrderRequestDTO).order_by(
-                                  desc(SourceOrderRequestDTO.created_at)).all()))
-            return result
+            source_orders: [SourceOrderRequestDTO] = self.db.query(SourceOrderRequestDTO). \
+                filter(SourceOrderRequestDTO.hospital_id == hospital_id). \
+                order_by(desc(SourceOrderRequestDTO.created_at)).all()
+            return [order.to_entity() for order in source_orders]
         except exc.SQLAlchemyError as e:
             logging.error(e)
             raise DBError
