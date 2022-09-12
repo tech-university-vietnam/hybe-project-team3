@@ -47,6 +47,8 @@ const NotificationItem = ({
         return trackingMedicineId;
       case "notifyAvailable":
         return sourcingId;
+      case "notifySold":
+        return sourcingId;
       default:
         return trackingMedicineId;
     }
@@ -98,7 +100,7 @@ const NotificationItem = ({
       <Paper
         elevation={0}
         onClick={() => {
-          getBuyingHospitalData(getPopupId());
+          getBuyingHospitalData(sourcingId);
           openPopup(true);
         }}
       >
