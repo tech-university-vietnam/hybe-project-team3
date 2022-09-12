@@ -24,7 +24,7 @@ class TrackingMedicineDTO(Base):
     manufacturer: Union[int, Column] = Column(Integer, nullable=True)
     expired_date: Union[datetime, Column] = Column(DateTime, nullable=False)
     created_at: Union[datetime, Column] = Column(DateTime,
-                                                 default=datetime.now(),
+                                                 default=datetime.utcnow,
                                                  nullable=True)
     created_by: Union[int, Column] = Column(Integer, nullable=False)
     image: Union[str, Column] = Column(String, nullable=True)

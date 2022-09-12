@@ -62,10 +62,9 @@ class BuyerSellerMap(BaseModel):
 
 class NotificationItem(BaseModel):
     id: int
-    trackingMedicine: str
+    tracking_medicine_id: str
     status: str
     type: str
-    seenStatus: str
     from_hospital_id: Optional[int]
     to_hospital_id: Optional[int]
 

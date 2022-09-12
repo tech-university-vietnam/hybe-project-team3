@@ -6,7 +6,7 @@ from datetime import datetime
 from app.model.user import User
 import bcrypt
 
-now = datetime.now()
+now = datetime.utcnow()
 
 
 class TestUserDTO:
