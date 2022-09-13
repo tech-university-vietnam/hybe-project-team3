@@ -11,7 +11,6 @@ import ResolvedPopup from "components/WishListPopup/ResolvedPopup.jsx";
 import { getSellingHospital } from "Utils/api/sourceOrder";
 import moment from "moment/moment";
 
-
 const badgeColorMap = {
   Listed: "primary",
   "Not listed": "secondary",
@@ -33,7 +32,7 @@ const WishList = () => {
   ]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const openPopup = async ({ id, status, medicineName }) => {
+  const openPopup = async ({ id, status, name: medicineName }) => {
     if (status === "Resolved") {
       try {
         const response = await getSellingHospital(id);
@@ -61,29 +60,29 @@ const WishList = () => {
             onClick={
               ["Resolved", "Available", "Finished listing"].includes(status)
                 ? () => openPopup({ id, status, name })
-                : () => { }
+                : () => {}
             }
             label={status}
             color={badgeColorMap[status]}
             sx={{ fontWeight: "bold" }}
           />
-        )
-      }
+        );
+      },
     },
     {
       field: "expired_date",
       headerName: "Tracking expired date",
       width: 250,
-      renderCell: ({ row: { expired_date } }) => moment(expired_date).format("YYYY-MM-DD")
+      renderCell: ({ row: { expired_date } }) =>
+        moment(expired_date).format("YYYY-MM-DD"),
     },
-  ]
+  ];
 
   const filteredWishListItems = useMemo(() => {
     return wishListItems.filter((wishListItem) =>
       selectedStatuses.includes(wishListItem.status)
     );
   }, [wishListItems, selectedStatuses]);
-
 
   const handleListChange = async () => {
     try {
@@ -100,7 +99,6 @@ const WishList = () => {
     } = event;
     setSelectedStatuses(typeof value === "string" ? value.split(",") : value);
   };
-
 
   const handleDeleteWishListItem = async (id) => {
     try {
@@ -159,8 +157,12 @@ const WishList = () => {
             resolve={handleListChange}
           />
         )}
-        <DataTable rows={filteredWishListItems} columns={columns} handleDelete={handleDeleteWishListItem} />
-
+        {console.log("filteredWishListItems", filteredWishListItems)}
+        <DataTable
+          rows={filteredWishListItems}
+          columns={columns}
+          handleDelete={handleDeleteWishListItem}
+        />
       </div>
     </div>
   );
