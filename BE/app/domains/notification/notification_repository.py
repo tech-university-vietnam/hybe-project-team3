@@ -81,6 +81,13 @@ class NotificationRepository(DatabaseRepository):
             logging.error(e)
             return False
 
+    def check_if_any_noti_exists(self, sourcing_id):
+        exists = self.db.query(NotificationDTO).filter(
+                        NotificationDTO.sourcing_id == sourcing_id,
+                        NotificationDTO.type == Type.notify_available,
+                        NotificationDTO.status == Status.init).scalar()
+        return exists
+
     def create(self, payload: Union[List[Notification], Notification]):
         if isinstance(payload, Notification):
             payload = [payload]
@@ -124,10 +131,10 @@ class NotificationRepository(DatabaseRepository):
             logging.error(e)
             return
 
-    def update_status_to_invalid(self, id: int):
+    def update_status_to_invalid(self, tracking_med_id: int):
         try:
             invalid_notis = self.db.query(NotificationDTO).filter(
-                NotificationDTO.sourcing_id == id,
+                NotificationDTO.tracking_medicine_id == tracking_med_id,
                 NotificationDTO.type == Type.notify_available,
                 NotificationDTO.status == Status.init
             ).all()
