@@ -1,3 +1,5 @@
+from typing import Dict
+
 from fastapi_utils.cbv import cbv
 from fastapi import Depends, HTTPException, status
 from fastapi_utils.inferring_router import InferringRouter
@@ -78,18 +80,15 @@ class SourceOrderRequestRoute:
         except PermissionError:
             raise HTTPException(500)
 
-    @router.delete("/source-order/{source_id}", tags=["source-order"])
+    @router.delete("/source-order/{source_id}", tags=["source-order"], response_model=CommonResponse)
     def delete_source_order(self, source_id: int,
                             bearer_auth: HTTPAuthorizationCredentials =
-                            Depends(oauth2_scheme)) -> CommonResponse:
+                            Depends(oauth2_scheme)):
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
         user = self.user_service.get_user_by_id(user_id)
         if not user:
             raise HTTPException(status_code=401)
-        try:
-            self.source_order_req_service.delete(source_id, user_id)
-            return {"msg": "ok"}
-        except DBError:
-            raise HTTPException(500)
-        except PermissionError:
-            raise HTTPException(500)
+
+        success = self.source_order_req_service.delete(source_id)
+
+        return CommonResponse(msg='ok' if success else 'failed')

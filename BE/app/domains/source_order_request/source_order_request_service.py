@@ -22,12 +22,12 @@ class SourceOrderRequestService:
     def _is_created_by_user(self, user_id):
         return self.source_order_req_repo.check_user_id(user_id)
 
-    def delete(self, id, user_id):
+    def delete(self, id: int):
         """
         If user has the same id as created_by id -> delete
         If not -> check if user is in the same id
         """
         try:
-            return self.source_order_req_repo.delete(id, user_id)
+            return self.source_order_req_repo.delete(id)
         except:
             raise PermissionError

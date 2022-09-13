@@ -59,13 +59,12 @@ class SourceOrderRequestRepository:
 
         return source_order_dto.to_full_entity()
 
-    # TODO: check the hospital id if user id is not matched
-    def delete(self, id, user_id):
-        statement = delete(SourceOrderRequestDTO).where(SourceOrderRequestDTO.id == id,
-                                                        SourceOrderRequestDTO.created_by == user_id)
+    def delete(self, id: int) -> bool:
+        statement = delete(SourceOrderRequestDTO).where(SourceOrderRequestDTO.id == id)
         try:
             self.db.execute(statement)
             self.db.commit()
+            return True
         except exc.SQLAlchemyError as e:
             logging.error(e)
-            raise DBError
+            return False
