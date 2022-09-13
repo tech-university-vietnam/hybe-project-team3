@@ -40,6 +40,8 @@ def setup_cron(app: FastAPI, debug=True):
         db_repo.db.commit()
 
     def check_nearly_expired_meds(meds: [TrackingMedicineDTO]):
+        if not meds:
+            return
         utc_now = datetime.utcnow()
 
         # Get meds need create noti

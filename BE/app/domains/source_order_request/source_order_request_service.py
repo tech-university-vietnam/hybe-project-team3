@@ -1,5 +1,6 @@
 from datetime import datetime
 from app.domains.source_order_request.source_order_request_repository import SourceOrderRequestRepository
+from app.model.source_order_request import SourceOrderRequestPayload
 
 
 class SourceOrderRequestService:
@@ -7,7 +8,7 @@ class SourceOrderRequestService:
     def __init__(self, source_order_request_repository: SourceOrderRequestRepository):
         self.source_order_req_repo = source_order_request_repository
 
-    def create(self, data):
+    def create(self, data: SourceOrderRequestPayload):
         return self.source_order_req_repo.create(data)
 
     def list(self, hospital_id: int):

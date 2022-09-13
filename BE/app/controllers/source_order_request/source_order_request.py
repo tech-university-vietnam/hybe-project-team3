@@ -35,12 +35,12 @@ class SourceOrderRequestRoute:
 
 
     @router.post("/source-order", tags=["source-order"],
-                 status_code=status.HTTP_201_CREATED)
+                 status_code=status.HTTP_201_CREATED, response_model=SourceOrderRequest)
     def create_source_order(self, payload: SourceOrderRequestPayload,
                             bearer_auth: HTTPAuthorizationCredentials =
-                            Depends(oauth2_scheme)) -> SourceOrderRequest:
+                            Depends(oauth2_scheme)):
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
-        user = self.user_service.get_user_by_id(user_id)
+        user = self.user_service.get_detail_user_by_id(user_id)
         if not user:
             raise HTTPException(status_code=401)
         try:

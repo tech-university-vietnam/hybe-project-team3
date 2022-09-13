@@ -7,7 +7,7 @@ from app.common.exceptions import DBError
 from app.domains.source_order_request.source_order_request_exceptions import RequestNotExistError
 from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
 from app.domains.helpers.database_repository import DatabaseRepository
-from app.model.source_order_request import SourceOrderRequest, SourceOrderHospitalRequest
+from app.model.source_order_request import SourceOrderRequest, SourceOrderHospitalRequest, SourceOrderRequestPayload
 
 
 class SourceOrderRequestRepository:
@@ -15,7 +15,7 @@ class SourceOrderRequestRepository:
         self.db_repo = database_repository
         self.db = next(self.db_repo.get_db())
 
-    def create(self, data):
+    def create(self, data: SourceOrderRequestPayload):
         try:
             source_order_request_dto = SourceOrderRequestDTO.from_data(data)
             self.db.add(source_order_request_dto)

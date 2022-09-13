@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, DateTime, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from app.infrastructure.postgresql.hospital.hospital import HospitalDTO
-from app.model.source_order_request import SourceOrderRequest, SourceOrderHospitalRequest
+from app.model.source_order_request import SourceOrderRequest, SourceOrderHospitalRequest, SourceOrderRequestPayload
 from app.infrastructure.postgresql.database import Base
 
 
@@ -45,9 +45,10 @@ class SourceOrderRequestDTO(Base):
         )
 
     @classmethod
-    def from_data(cls, data) -> "SourceOrderRequestDTO":
+    def from_data(cls, data: SourceOrderRequestPayload) -> "SourceOrderRequestDTO":
         return cls(
             name=data.name,
             status=data.status,
             created_by=data.created_by,
+            hospital_id=data.hospital_id
         )
