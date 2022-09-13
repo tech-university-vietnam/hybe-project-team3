@@ -1,21 +1,31 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Pagination, Alert } from "@mui/material";
+import { Alert, Chip } from "@mui/material";
 import AddItemButton from "components/AddWishlistItemButton/AddWishlistItemButton";
-import MedicineItems from "components/MedicineItems/MedicineItems";
-import usePagination from "../../Utils/hooks/pagination";
 import Filter from "components/Filter/Filter";
-import "./WishList.css";
+import styles from "./WishList.module.css";
+import DataTable from "components/DataTable/DataTable";
+
 import { deleteSourceOrder, getSourceOrders } from "Utils/api/sourceOrder";
 import AvailablePopup from "components/WishListPopup/AvailablePopup";
 import ResolvedPopup from "components/WishListPopup/ResolvedPopup.jsx";
 import { getSellingHospital } from "Utils/api/sourceOrder";
+import moment from "moment/moment";
+
+
+const badgeColorMap = {
+  Listed: "primary",
+  "Not listed": "secondary",
+  "Finished listing": "success",
+  Available: "primary",
+  Unavailable: "secondary",
+  Resolved: "success",
+};
 
 const WishList = () => {
   const [popupData, setPopupData] = useState();
   const [resolvedPopup, setResolvedPopup] = useState(false);
   const [availablePopup, setAvailablePopup] = useState(false);
   const [wishListItems, setWishListItems] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
     "Available",
     "Unavailable",
@@ -38,18 +48,42 @@ const WishList = () => {
     }
   };
 
+  const columns = [
+    { field: "id", headerName: "ID", width: 70 },
+    { field: "name", headerName: "Medicine name", width: 200 },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 150,
+      renderCell: ({ row: { status, id, name } }) => {
+        return (
+          <Chip
+            onClick={
+              ["Resolved", "Available", "Finished listing"].includes(status)
+                ? () => openPopup({ id, status, name })
+                : () => { }
+            }
+            label={status}
+            color={badgeColorMap[status]}
+            sx={{ fontWeight: "bold" }}
+          />
+        )
+      }
+    },
+    {
+      field: "expired_date",
+      headerName: "Tracking expired date",
+      width: 250,
+      renderCell: ({ row: { expired_date } }) => moment(expired_date).format("YYYY-MM-DD")
+    },
+  ]
+
   const filteredWishListItems = useMemo(() => {
     return wishListItems.filter((wishListItem) =>
       selectedStatuses.includes(wishListItem.status)
     );
   }, [wishListItems, selectedStatuses]);
 
-  const PER_PAGE = 7;
-  const count = Math.ceil(filteredWishListItems.length / PER_PAGE);
-  const filteredWishListToDisplay = usePagination(
-    filteredWishListItems,
-    PER_PAGE
-  );
 
   const handleListChange = async () => {
     try {
@@ -67,13 +101,8 @@ const WishList = () => {
     setSelectedStatuses(typeof value === "string" ? value.split(",") : value);
   };
 
-  const handlePageChange = (e, p) => {
-    setCurrentPage(p);
-    filteredWishListToDisplay.jump(p);
-  };
 
   const handleDeleteWishListItem = async (id) => {
-    console.log("id is", id);
     try {
       await deleteSourceOrder(id);
       await getAllWishListItems();
@@ -101,20 +130,12 @@ const WishList = () => {
   }, []);
 
   return (
-    <div className="content-container">
+    <div className={styles.contentContainer}>
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-      <div className="content-header">
+      <div className={styles.contentHeader}>
         <AddItemButton
           type="tracked list"
           handleListChange={handleListChange}
-        />
-        <Pagination
-          count={count}
-          size="large"
-          page={currentPage}
-          variant="outlined"
-          shape="rounded"
-          onChange={handlePageChange}
         />
         <Filter
           statuses={["Available", "Unavailable", "Resolved"]}
@@ -122,7 +143,7 @@ const WishList = () => {
           handleChange={handleFilterChange}
         />
       </div>
-      <div className="data-container">
+      <div className={styles.dataContainer}>
         {resolvedPopup && (
           <ResolvedPopup
             open={resolvedPopup}
@@ -138,21 +159,9 @@ const WishList = () => {
             resolve={handleListChange}
           />
         )}
-        <MedicineItems
-          medicineItems={filteredWishListToDisplay.currentData()}
-          handleDelete={handleDeleteWishListItem}
-          openPopup={openPopup}
-          refreshList={handleListChange}
-        />
+        <DataTable rows={filteredWishListItems} columns={columns} handleDelete={handleDeleteWishListItem} />
+
       </div>
-      <Pagination
-        count={count}
-        size="large"
-        page={currentPage}
-        variant="outlined"
-        shape="rounded"
-        onChange={handlePageChange}
-      />
     </div>
   );
 };

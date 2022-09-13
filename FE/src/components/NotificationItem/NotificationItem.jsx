@@ -100,7 +100,7 @@ const NotificationItem = ({
       <Paper
         elevation={0}
         onClick={() => {
-          getBuyingHospitalData(sourcingId);
+          getBuyingHospitalData(trackingMedicineId);
           openPopup(true);
         }}
       >

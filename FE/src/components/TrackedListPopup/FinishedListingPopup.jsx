@@ -31,11 +31,11 @@ const FinishedListingPopup = ({ id, popupData, open, onClose }) => {
   return (
     <Modal open={open} onClose={() => onClose(false)}>
       <Box sx={style}>
-        <Typography sx={{ fontWeight: "bold" }}>
-          🎉 {hospitalName} bought {medicineName} from you!
+        <Typography>
+          🎉 <b>{hospitalName}</b> bought <b>{medicineName}</b> from you!
         </Typography>
-        <Typography>Address: {hospitalAddress}</Typography>
-        <Typography>Contact number: {hospitalPhone}</Typography>
+        <Typography><b>Address:</b> {hospitalAddress}</Typography>
+        <Typography><b>Contact number:</b> {hospitalPhone}</Typography>
       </Box>
     </Modal>
   );

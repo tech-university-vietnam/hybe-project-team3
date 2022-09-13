@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import axios from 'axios';
 import { postSourceOrder } from 'Utils/api/sourceOrder';
 
 const AddItemForm = ({ handleClose, handleListChange }) => {
