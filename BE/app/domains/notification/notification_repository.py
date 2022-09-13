@@ -112,7 +112,6 @@ class NotificationRepository(DatabaseRepository):
 
             notify.status = status
             if status == Status.approved and notify.type == Type.notify_available:
-                print("run")
                 self.db.add(
                     NotificationDTO.from_approved_request(notify)
                 )
