@@ -44,7 +44,7 @@ class NotificationService:
             self.medicine_repo.update(noti.sourcing_id, TrackingMedicinePayload(status="Listed"))
 
         if noti and noti.type == Type.notify_available and noti.status == Status.approved:
-            self.medicine_repo.update(noti.tracking_medicine_id, TrackingMedicinePayload(status="Sold"))
+            self.medicine_repo.update(noti.tracking_medicine_id, TrackingMedicinePayload(status="Finished listing"))
             self.source_repo.update({"status": "Resolved"}, noti.sourcing_id, user_id)
             background_task.add_task(self.noti_repo.update_status_to_invalid(noti.sourcing_id))
 
