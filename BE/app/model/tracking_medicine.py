@@ -5,6 +5,14 @@ from pydantic import BaseModel
 from app.model.hospital import Hospital
 
 
+class Status:
+    sold = 'Sold'
+    listing = 'Listing'
+    expired = 'Expired'
+    not_listed = 'Not listed'
+    finished_listing = 'Finished listing'
+
+
 class TrackingMedicine(BaseModel):
     id: int
     name: str

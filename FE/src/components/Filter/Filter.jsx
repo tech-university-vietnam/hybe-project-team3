@@ -29,7 +29,7 @@ const Filter = ({
 
   return (
     <div>
-      <FormControl sx={{ m: 1, width: 300 }}>
+      <FormControl sx={{ m: 1 }} style={{marginRight: '0px'}}>
         <InputLabel id="demo-multiple-checkbox-label">Status filter</InputLabel>
         <Select
           labelId="demo-multiple-checkbox-label"

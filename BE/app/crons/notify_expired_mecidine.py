@@ -17,6 +17,7 @@ from app.infrastructure.postgresql.notiffication.notification import Notificatio
 from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
 from app.model.notification import Type, Status
+from app.model.tracking_medicine import Status as TrackingStatus
 
 
 def setup_cron(app: FastAPI, debug=True):
@@ -42,6 +43,8 @@ def setup_cron(app: FastAPI, debug=True):
         db_repo.db.commit()
 
     def check_nearly_expired_meds(meds: [TrackingMedicineDTO]):
+        if not meds:
+            return
         utc_now = datetime.utcnow()
 
         # Get meds need create noti

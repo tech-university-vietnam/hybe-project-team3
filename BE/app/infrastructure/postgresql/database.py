@@ -1,19 +1,17 @@
-import json
 import os
-from datetime import datetime
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-from app.infrastructure.postgresql import seeders
 
 from app.config import get_settings
+from app.infrastructure.postgresql import seeders
 
 SQLALCHEMY_DATABASE_URL = get_settings().DATABASE_URL
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-SessionLocal = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 session: Session = SessionLocal()
 
 Base = declarative_base()

@@ -30,7 +30,6 @@ const Notifications = ({
   openPopup,
   getBuyingHospitalData,
 }) => {
-  console.log("notifications", notifications);
   const [next, setNext] = useState(numberOfNotificationToShow);
   const handleMoreNotifications = () => {
     setNext(next + numberOfNotificationToShow);

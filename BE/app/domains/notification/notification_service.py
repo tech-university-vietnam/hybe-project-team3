@@ -7,6 +7,7 @@ from app.controllers.tracking_medicine.model import TrackingMedicinePayload
 from app.domains.notification.notification_repository import NotificationRepository
 from app.domains.medicine.medicine_repository import MedicineRepository
 from app.model.notification import Type, Status
+from app.model.tracking_medicine import Status as TrackingStatus
 
 
 class NotificationService:
@@ -38,10 +39,28 @@ class NotificationService:
     def count_total_not_seen(self, hospital_id: int):
         return self.noti_repo.count_total_not_seen(hospital_id)
 
-    def update_status(self, noti_id: int, status: str, user_id: int, background_task=None):
+    def check_available_medicine(self, med_id):
+        # Check tracking medicine exist
+        if not med_id:
+            # Skip check if noti does not have tracking_med_id
+            return True
+
+        medicine = self.medicine_repo.get(med_id)
+        if not medicine or (medicine and medicine.status in [TrackingStatus.sold, TrackingStatus.expired,
+                                                             TrackingStatus.finished_listing]):
+            return False
+        return True
+
+    def update_status(self, noti_id: int, status: str, user_id: int, background_task):
+
         # update med status to listed
         # update notification status
         noti = self.noti_repo.update_status(noti_id, status)
+
+        med_available = self.check_available_medicine(noti.tracking_medicine_id)
+        if not med_available:
+            raise Exception('Medicine not available or removed')
+
         if noti and noti.type == Type.warning_expired and noti.status == Status.approved:
             self.medicine_repo.update(noti.sourcing_id, TrackingMedicinePayload(status="Listed"))
 
