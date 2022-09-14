@@ -151,7 +151,6 @@ def setup_cron(app: FastAPI, debug=True):
         for name in map_meds_hospital_sell.keys():
             map_hospital_sell_buy[name]['buyer'] = map_meds_hospital_buy[name]
             map_hospital_sell_buy[name]['seller'] = map_meds_hospital_sell[name]
-        print(map_hospital_sell_buy)
         noti_list = []
         mappings = []
         available_hospital_ids = set()
