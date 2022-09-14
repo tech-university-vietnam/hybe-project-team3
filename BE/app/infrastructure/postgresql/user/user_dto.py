@@ -31,9 +31,9 @@ class UserDTO(Base):
     # created_at: Union[datetime, Column] = Column(DateTime(timezone=True),
     #           server_default=func.now())
 
-    created_at: Union[datetime, Column] = Column(DateTime(timezone=True),default=datetime.now(),
+    created_at: Union[datetime, Column] = Column(DateTime(timezone=True),default=datetime.utcnow,
                                                  nullable=True)
-    updated_at: Union[datetime, Column] = Column(DateTime(timezone=True), default=datetime.now(),
+    updated_at: Union[datetime, Column] = Column(DateTime(timezone=True), default=datetime.utcnow,
                                                  nullable=True)
     # jwt token
     token: Union[str, Column] = Column(String, nullable=True)
@@ -41,6 +41,8 @@ class UserDTO(Base):
     work_for: Union[int, Column] = Column(Integer, ForeignKey("Hospital.id"))
     source_order_request = relationship("SourceOrderRequestDTO",
                                         backref=__tablename__)
+
+    hospital = relationship("HospitalDTO", back_populates="users", viewonly=True)
 
     def to_entity(self) -> User:
         return User(
@@ -58,7 +60,7 @@ class UserDTO(Base):
 
     @classmethod
     def from_entity(cls, user: User) -> "UserDTO":
-        now = datetime.now()
+        now = datetime.utcnow()
         return cls(
             id=user.id,
             username=user.username,
@@ -75,7 +77,7 @@ class UserDTO(Base):
             id=self.id,
             username=self.username,
             email=self.email,
-            work_for=self.work_for,
+            work_for=self.hospital.name,
             created_at=self.created_at,
             updated_at=self.updated_at
         )
@@ -90,12 +92,13 @@ class UserDTO(Base):
             updated_at=self.updated_at
         )
 
+
     @classmethod
     def from_register_request(cls, regis_req: RegisterRequest) -> "UserDTO":
         salt = bcrypt.gensalt()
         password = regis_req.password.encode('utf8')
         pwhash = bcrypt.hashpw(password, salt).decode('utf8')
-        now = datetime.now()
+        now = datetime.utcnow()
         return cls(
             hash_pw=pwhash,
             email=regis_req.email,

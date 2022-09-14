@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -15,8 +15,8 @@ class User:
                  telephone: str,
                  avatar: str,
                  work_for: int,
-                 created_at: Optional[datetime] = datetime.now(),
-                 updated_at: Optional[datetime] = datetime.now(),
+                 created_at: Optional[datetime] = datetime.utcnow(),
+                 updated_at: Optional[datetime] = datetime.utcnow(),
                  ):
         self.id: int = id
         self.username: str = username
@@ -40,7 +40,7 @@ class SafeUser(BaseModel):
     id: int
     username: Optional[str]
     email: str
-    work_for: int
+    work_for: str
     created_at: datetime
     updated_at: datetime
 

@@ -1,11 +1,21 @@
 from fastapi import FastAPI
 from fastapi.security import HTTPBearer
-import os
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.crons.notify_expired_mecidine import setup_cron
 
 app = FastAPI(debug=True)
 oauth2_scheme = HTTPBearer(scheme_name='token')
+
+origins = ["http://localhost:3000", "http://localhost:8000"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def setup(setup_app: FastAPI):
@@ -26,7 +36,7 @@ def setup(setup_app: FastAPI):
     setup_app.include_router(source_order_request_router)
     setup_app.include_router(notification_router)
 
-    setup_cron(app, debug=True)
+    setup_cron(app, debug=False)
 
 
 setup(app)

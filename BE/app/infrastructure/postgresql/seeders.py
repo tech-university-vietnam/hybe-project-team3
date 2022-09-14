@@ -19,18 +19,19 @@ def seed_medicines(session):
         max_user = session.query(UserDTO).count()
         meds_dto = []
         for med in json_meds:
-            user = users[random.randint(0, max_user-1)]
+            user = users[random.randint(0, max_user - 1)]
             meds_dto.append(
                 TrackingMedicineDTO(
-                name=med['name'],
-                status=MedicineStatus.calculate_create_status(datetime.fromisoformat(med['expired_date'])),
-                expired_date=datetime.fromisoformat(med['expired_date']),
-                created_at=datetime.fromisoformat(med['created_at']),
-                created_by=user.id,
-                hospital_id=user.work_for,
-            ))
+                    name=med['name'],
+                    status=MedicineStatus.calculate_create_status(datetime.fromisoformat(med['expired_date'])),
+                    expired_date=datetime.fromisoformat(med['expired_date']),
+                    created_at=datetime.fromisoformat(med['created_at']),
+                    created_by=user.id,
+                    hospital_id=user.work_for,
+                ))
         session.add_all(meds_dto)
         session.commit()
+
 
 def seed_sources(session):
     from app.infrastructure.postgresql.source_order_request.source_order_request import SourceOrderRequestDTO
@@ -64,9 +65,9 @@ def seed_users(session):
             json_file = json.load(file)
 
         user_dtos = list(map(lambda user: UserDTO(
-            email= user['email'],
-            hash_pw= hash_pw(user),
-            work_for= user['work_for']
+            email=user['email'],
+            hash_pw=hash_pw(user),
+            work_for=user['work_for']
         ), json_file))
         session.add_all(user_dtos)
         session.commit()
@@ -87,6 +88,7 @@ def seed_hositals(session):
         ), json_sources))
         session.add_all(hospital_dtos)
         session.commit()
+
 
 def seed_notifications(session):
     from app.infrastructure.postgresql.notiffication.notification import NotificationDTO

@@ -38,7 +38,6 @@ const AddItemForm = ({ handleClose, handleListChange }) => {
     setIsSubmitting(false);
   };
 
-
   return (
     <>
       <TextField

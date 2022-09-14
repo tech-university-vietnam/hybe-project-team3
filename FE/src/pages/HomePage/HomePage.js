@@ -1,19 +1,14 @@
 import React, { useState } from "react";
 import "./HomePage.css";
-import Login from "pages/Login/Login";
-import Register from "pages/Register/Register";
-import { Footer } from "layouts/Footer/Footer";
 import Header from "../../layouts/Header/Header";
 import TabBar from '../../components/TabBar/TabBar'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TrackedList from "pages/TrackedList/TrackedList";
 import WishList from "pages/WishList/WishList";
-import Notification from "pages/Notification/Notification";
+import { Box } from "@mui/system";
 
 const dashboard = {
-  'tracked-list': <TrackedList/>,
-  'wishlist': <WishList/>,
-  'notification': <Notification/>
+  'tracked-list': <TrackedList />,
+  'wishlist': <WishList />,
 }
 
 export const HomePage = () => {
@@ -25,10 +20,13 @@ export const HomePage = () => {
 
   return (
     <div className='page-container'>
-      <TabBar className='tab-bar' currentTab={currentTab} handleChangeTab={handleChangeTab}/>
+      <TabBar className='tab-bar' currentTab={currentTab} handleChangeTab={handleChangeTab} />
       <div className='dashboard-container'>
         <Header />
-        {dashboard[currentTab]}
+        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          {dashboard[currentTab]}
+
+        </Box>
       </div>
     </div>
   );

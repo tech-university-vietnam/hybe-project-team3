@@ -1,20 +1,21 @@
-.content-container {
+.contentContainer {
   display: flex;
   flex-direction: column;
   /* flex: 1; */
   padding: 2rem;
   gap: 2rem;
+
+  width: 950px;
+
 }
 
-.content-header {
+.contentHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
-.data-container {
+.dataContainer {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  align-items: center;
 }

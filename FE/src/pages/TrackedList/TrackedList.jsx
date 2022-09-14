@@ -1,23 +1,34 @@
 import React, { useState, useEffect, useMemo } from "react";
 import AddItemButton from "../../components/AddTrackingItemButton/AddTrackingItemButton";
-import "./TrackedList.css";
-import { Pagination, Alert } from "@mui/material";
-import MedicineItems from "components/MedicineItems/MedicineItems";
+import styles from "./TrackedList.module.css";
+import { Alert, Chip } from "@mui/material";
 import Filter from "components/Filter/Filter";
-import axios from "axios";
-import usePagination from "../../Utils/hooks/pagination";
-import "./TrackedList.css";
 import {
   deleteTrackingMedicine,
-  getTrackingMedinces,
+  getBuyingHospital,
+  getTrackingMedicines,
 } from "Utils/api/medicine";
+import FinishedListingPopup from "components/TrackedListPopup/FinishedListingPopup";
+import DataTable from "components/DataTable/DataTable";
+import moment from "moment/moment";
+import ChipStatus from "components/ChipStatus/ChipStatus";
+
+const badgeColorMap = {
+  Listed: "primary",
+  "Not listed": "secondary",
+  "Finished listing": "success",
+  Available: "primary",
+  Unavailable: "secondary",
+  Resolved: "success",
+};
 
 const TrackedList = () => {
+  const [popupData, setPopupData] = useState({});
+  const [finishedListingPopup, setFinishedListingPopup] = useState(false);
   const [listOfTrackedMedicineItems, setListOfTrackedMedicineItems] = useState(
     []
   );
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatuses, setSelectedStatuses] = useState([
     "Listed",
     "Not listed",
@@ -25,7 +36,17 @@ const TrackedList = () => {
     "Expired",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
-  // const [filteredMedicines, setFilteredMedicines] = useState([]);
+
+
+  const openPopup = async ({ id, status }) => {
+    try {
+      const response = await getBuyingHospital(id);
+      setPopupData(response.data);
+      setFinishedListingPopup(true);
+    } catch (error) {
+      console.log("Error getting buying hospital");
+    }
+  };
 
   const filteredMedicines = useMemo(() => {
     return listOfTrackedMedicineItems.filter((medicineItem) =>
@@ -33,15 +54,6 @@ const TrackedList = () => {
     );
   }, [listOfTrackedMedicineItems, selectedStatuses]);
 
-  const PER_PAGE = 7;
-
-  const count = Math.ceil(filteredMedicines.length / PER_PAGE);
-  const filteredMedicineItems = usePagination(filteredMedicines, PER_PAGE);
-
-  const handlePageChange = (e, p) => {
-    setCurrentPage(p);
-    filteredMedicineItems.jump(p);
-  };
 
   const handleListChange = async () => {
     try {
@@ -55,6 +67,27 @@ const TrackedList = () => {
     }
   };
 
+
+  const columns = [
+    { field: "id", headerName: "ID", width: 70 },
+    { field: "name", headerName: "Medicine name", width: 200 },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 150,
+      renderCell: ({ row: { status, id, name } }) => (
+        <ChipStatus status={status} openPopup={openPopup} id={id} name={name} />
+      )
+    },
+    {
+      field: "expired_date",
+      headerName: "Tracking expired date",
+      width: 250,
+      renderCell: ({ row: { expired_date } }) => moment(expired_date).format("YYYY-MM-DD")
+    },
+  ]
+
+
   const handleFilterChange = (event) => {
     const {
       target: { value },
@@ -64,7 +97,7 @@ const TrackedList = () => {
 
   const getAllTrackedMedicineItems = async () => {
     try {
-      const response = await getTrackingMedinces();
+      const response = await getTrackingMedicines();
       setListOfTrackedMedicineItems(response.data);
     } catch (error) {
       console.log(
@@ -93,38 +126,28 @@ const TrackedList = () => {
   }, []);
 
   return (
-    <div className="content-container">
+    <div className={styles.contentContainer}>
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-      <div className="content-header">
+      <div className={styles.contentHeader}>
         <AddItemButton handleListChange={handleListChange} />
-        <Pagination
-          count={count}
-          size="large"
-          page={currentPage}
-          variant="outlined"
-          shape="rounded"
-          onChange={handlePageChange}
-        />
         <Filter
           statuses={["Listed", "Not listed", "Finished listing", "Expired"]}
           selectedStatuses={selectedStatuses}
           handleChange={handleFilterChange}
         />
       </div>
-      <div className="data-container">
-        <MedicineItems
-          medicineItems={filteredMedicineItems.currentData()}
-          handleDelete={handleDeleteMedicineItem}
-        />
+      <div className={styles.dataContainer}>
+        {finishedListingPopup && (
+          <FinishedListingPopup
+            open={finishedListingPopup}
+            onClose={setFinishedListingPopup}
+            popupData={popupData}
+          />
+        )}
+
+        <DataTable rows={filteredMedicines} columns={columns} handleDelete={handleDeleteMedicineItem} />
       </div>
-      <Pagination
-        count={count}
-        size="large"
-        page={currentPage}
-        variant="outlined"
-        shape="rounded"
-        onChange={handlePageChange}
-      />
+
     </div>
   );
 };

@@ -33,7 +33,7 @@ def test_create_tracking_medicine(client: TestClient) -> None:
     r = client.post(
         TRACKING_MEDICINE_PREFIX,
         headers=auth_header,
-        json={"name": "foo", "expired_date": "2022-09-07T13:00:50.280Z"}
+        json={"name": "foo", "expired_date": "2022-11-14T12:17:36"}
     )
     assert r.status_code == status.HTTP_201_CREATED
     data = r.json()

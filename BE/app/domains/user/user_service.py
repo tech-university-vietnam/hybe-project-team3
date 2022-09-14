@@ -15,16 +15,16 @@ class UserService:
         user = self.user_repo.create(regis)
         return user and bool(user.id)
 
-    def get_user_by_id(self, user_id: str):
+    def get_user_by_id(self, user_id: int):
         return self.user_repo.get_by_id(user_id)
 
-    def get_detail_user_by_id(self, user_id: str):
+    def get_detail_user_by_id(self, user_id: int):
         return self.user_repo.get_detail_by_id(user_id)
 
     def update(self, user: User) -> Optional[User]:
         pass
 
-    def delete_by_id(self, id: str):
+    def delete_by_id(self, id: int):
         pass
 
     def add_new_token(self, id: int, token: str) -> bool:
