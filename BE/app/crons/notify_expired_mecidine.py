@@ -24,7 +24,7 @@ from app.model.tracking_medicine import Status as TrackingStatus
 
 def setup_cron(app: FastAPI, debug=True):
     container = Container()
-    db_repo: DatabaseRepository = container.database_repo
+    db_repo: DatabaseRepository = container.database_repo_factory()
 
     def check_expired_meds(meds: [TrackingMedicineDTO]):
         utc_now = datetime.utcnow()
