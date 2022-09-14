@@ -95,16 +95,6 @@ class NotificationRepository(DatabaseRepository):
         if status is Approved -> change type to notifySold
         """
 
-        def build_updated_values():
-            values = {
-                "status": status,
-            }
-            # Update notification type to sold if buyer approved
-            if status == "Approved":
-                if notify.type == Type.notify_available:
-                    values["type"] = Type.notify_sold
-            return values
-
         try:
             notify: NotificationDTO = self.db.query(NotificationDTO).get(id)
             if not notify or status not in Status.all():

@@ -7,7 +7,7 @@ from app.crons.notify_expired_mecidine import setup_cron
 app = FastAPI(debug=True)
 oauth2_scheme = HTTPBearer(scheme_name='token')
 
-origins = ["http://localhost:3000"]
+origins = ["http://localhost:3000", "http://localhost:8000"]
 
 app.add_middleware(
     CORSMiddleware,
