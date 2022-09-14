@@ -1,4 +1,3 @@
-import pinject
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import HTTPException, status, Depends

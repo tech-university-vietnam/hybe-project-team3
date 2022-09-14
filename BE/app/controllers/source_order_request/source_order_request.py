@@ -10,7 +10,7 @@ from app.services.jwt_service import JWTService
 from app.domains.source_order_request.source_order_request_service import SourceOrderRequestService
 from fastapi.security import HTTPAuthorizationCredentials
 from app.main import oauth2_scheme
-import pinject
+
 router = InferringRouter()
 
 

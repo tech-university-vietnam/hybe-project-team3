@@ -3,11 +3,11 @@ from datetime import datetime, timedelta
 from operator import and_
 from typing import List
 
-import pinject
 from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
 from sqlalchemy import update
-from app.model.notification import BuyerSellerMap, Notification
+
+from app.controllers.dependency_injections.container import Container
 from sqlalchemy import delete
 from app.domains.helpers.database_repository import DatabaseRepository
 
@@ -17,8 +17,8 @@ from app.infrastructure.postgresql.source_order_request.source_order_request imp
 
 
 def setup_cron(app: FastAPI, debug=True):
-    obj_graph = pinject.new_object_graph()
-    db_repo: DatabaseRepository = obj_graph.provide(DatabaseRepository)
+    container = Container()
+    db_repo: DatabaseRepository = container.database_repo
 
     def check_expired_meds(meds: [TrackingMedicineDTO]):
         utc_now = datetime.utcnow()

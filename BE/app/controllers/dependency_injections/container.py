@@ -33,17 +33,17 @@ def singleton(cls: T) -> T:
 
 @singleton
 class Container(containers.DeclarativeContainer):
-    database_repo = providers.Factory(DatabaseRepository)
+    database_repo_factory = providers.Factory(DatabaseRepository)
     session = providers.Singleton(SessionLocal)
-    database_repo.add_attributes(db=session)
+    database_repo_factory.add_attributes(db=session)
 
     # repos
-    user_repo_factory = providers.Factory(UserRepository, database_repository=database_repo)
-    notification_repo_factory = providers.Factory(NotificationRepository, database_repository=database_repo)
-    hospital_repo_factory = providers.Factory(HospitalRepository, database_repository=database_repo)
-    medicine_repo_factory = providers.Factory(MedicineRepository, database_repository=database_repo)
+    user_repo_factory = providers.Factory(UserRepository, database_repository=database_repo_factory)
+    notification_repo_factory = providers.Factory(NotificationRepository, database_repository=database_repo_factory)
+    hospital_repo_factory = providers.Factory(HospitalRepository, database_repository=database_repo_factory)
+    medicine_repo_factory = providers.Factory(MedicineRepository, database_repository=database_repo_factory)
     source_order_request_repo_factory = providers.Factory(SourceOrderRequestRepository,
-                                                          database_repository=database_repo)
+                                                          database_repository=database_repo_factory)
 
     # services
     auth_service_factory = providers.Factory(

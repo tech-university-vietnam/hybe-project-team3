@@ -1,4 +1,3 @@
-import pinject
 from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi_utils.cbv import cbv

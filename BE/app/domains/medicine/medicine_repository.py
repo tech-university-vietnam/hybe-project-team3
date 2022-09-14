@@ -4,7 +4,7 @@ from typing import Optional, List
 
 from sqlalchemy import exc, delete, update, desc
 
-from app.controllers.tracking_medicine.tracking_medicine import TrackingMedicinePayload
+from app.controllers.tracking_medicine.model import TrackingMedicinePayload
 from app.domains.helpers.database_repository import DatabaseRepository
 from app.infrastructure.postgresql.tracking_medicine.tracking_medicine import TrackingMedicineDTO
 from app.model.tracking_medicine import TrackingMedicine
