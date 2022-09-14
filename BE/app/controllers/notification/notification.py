@@ -38,7 +38,7 @@ class NotificationRoute:
         self.medicine_service: MedicineService = container.medicine_service_factory()
         self.jwt_service: JWTService = container.jwt_service_factory()
         self.user_service: UserService = container.user_service_factory()
-        self.notification_service: NotificationService = container.notification_service_factory()
+        self.notify_service: NotificationService = container.notification_service_factory()
 
     @router.get("/notifications", tags=["notification"],
                 status_code=status.HTTP_200_OK, response_model=List[NotificationWithHospital])

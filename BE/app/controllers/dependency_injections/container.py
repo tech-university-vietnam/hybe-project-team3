@@ -74,7 +74,6 @@ class Container(containers.DeclarativeContainer):
     notification_service_factory = providers.Factory(
         NotificationService,
         notification_repository=notification_repo_factory,
-        hospital_repository=hospital_repo_factory,
         medicine_repository=medicine_repo_factory,
         source_order_request_repository=source_order_request_repo_factory
     )
