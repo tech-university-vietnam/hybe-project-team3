@@ -31,3 +31,9 @@ class SourceOrderRequestPayload(BaseModel):
 
 class SourceOrderRequestUpdatePayload(BaseModel):
     status: Optional[str]
+
+
+class SourceStatus:
+    available = "Available"
+    unavailable = "Unavailable"
+    resolved = "Resolved"

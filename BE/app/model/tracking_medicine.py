@@ -24,3 +24,9 @@ class TrackingMedicine(BaseModel):
 
 class TrackingMedicineWithHospital(TrackingMedicine):
     hospital: Optional[Hospital]
+
+
+class MedicineStatus:
+    listed = "Listed"
+    finished_listing = "Finished listing"
+    not_listed = "Not listed"

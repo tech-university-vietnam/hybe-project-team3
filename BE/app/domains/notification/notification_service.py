@@ -1,4 +1,6 @@
 from typing import List
+from app.model.tracking_medicine import MedicineStatus
+from app.model.source_order_request import SourceStatus
 
 from app.domains.source_order_request.source_order_request_repository import SourceOrderRequestRepository
 from app.controllers.tracking_medicine.model import TrackingMedicinePayload
@@ -62,12 +64,18 @@ class NotificationService:
         if noti and noti.type == Type.warning_expired and noti.status == Status.approved:
             self.medicine_repo.update(noti.sourcing_id, TrackingMedicinePayload(status="Listed"))
 
-        if noti and noti.type == Type.notify_available and noti.status == Status.approved:
-            self.medicine_repo.update(noti.tracking_medicine_id, TrackingMedicinePayload(status="Sold"))
-            self.source_repo.update({"status": "Resolved"}, noti.sourcing_id, user_id)
-            background_task.add_task(self.noti_repo.update_status_to_invalid(noti.sourcing_id))
+        if noti and noti.type == Type.notify_available:
+            if noti.status == Status.approved:
+                self.medicine_repo.update(noti.tracking_medicine_id, TrackingMedicinePayload(status=MedicineStatus.finished_listing))
+                self.source_repo.update({"status": SourceStatus.resolved}, noti.sourcing_id, user_id)
+                background_task.add_task(self.noti_repo.update_status_to_invalid(noti.tracking_medicine_id))
+            if noti.status == Status.declined and not self.noti_repo.check_if_any_noti_exists(noti.sourcing_id):
+                self.source_repo.update({"status": SourceStatus.unavailable}, noti.sourcing_id, noti.to_hospital_id)
 
         return noti
 
     def update_all_seen_status(self, ids: List[int]):
         return self.noti_repo.update_all_seen_status(ids)
+
+    def check_if_any_noti_exists(self, sourcing_id: int):
+        return self.noti_repo.check_if_any_noti_exists(sourcing_id)

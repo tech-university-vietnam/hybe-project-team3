@@ -48,7 +48,7 @@ const NotificationItem = ({
       case "notifyAvailable":
         return sourcingId;
       case "notifySold":
-        return sourcingId;
+        return trackingMedicineId;
       default:
         return trackingMedicineId;
     }
