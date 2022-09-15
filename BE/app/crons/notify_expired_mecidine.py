@@ -163,17 +163,20 @@ def setup_cron(app: FastAPI, debug=True):
             ):
                 # 1 med can have multiple hospital_buyer
                 for hospital_buy in map_hospital_sell_buy[name]['buyer']:
-                    seller = map_hospital_sell_buy[name]['seller']
-                    if not check_if_buyer_declined_before(seller[0][0], hospital_buy[0], seller[0][1]):
-                        noti: NotificationDTO= NotificationDTO.from_sourcing_entity(
-                            hospital_buy[1],
-                            seller[0][1],
-                            name,
-                            seller[0][0],
-                            hospital_buy[0]
-                        )
-                        available_hospital_ids.add(hospital_buy[1])
-                        noti_list += [noti]
+                    sellers = map_hospital_sell_buy[name]['seller']
+                    print(sellers)
+                    for seller in sellers:
+                        print(seller)
+                        if not check_if_buyer_declined_before(seller[0], hospital_buy[0], seller[1]):
+                            noti: NotificationDTO= NotificationDTO.from_sourcing_entity(
+                                hospital_buy[1],
+                                seller[1],
+                                name,
+                                seller[0],
+                                hospital_buy[0]
+                            )
+                            available_hospital_ids.add(hospital_buy[1])
+                            noti_list += [noti]
         # update to available
         # TODO: Add to background task
         for i in available_hospital_ids:

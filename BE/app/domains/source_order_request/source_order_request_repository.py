@@ -44,7 +44,7 @@ class SourceOrderRequestRepository:
                 raise RequestNotExistError
             stmt = (
                 update(SourceOrderRequestDTO).
-                where(SourceOrderRequestDTO.id == source_id, SourceOrderRequestDTO.created_by == user_id).
+                where(SourceOrderRequestDTO.id == source_id).
                 values(updated_values)
             )
             self.db.execute(stmt)

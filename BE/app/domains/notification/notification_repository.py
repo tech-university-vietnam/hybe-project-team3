@@ -129,12 +129,13 @@ class NotificationRepository(DatabaseRepository):
                 NotificationDTO.status == Status.init
             ).all()
             mappings = []
-            for noti in invalid_notis:
-                mappings.append({
-                    "id": noti.id,
-                    "status": Status.invalid
-                })
-            self.db.bulk_update_mappings(NotificationDTO, mappings)
+            if invalid_notis:
+                for noti in invalid_notis:
+                    mappings.append({
+                        "id": noti.id,
+                        "status": Status.invalid
+                    })
+                self.db.bulk_update_mappings(NotificationDTO, mappings)
         except exc.SQLAlchemyError as e:
             logging.error(e)
             return
