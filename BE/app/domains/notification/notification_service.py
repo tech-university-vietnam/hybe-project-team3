@@ -2,6 +2,7 @@ from typing import List
 from app.model.tracking_medicine import MedicineStatus
 from app.model.source_order_request import SourceStatus
 
+from fastapi import BackgroundTasks
 from app.domains.source_order_request.source_order_request_repository import SourceOrderRequestRepository
 from app.controllers.tracking_medicine.model import TrackingMedicinePayload
 from app.domains.notification.notification_repository import NotificationRepository
@@ -51,7 +52,7 @@ class NotificationService:
             return False
         return True
 
-    def update_status(self, noti_id: int, status: str, user_id: int, background_task):
+    def update_status(self, noti_id: int, status: str, user_id: int, background_task: BackgroundTasks):
 
         # update med status to listed
         # update notification status
@@ -68,7 +69,7 @@ class NotificationService:
             if noti.status == Status.approved:
                 self.medicine_repo.update(noti.tracking_medicine_id, TrackingMedicinePayload(status=MedicineStatus.finished_listing))
                 self.source_repo.update({"status": SourceStatus.resolved}, noti.sourcing_id, user_id)
-                background_task.add_task(self.noti_repo.update_status_to_invalid(noti.tracking_medicine_id))
+                self.noti_repo.update_status_to_invalid(noti.tracking_medicine_id)
             if noti.status == Status.declined and not self.noti_repo.check_if_any_noti_exists(noti.sourcing_id):
                 self.source_repo.update({"status": SourceStatus.unavailable}, noti.sourcing_id, noti.to_hospital_id)
 
