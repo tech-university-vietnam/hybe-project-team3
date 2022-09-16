@@ -17,3 +17,5 @@ requests
 python-dotenv
 pytz
 dependency-injector
+ddtrace
+datadog

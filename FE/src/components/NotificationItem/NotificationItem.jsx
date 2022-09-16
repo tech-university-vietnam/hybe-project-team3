@@ -25,8 +25,8 @@ const NotificationItem = ({
     try {
       await postDeclineNotification({ id });
       await onApproveDecline();
-    } catch (error) {
-      console.log("Error declining notification", error);
+    } catch ({response}) {
+      alert(response.data)
     }
   };
 
@@ -58,8 +58,8 @@ const NotificationItem = ({
     try {
       await postApproveNotification({ id });
       await onApproveDecline();
-    } catch (error) {
-      console.log("Error approving notification", error);
+    } catch ({response}) {
+      alert(response.data)
     }
   };
 

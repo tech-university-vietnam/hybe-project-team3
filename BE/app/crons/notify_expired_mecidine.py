@@ -153,7 +153,6 @@ def setup_cron(app: FastAPI, debug=True):
         for name in map_meds_hospital_sell.keys():
             map_hospital_sell_buy[name]['buyer'] = map_meds_hospital_buy[name]
             map_hospital_sell_buy[name]['seller'] = map_meds_hospital_sell[name]
-        print(map_hospital_sell_buy)
         noti_list = []
         mappings = []
         available_hospital_ids = set()
@@ -166,9 +165,7 @@ def setup_cron(app: FastAPI, debug=True):
                 # 1 med can have multiple hospital_buyer
                 for hospital_buy in map_hospital_sell_buy[name]['buyer']:
                     sellers = map_hospital_sell_buy[name]['seller']
-                    print(sellers)
                     for seller in sellers:
-                        print(seller)
                         if not check_if_buyer_declined_before(seller[0], hospital_buy[0], seller[1]):
                             noti: NotificationDTO= NotificationDTO.from_sourcing_entity(
                                 hospital_buy[1],

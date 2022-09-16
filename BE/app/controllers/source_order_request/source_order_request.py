@@ -32,7 +32,6 @@ class SourceOrderRequestRoute:
         user = self.user_service.get_detail_user_by_id(user_id)
         return self.source_order_req_service.list(user.work_for)
 
-
     @router.post("/source-order", tags=["source-order"],
                  status_code=status.HTTP_201_CREATED, response_model=SourceOrderRequest)
     def create_source_order(self, payload: SourceOrderRequestPayload,

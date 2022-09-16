@@ -1,7 +1,7 @@
 version: "3"
 services:
   frontend:
-    build: FE
+    build: ./FE
     ports:
       - 8088:80
     environment:
@@ -29,5 +29,18 @@ services:
      - "5432"
     environment:
       POSTGRES_PASSWORD: password
+
+  datadog:
+    image: gcr.io/datadoghq/agent:7
+    pid: host
+    environment:
+     - DD_API_KEY=5e210817d3abc4568da4340e57d7fb91
+     - DD_SITE=datadoghq.com
+     - DD_LOGS_ENABLED=true
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+     - /proc/:/host/proc/:ro
+     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+     - /var/lib/docker/containers:/var/lib/docker/containers:ro
 networks:
   default:

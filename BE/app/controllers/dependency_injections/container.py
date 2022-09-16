@@ -69,7 +69,7 @@ class Container(containers.DeclarativeContainer):
 
     source_order_request_service_factory = providers.Factory(
         SourceOrderRequestService,
-        source_order_req_repo=source_order_request_repo_factory
+        source_order_request_repository=source_order_request_repo_factory
     )
     notification_service_factory = providers.Factory(
         NotificationService,
