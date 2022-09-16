@@ -1,8 +1,8 @@
-import pinject
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi.responses import JSONResponse
 
+from app.controllers.dependency_injections.container import Container
 from app.controllers.user.auth_request import LogoutRequest, LoginRequest, RegisterRequest
 from app.domains.user.user_service import UserService
 
@@ -19,11 +19,10 @@ router = InferringRouter()
 class AuthenticationRoute:
 
     def __init__(self):
-        obj_graph = pinject.new_object_graph()
-
-        self.auth_service = obj_graph.provide(AuthService)
-        self.jwt_service = obj_graph.provide(JWTService)
-        self.user_service = obj_graph.provide(UserService)
+        container = Container()
+        self.auth_service: AuthService = container.auth_service_factory()
+        self.jwt_service: JWTService = container.jwt_service_factory()
+        self.user_service: UserService = container.user_service_factory()
 
     @router.post("/login", tags=["authentication"])
     def login(self, login_req: LoginRequest):

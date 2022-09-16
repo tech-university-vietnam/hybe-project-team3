@@ -1,12 +1,12 @@
 from typing import List
 
-import pinject
 from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from starlette import status
 
+from app.controllers.dependency_injections.container import Container
 from app.controllers.tracking_medicine.model import TrackingMedicinePayload
 from app.domains.medicine.medicine_service import MedicineService
 from app.domains.user.user_service import UserService
@@ -21,11 +21,10 @@ router = InferringRouter()
 class TrackingMedicineRoute:
 
     def __init__(self):
-        obj_graph = pinject.new_object_graph()
-        self.medicine_service: MedicineService = obj_graph.provide(
-            MedicineService)
-        self.jwt_service: JWTService = obj_graph.provide(JWTService)
-        self.user_service: UserService = obj_graph.provide(UserService)
+        container = Container()
+        self.medicine_service: MedicineService = container.medicine_service_factory()
+        self.jwt_service: JWTService = container.jwt_service_factory()
+        self.user_service: UserService = container.user_service_factory()
 
     @router.get("/tracking-medicines", tags=["medicine"],
                 response_model=List[TrackingMedicine])

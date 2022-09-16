@@ -9,7 +9,11 @@ from app.infrastructure.postgresql.notiffication.notification import Notificatio
 from app.model.notification import Notification, Status, SeenStatus, NotificationWithHospital, Type
 
 
-class NotificationRepository(DatabaseRepository):
+class NotificationRepository:
+
+    def __init__(self, database_repository: DatabaseRepository):
+        self.db_repo = database_repository
+        self.db = self.db_repo.db
 
     def list(self, hospital_id: int) -> List[NotificationWithHospital]:
         notifies: [NotificationDTO] = self.db.query(NotificationDTO).options(

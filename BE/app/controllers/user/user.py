@@ -1,8 +1,9 @@
-import pinject
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import HTTPException, status, Depends
 from fastapi.responses import JSONResponse
+
+from app.controllers.dependency_injections.container import Container
 from app.model.user import SafeUser
 from app.controllers.user.schema import LoginResponse
 
@@ -15,15 +16,17 @@ from app.domains.user.user_service import UserService
 from app.controllers.common.schema import CommonResponse
 from app.main import oauth2_scheme
 from fastapi.security import HTTPAuthorizationCredentials
+
 router = InferringRouter()
+
 
 @cbv(router)
 class UserRoute:
     def __init__(self):
-        obj_graph = pinject.new_object_graph()
-        self.auth_service: AuthService = obj_graph.provide(AuthService)
-        self.jwt_service: JWTService = obj_graph.provide(JWTService)
-        self.user_service: UserService = obj_graph.provide(UserService)
+        container = Container()
+        self.auth_service: AuthService = container.auth_service_factory()
+        self.jwt_service: JWTService = container.jwt_service_factory()
+        self.user_service: UserService = container.user_service_factory()
 
     @router.post("/login", tags=["users"])
     def login(self, login_req: LoginRequest) -> LoginResponse:

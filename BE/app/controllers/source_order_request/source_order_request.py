@@ -5,6 +5,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi_utils.inferring_router import InferringRouter
 from app.common.exceptions import DBError
 from app.controllers.common.schema import CommonResponse
+from app.controllers.dependency_injections.container import Container
 from app.domains.user.user_service import UserService
 from app.model.source_order_request import SourceOrderRequest, SourceOrderRequestPayload, \
     SourceOrderRequestUpdatePayload, SourceOrderHospitalRequest
@@ -12,7 +13,6 @@ from app.services.jwt_service import JWTService
 from app.domains.source_order_request.source_order_request_service import SourceOrderRequestService
 from fastapi.security import HTTPAuthorizationCredentials
 from app.main import oauth2_scheme
-import pinject
 
 router = InferringRouter()
 
@@ -20,11 +20,10 @@ router = InferringRouter()
 @cbv(router)
 class SourceOrderRequestRoute:
     def __init__(self) -> None:
-        obj_graph = pinject.new_object_graph()
-        self.source_order_req_service: SourceOrderRequestService = obj_graph.provide(
-            SourceOrderRequestService)
-        self.jwt_service: JWTService = obj_graph.provide(JWTService)
-        self.user_service: UserService = obj_graph.provide(UserService)
+        container = Container()
+        self.source_order_req_service: SourceOrderRequestService = container.source_order_request_service_factory()
+        self.jwt_service: JWTService = container.jwt_service_factory()
+        self.user_service: UserService = container.user_service_factory()
 
     @router.get("/source-orders", tags=["source-order"])
     def get_source_orders(self, bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):

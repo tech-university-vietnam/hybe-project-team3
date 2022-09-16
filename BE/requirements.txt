@@ -15,5 +15,5 @@ pytest-cov
 pytz
 requests
 python-dotenv
-pinject
 pytz
+dependency-injector

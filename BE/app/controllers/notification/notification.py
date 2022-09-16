@@ -1,14 +1,15 @@
 from typing import List
 
-import pinject
-from fastapi import Depends, Path, BackgroundTasks
+from fastapi import Depends, Path
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from pydantic import BaseModel
 from starlette import status
+from starlette.background import BackgroundTasks
 
+from app.controllers.dependency_injections.container import Container
 from app.controllers.notification.schema import NotificationPayload
 from app.domains.medicine.medicine_service import MedicineService
 from app.domains.notification.notification_service import NotificationService
@@ -16,8 +17,6 @@ from app.domains.user.user_service import UserService
 from app.main import oauth2_scheme
 from app.model.notification import NotificationWithHospital, Status, SeenStatus, Type
 from app.services.jwt_service import JWTService
-from fastapi.security import HTTPAuthorizationCredentials
-
 
 router = InferringRouter()
 
@@ -35,12 +34,11 @@ class NotificationRoute:
     """
 
     def __init__(self):
-        obj_graph = pinject.new_object_graph()
-        self.medicine_service: MedicineService = obj_graph.provide(
-            MedicineService)
-        self.jwt_service: JWTService = obj_graph.provide(JWTService)
-        self.user_service: UserService = obj_graph.provide(UserService)
-        self.notify_service: NotificationService = obj_graph.provide(NotificationService)
+        container = Container()
+        self.medicine_service: MedicineService = container.medicine_service_factory()
+        self.jwt_service: JWTService = container.jwt_service_factory()
+        self.user_service: UserService = container.user_service_factory()
+        self.notify_service: NotificationService = container.notification_service_factory()
 
     @router.get("/notifications", tags=["notification"],
                 status_code=status.HTTP_200_OK, response_model=List[NotificationWithHospital])
@@ -104,15 +102,14 @@ class NotificationRoute:
             return JSONResponse(None, status.HTTP_401_UNAUTHORIZED)
 
         notify = self.notify_service.update_status(
-                id, Status.approved, user_id, background_tasks)
+            id, Status.approved, user_id, background_tasks)
 
         return notify if notify else JSONResponse(None, status.HTTP_404_NOT_FOUND)
 
     @router.post("/notification/{id}/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
-    def declined(self,
-    background_tasks: BackgroundTasks,
-     id: int = Path("Notification ID"),
+    def declined(self, background_tasks: BackgroundTasks,
+                 id: int = Path("Notification ID"),
                  bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
         """
         change status to Resolved in tracking medicine if type warningExpired
