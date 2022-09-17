@@ -34,7 +34,6 @@ services:
     image: gcr.io/datadoghq/agent:7
     pid: host
     environment:
-     - DD_API_KEY=5e210817d3abc4568da4340e57d7fb91
      - DD_SITE=datadoghq.com
      - DD_LOGS_ENABLED=true
     volumes:
