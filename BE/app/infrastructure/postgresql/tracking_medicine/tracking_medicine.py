@@ -14,6 +14,8 @@ from app.infrastructure.postgresql.source_order_request.source_order_request imp
 class TrackingMedicineDTO(Base):
 
     __tablename__ = "TrackingMedicine"
+    __allow_unmapped__ = True
+
     id: Union[int, Column] = Column(Integer, primary_key=True,
                                     autoincrement=True)
 

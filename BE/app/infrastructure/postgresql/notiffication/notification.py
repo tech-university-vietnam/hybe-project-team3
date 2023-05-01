@@ -13,6 +13,8 @@ from app.model.notification import Notification, SeenStatus, Status, Notificatio
 
 class NotificationDTO(Base):
     __tablename__ = "Notification"
+    __allow_unmapped__ = True
+
     id: Union[int, Column] = Column(Integer, primary_key=True,
                                     autoincrement=True)
 

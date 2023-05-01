@@ -93,7 +93,7 @@ class NotificationRoute:
     def approved(
             self,
             background_tasks: BackgroundTasks,
-            id: int = Path("Notification ID"),
+            id: int = Path(description="Notification ID"),
             bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
 
         user_id = self.jwt_service.validate_token(bearer_auth.credentials)
@@ -110,7 +110,7 @@ class NotificationRoute:
     @router.post("/notification/{id}/declined", tags=["notification"],
                  status_code=status.HTTP_200_OK)
     def declined(self, background_tasks: BackgroundTasks,
-                 id: int = Path("Notification ID"),
+                 id: int = Path(description="Notification ID"),
                  bearer_auth: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
         """
         change status to Resolved in tracking medicine if type warningExpired

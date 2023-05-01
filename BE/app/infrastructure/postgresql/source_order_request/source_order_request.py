@@ -15,6 +15,7 @@ class SourceOrderRequestDTO(Base):
     """
 
     __tablename__ = "SourceOrderRequest"
+    __allow_unmapped__ = True
     id: Union[int, Column] = Column(Integer, primary_key=True,
                                     autoincrement=True)
 
